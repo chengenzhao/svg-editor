@@ -1,5 +1,5 @@
-import com.whitewoodcity.svgeditor.SVGEditor;
+import com.whitewoodcity.svgeditor.SVGEditor2;
 
 void main(){
-  SVGEditor.launch(SVGEditor.class);
+  SVGEditor2.launch(SVGEditor2.class);
 }
