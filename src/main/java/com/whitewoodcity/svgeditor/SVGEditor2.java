@@ -1,19 +1,29 @@
 package com.whitewoodcity.svgeditor;
 
 import module javafx.controls;
-import org.jetbrains.annotations.NotNull;
+import com.whitewoodcity.svgpathcommand.SVGPathCommand;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SVGEditor2 extends Application {
+
+  RadioButton m = new RadioButton("M");
+  RadioButton l = new RadioButton("L");
+  RadioButton t = new RadioButton("T");
+  RadioButton s = new RadioButton("S");
+  RadioButton q = new RadioButton("Q");
+  RadioButton c = new RadioButton("C");
+
+  List<SVGPathCommand> pathCommands = new ArrayList<>();
+
   @Override
   public void start(Stage stage) {
     var vBox = new VBox();
 
     var hbox = getHBox();
 
-    var pane = new Pane();
-    pane.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
-    pane.setPrefHeight(600);
-    pane.setPrefWidth(800);
+    var pane = getPane();
 
     vBox.getChildren().addAll(hbox, pane);
     vBox.setPrefWidth(pane.getPrefWidth());
@@ -22,20 +32,34 @@ public class SVGEditor2 extends Application {
     Scene scene = new Scene(vBox, vBox.getPrefWidth(), vBox.getPrefHeight());
     vBox.prefWidthProperty().bind(scene.widthProperty());
     vBox.prefHeightProperty().bind(scene.heightProperty());
-    stage.setTitle("Hello!");
+    stage.setTitle("SVG Editor~!");
     stage.setScene(scene);
     stage.show();
   }
 
-  @NotNull
-  private static HBox getHBox() {
-    RadioButton m = new RadioButton("M");
-    RadioButton l = new RadioButton("L");
-    RadioButton t = new RadioButton("T");
-    RadioButton s = new RadioButton("S");
-    RadioButton q = new RadioButton("Q");
-    RadioButton c = new RadioButton("C");
+  private static Pane getPane() {
+    var pane = new Pane();
+    pane.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+    pane.setPrefHeight(Screen.getPrimary().getBounds().getHeight()*.8);
+    pane.setPrefWidth(Screen.getPrimary().getBounds().getWidth()*.8);
 
+    pane.setOnMousePressed(e -> {
+      if(e.getButton()==MouseButton.PRIMARY){
+        var circle = new Circle(e.getX(), e.getY(),5);
+        circle.setFill(Color.TRANSPARENT);
+        circle.setStroke(Color.DEEPSKYBLUE);
+
+        circle.setOnMousePressed(ee -> {
+          if(ee.getButton()==MouseButton.SECONDARY)
+            pane.getChildren().remove(circle);
+        });
+        pane.getChildren().add(circle);
+      }
+    });
+    return pane;
+  }
+
+  private HBox getHBox() {
     ToggleGroup radioGroup = new ToggleGroup();
 
     m.setToggleGroup(radioGroup);
