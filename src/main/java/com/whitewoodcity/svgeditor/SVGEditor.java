@@ -45,10 +45,6 @@ public class SVGEditor extends Application {
     stage.show();
   }
 
-  public static void main(String[] args) {
-    launch();
-  }
-
   public void setFill(Region region, Paint fill, Paint stroke) {
     region.setBackground(new Background(new BackgroundFill(fill, CornerRadii.EMPTY, Insets.EMPTY)));
     region.setBorder(new Border(new BorderStroke(stroke, BorderStrokeStyle.SOLID,CornerRadii.EMPTY,new BorderWidths(10))));
