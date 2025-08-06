@@ -59,14 +59,20 @@ public class SVGEditor2 extends Application {
     }
   }
 
+  private Circle makeCircle(SimpleDoubleProperty x, SimpleDoubleProperty y){
+    return makeCircle(x,y,null);
+  }
   private Circle makeCircle(SimpleDoubleProperty x, SimpleDoubleProperty y, Deletable deletable){
     var circle = new Circle(x.get(), y.get(), 5);
     circle.setFill(Color.TRANSPARENT);
-    circle.setStroke(Color.DEEPSKYBLUE);
+    if(deletable == null)
+      circle.setStroke(Color.RED);
+    else
+      circle.setStroke(Color.DEEPSKYBLUE);
 
     circle.setOnMousePressed(e -> {
       if (e.getButton() == MouseButton.SECONDARY) {
-        deletable.run();
+        if(deletable!=null) deletable.run();
       }else{
         double ox = e.getX();
         double oy = e.getY();
@@ -113,8 +119,8 @@ public class SVGEditor2 extends Application {
         switch (command){
           case CurveTo c -> {
             var circle = makeCircle(command.x(), command.y(), () -> removeAllCircles(pane, command));
-            var c1 = makeCircle(c.x1(), c.y1(), () -> {});
-            var c2 = makeCircle(c.x2(), c.y2(), () -> {});
+            var c1 = makeCircle(c.x1(), c.y1());
+            var c2 = makeCircle(c.x2(), c.y2());
 
             addCircleToMap(command, circle);
             addCircleToMap(command, c1);
@@ -123,7 +129,7 @@ public class SVGEditor2 extends Application {
           }
           case QuadraticTo q ->{
             var circle = makeCircle(command.x(), command.y(), () -> removeAllCircles(pane, command));
-            var c1 = makeCircle(q.x1(), q.y1(), () -> {});
+            var c1 = makeCircle(q.x1(), q.y1());
 
             addCircleToMap(command, circle);
             addCircleToMap(command, c1);
@@ -131,7 +137,7 @@ public class SVGEditor2 extends Application {
           }
           case SmoothTo s -> {
             var circle = makeCircle(command.x(), command.y(), () -> removeAllCircles(pane, command));
-            var c2 = makeCircle(s.x2(), s.y2(), () -> {});
+            var c2 = makeCircle(s.x2(), s.y2());
 
             addCircleToMap(command, circle);
             addCircleToMap(command, c2);
