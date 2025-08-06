@@ -61,16 +61,32 @@ public class SVGEditor2 extends Application {
             pathCommands.removeIf(c -> Math.abs(c.getX() - circle.getCenterX()) < 0.01 && Math.abs(c.getY() - circle.getCenterY())<0.01 );
             pane.getChildren().remove(circle);
             updateSVGPath();
+          }else{
+            double ox = ee.getX();
+            double oy = ee.getY();
+            double cx = circle.getCenterX();
+            double cy = circle.getCenterY();
+            circle.setOnMouseDragged(event -> {
+              var dx = event.getX() - ox;
+              var dy = event.getY() - oy;
+              circle.setCenterX(cx + dx);
+              circle.setCenterY(cy + dy);
+              updateSVGPath();
+            });
+            ee.consume();
           }
         });
         pane.getChildren().add(circle);
-        if (m.isSelected()) {
-          pathCommands.add(new MoveTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())));
-        } else if (l.isSelected()) {
-          pathCommands.add(new LineTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())));
-        } else if (t.isSelected()) {
-          pathCommands.add(new TransitTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())));
-        } //todo the rest
+
+        SVGPathCommand command =
+          m.isSelected() ? new MoveTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
+            l.isSelected() ? new LineTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
+              t.isSelected() ? new TransitTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):null;
+        //todo the rest
+        circle.centerXProperty().bindBidirectional(command.x());
+        circle.centerYProperty().bindBidirectional(command.y());
+        pathCommands.add(command);
+
         updateSVGPath();
       }
     });
