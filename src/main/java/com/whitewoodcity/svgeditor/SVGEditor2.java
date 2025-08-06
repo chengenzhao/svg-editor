@@ -195,7 +195,7 @@ public class SVGEditor2 extends Application {
 
     m.setSelected(true);
 
-    z.selectedProperty().addListener((_,_,v) -> {
+    z.selectedProperty().addListener((_,_,_) -> {
       updateSVGPath();
     });
 
