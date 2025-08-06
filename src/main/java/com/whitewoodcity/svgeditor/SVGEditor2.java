@@ -17,7 +17,7 @@ public class SVGEditor2 extends Application {
   RadioButton q = new RadioButton("Q");
   RadioButton c = new RadioButton("C");
 
-  List<SVGPathCommand> pathCommands = new ArrayList<>();
+  List<SVGPathCommand> svgPathCommands = new ArrayList<>();
 
   SVGPath svgPath = new SVGPath();
 
@@ -52,11 +52,12 @@ public class SVGEditor2 extends Application {
     list.add(circle);
   }
 
-  private void removeAllCircles(Pane pane, SVGPathCommand command){
+  private void removeSVGPathCommand(Pane pane, SVGPathCommand command){
     var list = commandCircleMap.remove(command);
     if(list!=null){
       pane.getChildren().removeAll(list);
     }
+    svgPathCommands.remove(command);
   }
 
   private Circle makeCircle(SimpleDoubleProperty x, SimpleDoubleProperty y){
@@ -72,7 +73,10 @@ public class SVGEditor2 extends Application {
 
     circle.setOnMousePressed(e -> {
       if (e.getButton() == MouseButton.SECONDARY) {
-        if(deletable!=null) deletable.run();
+        if(deletable!=null){
+          deletable.run();
+          updateSVGPath();
+        }
       }else{
         double ox = e.getX();
         double oy = e.getY();
@@ -108,17 +112,17 @@ public class SVGEditor2 extends Application {
 
     pane.setOnMousePressed(e -> {
       if (e.getButton() == MouseButton.PRIMARY) {
-        SVGPathCommand command =
-        m.isSelected() ? new MoveTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
+        var previousCommand = svgPathCommands.size() > 0 ? svgPathCommands.getLast():null;
+        SVGPathCommand command = (svgPathCommands.size() < 1 || m.isSelected()) ? new MoveTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
         l.isSelected() ? new LineTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
         t.isSelected() ? new TransitTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
-        c.isSelected() ? new CurveTo(new SimpleDoubleProperty(e.getX() - 10), new SimpleDoubleProperty(e.getY()), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY() - 10), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
-        s.isSelected() ? new SmoothTo(new SimpleDoubleProperty(e.getX() - 10), new SimpleDoubleProperty(e.getY()),new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
-        new QuadraticTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY() - 10),new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY()));
+        c.isSelected() ? new CurveTo(new SimpleDoubleProperty(previousCommand.getX() + 50), new SimpleDoubleProperty(previousCommand.getY()), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY() - 50), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
+        s.isSelected() ? new SmoothTo(new SimpleDoubleProperty(e.getX() - 50), new SimpleDoubleProperty(e.getY()),new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
+        new QuadraticTo(new SimpleDoubleProperty((previousCommand.getX() + e.getX())/2), new SimpleDoubleProperty((previousCommand.getY()+e.getY())/2),new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY()));
 
         switch (command){
           case CurveTo c -> {
-            var circle = makeCircle(command.x(), command.y(), () -> removeAllCircles(pane, command));
+            var circle = makeCircle(command.x(), command.y(), () -> removeSVGPathCommand(pane, command));
             var c1 = makeCircle(c.x1(), c.y1());
             var c2 = makeCircle(c.x2(), c.y2());
 
@@ -128,7 +132,7 @@ public class SVGEditor2 extends Application {
             pane.getChildren().addAll(circle,c1,c2);
           }
           case QuadraticTo q ->{
-            var circle = makeCircle(command.x(), command.y(), () -> removeAllCircles(pane, command));
+            var circle = makeCircle(command.x(), command.y(), () -> removeSVGPathCommand(pane, command));
             var c1 = makeCircle(q.x1(), q.y1());
 
             addCircleToMap(command, circle);
@@ -136,7 +140,7 @@ public class SVGEditor2 extends Application {
             pane.getChildren().addAll(circle,c1);
           }
           case SmoothTo s -> {
-            var circle = makeCircle(command.x(), command.y(), () -> removeAllCircles(pane, command));
+            var circle = makeCircle(command.x(), command.y(), () -> removeSVGPathCommand(pane, command));
             var c2 = makeCircle(s.x2(), s.y2());
 
             addCircleToMap(command, circle);
@@ -144,7 +148,7 @@ public class SVGEditor2 extends Application {
             pane.getChildren().addAll(circle,c2);
           }
           default -> {
-            var circle = makeCircle(command.x(), command.y(), () -> removeAllCircles(pane, command));
+            var circle = makeCircle(command.x(), command.y(), () -> removeSVGPathCommand(pane, command));
             addCircleToMap(command, circle);
             pane.getChildren().add(circle);
           }
@@ -174,7 +178,7 @@ public class SVGEditor2 extends Application {
 //          }
 //        });
 //        pane.getChildren().add(circle);
-        pathCommands.add(command);
+        svgPathCommands.add(command);
 
         updateSVGPath();
       }
@@ -185,7 +189,7 @@ public class SVGEditor2 extends Application {
 
   private void updateSVGPath() {
     StringBuilder content = new StringBuilder();
-    for (SVGPathCommand command : pathCommands) {
+    for (SVGPathCommand command : svgPathCommands) {
       content.append(command.command()).append(" ").append(switch (command) {
         case CurveTo curveTo -> curveTo.getX1() + "," + curveTo.getY1() + " " + curveTo.getX2() + "," + curveTo.getY2() + " ";
         case SmoothTo smoothTo -> smoothTo.getX2() + "," + smoothTo.getY2() + " ";
