@@ -57,8 +57,11 @@ public class SVGEditor2 extends Application {
         circle.setStroke(Color.DEEPSKYBLUE);
 
         circle.setOnMousePressed(ee -> {
-          if (ee.getButton() == MouseButton.SECONDARY)
+          if (ee.getButton() == MouseButton.SECONDARY) {
+            pathCommands.removeIf(c -> Math.abs(c.getX() - circle.getCenterX()) < 0.01 && Math.abs(c.getY() - circle.getCenterY())<0.01 );
             pane.getChildren().remove(circle);
+            updateSVGPath();
+          }
         });
         pane.getChildren().add(circle);
         if (m.isSelected()) {
