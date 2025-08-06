@@ -16,6 +16,7 @@ public class SVGEditor2 extends Application {
   RadioButton s = new RadioButton("S");
   RadioButton q = new RadioButton("Q");
   RadioButton c = new RadioButton("C");
+  RadioButton z = new RadioButton("Z");
 
   List<SVGPathCommand> svgPathCommands = new ArrayList<>();
 
@@ -63,7 +64,7 @@ public class SVGEditor2 extends Application {
   private Circle makeCircle(SimpleDoubleProperty x, SimpleDoubleProperty y){
     return makeCircle(x,y,null);
   }
-  private Circle makeCircle(SimpleDoubleProperty x, SimpleDoubleProperty y, Deletable deletable){
+  private Circle makeCircle(SimpleDoubleProperty x, SimpleDoubleProperty y, Runnable deletable){
     var circle = new Circle(x.get(), y.get(), 5);
     circle.setFill(Color.TRANSPARENT);
     if(deletable == null)
@@ -153,31 +154,6 @@ public class SVGEditor2 extends Application {
             pane.getChildren().add(circle);
           }
         };
-//        var circle = new Circle(e.getX(), e.getY(), 5);
-//        circle.setFill(Color.TRANSPARENT);
-//        circle.setStroke(Color.DEEPSKYBLUE);
-//
-//        circle.setOnMousePressed(ee -> {
-//          if (ee.getButton() == MouseButton.SECONDARY) {
-//            pathCommands.removeIf(c -> Math.abs(c.getX() - circle.getCenterX()) < 0.01 && Math.abs(c.getY() - circle.getCenterY())<0.01 );
-//            pane.getChildren().remove(circle);
-//            updateSVGPath();
-//          }else{
-//            double ox = ee.getX();
-//            double oy = ee.getY();
-//            double cx = circle.getCenterX();
-//            double cy = circle.getCenterY();
-//            circle.setOnMouseDragged(event -> {
-//              var dx = event.getX() - ox;
-//              var dy = event.getY() - oy;
-//              circle.setCenterX(cx + dx);
-//              circle.setCenterY(cy + dy);
-//              updateSVGPath();
-//            });
-//            ee.consume();
-//          }
-//        });
-//        pane.getChildren().add(circle);
         svgPathCommands.add(command);
 
         updateSVGPath();
@@ -197,6 +173,7 @@ public class SVGEditor2 extends Application {
         default -> "";
       }).append(command.getX()).append(",").append(command.getY()).append(" ");
     }
+    if(z.isSelected()) content.append("Z");
     svgPath.setContent(content.toString());
   }
 
@@ -209,19 +186,19 @@ public class SVGEditor2 extends Application {
     s.setToggleGroup(radioGroup);
     q.setToggleGroup(radioGroup);
     c.setToggleGroup(radioGroup);
+    z.setToggleGroup(radioGroup);
 
-    var hbox = new HBox(m, l, t, s, q, c);
+    var hbox = new HBox(m, l, t, s, q, c,z);
 
     hbox.setSpacing(3);
     hbox.setPadding(new Insets(10));
 
     m.setSelected(true);
 
+    z.selectedProperty().addListener((_,_,v) -> {
+      updateSVGPath();
+    });
+
     return hbox;
   }
-}
-
-@FunctionalInterface
-interface Deletable{
-  void run();
 }
