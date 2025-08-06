@@ -80,9 +80,12 @@ public class SVGEditor2 extends Application {
 
         SVGPathCommand command =
           m.isSelected() ? new MoveTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
-            l.isSelected() ? new LineTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
-              t.isSelected() ? new TransitTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):null;
-        //todo the rest
+          l.isSelected() ? new LineTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
+          t.isSelected() ? new TransitTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
+          c.isSelected() ? new CurveTo(new SimpleDoubleProperty(e.getX() - 10), new SimpleDoubleProperty(e.getY()), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY() - 10), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
+          s.isSelected() ? new SmoothTo(new SimpleDoubleProperty(e.getX() - 10), new SimpleDoubleProperty(e.getY()),new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
+          new QuadraticTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY() - 10),new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY()));
+
         circle.centerXProperty().bindBidirectional(command.x());
         circle.centerYProperty().bindBidirectional(command.y());
         pathCommands.add(command);
@@ -98,7 +101,7 @@ public class SVGEditor2 extends Application {
     StringBuilder content = new StringBuilder();
     for (SVGPathCommand command : pathCommands) {
       content.append(command.command()).append(" ").append(switch (command) {
-        case CurveTo curveTo -> curveTo.getX1() + "," + curveTo.y1() + " " + curveTo.x2() + "," + curveTo.y2() + " ";
+        case CurveTo curveTo -> curveTo.getX1() + "," + curveTo.getY1() + " " + curveTo.getX2() + "," + curveTo.getY2() + " ";
         case SmoothTo smoothTo -> smoothTo.getX2() + "," + smoothTo.getY2() + " ";
         case QuadraticTo quadraticTo -> quadraticTo.getX1() + "," + quadraticTo.getY1() + " ";
         default -> "";
