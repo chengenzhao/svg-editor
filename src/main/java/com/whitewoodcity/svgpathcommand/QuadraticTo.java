@@ -12,15 +12,7 @@ public record QuadraticTo(SimpleDoubleProperty x1, SimpleDoubleProperty y1, Simp
     return x1.get();
   }
 
-  public SimpleDoubleProperty x1Property() {
-    return x1;
-  }
-
   public double getY1() {
     return y1.get();
-  }
-
-  public SimpleDoubleProperty y1Property() {
-    return y1;
   }
 }

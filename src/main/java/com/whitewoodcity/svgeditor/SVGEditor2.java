@@ -4,7 +4,9 @@ import module javafx.controls;
 import com.whitewoodcity.svgpathcommand.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SVGEditor2 extends Application {
 
@@ -39,6 +41,54 @@ public class SVGEditor2 extends Application {
     stage.show();
   }
 
+  private Map<SVGPathCommand, List<Circle>> commandCircleMap = new HashMap<>();
+
+  private void addCircleToMap(SVGPathCommand command, Circle circle){
+    var list = commandCircleMap.get(command);
+    if(list == null) {
+      list = new ArrayList<>();
+      commandCircleMap.put(command, list);
+    }
+    list.add(circle);
+  }
+
+  private void removeAllCircles(Pane pane, SVGPathCommand command){
+    var list = commandCircleMap.remove(command);
+    if(list!=null){
+      pane.getChildren().removeAll(list);
+    }
+  }
+
+  private Circle makeCircle(SimpleDoubleProperty x, SimpleDoubleProperty y, Deletable deletable){
+    var circle = new Circle(x.get(), y.get(), 5);
+    circle.setFill(Color.TRANSPARENT);
+    circle.setStroke(Color.DEEPSKYBLUE);
+
+    circle.setOnMousePressed(e -> {
+      if (e.getButton() == MouseButton.SECONDARY) {
+        deletable.run();
+      }else{
+        double ox = e.getX();
+        double oy = e.getY();
+        double cx = circle.getCenterX();
+        double cy = circle.getCenterY();
+        circle.setOnMouseDragged(event -> {
+          var dx = event.getX() - ox;
+          var dy = event.getY() - oy;
+          circle.setCenterX(cx + dx);
+          circle.setCenterY(cy + dy);
+          updateSVGPath();
+        });
+        e.consume();
+      }
+    });
+
+    circle.centerXProperty().bindBidirectional(x);
+    circle.centerYProperty().bindBidirectional(y);
+
+    return circle;
+  }
+
   private Pane getPane() {
     var pane = new Pane();
     pane.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
@@ -60,35 +110,64 @@ public class SVGEditor2 extends Application {
         s.isSelected() ? new SmoothTo(new SimpleDoubleProperty(e.getX() - 10), new SimpleDoubleProperty(e.getY()),new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
         new QuadraticTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY() - 10),new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY()));
 
-        var circle = new Circle(e.getX(), e.getY(), 5);
-        circle.setFill(Color.TRANSPARENT);
-        circle.setStroke(Color.DEEPSKYBLUE);
+        switch (command){
+          case CurveTo c -> {
+            var circle = makeCircle(command.x(), command.y(), () -> removeAllCircles(pane, command));
+            var c1 = makeCircle(c.x1(), c.y1(), () -> {});
+            var c2 = makeCircle(c.x2(), c.y2(), () -> {});
 
-        circle.setOnMousePressed(ee -> {
-          if (ee.getButton() == MouseButton.SECONDARY) {
-            pathCommands.removeIf(c -> Math.abs(c.getX() - circle.getCenterX()) < 0.01 && Math.abs(c.getY() - circle.getCenterY())<0.01 );
-            pane.getChildren().remove(circle);
-            updateSVGPath();
-          }else{
-            double ox = ee.getX();
-            double oy = ee.getY();
-            double cx = circle.getCenterX();
-            double cy = circle.getCenterY();
-            circle.setOnMouseDragged(event -> {
-              var dx = event.getX() - ox;
-              var dy = event.getY() - oy;
-              circle.setCenterX(cx + dx);
-              circle.setCenterY(cy + dy);
-              updateSVGPath();
-            });
-            ee.consume();
+            addCircleToMap(command, circle);
+            addCircleToMap(command, c1);
+            addCircleToMap(command, c2);
+            pane.getChildren().addAll(circle,c1,c2);
           }
-        });
-        pane.getChildren().add(circle);
+          case QuadraticTo q ->{
+            var circle = makeCircle(command.x(), command.y(), () -> removeAllCircles(pane, command));
+            var c1 = makeCircle(q.x1(), q.y1(), () -> {});
 
+            addCircleToMap(command, circle);
+            addCircleToMap(command, c1);
+            pane.getChildren().addAll(circle,c1);
+          }
+          case SmoothTo s -> {
+            var circle = makeCircle(command.x(), command.y(), () -> removeAllCircles(pane, command));
+            var c2 = makeCircle(s.x2(), s.y2(), () -> {});
 
-        circle.centerXProperty().bindBidirectional(command.x());
-        circle.centerYProperty().bindBidirectional(command.y());
+            addCircleToMap(command, circle);
+            addCircleToMap(command, c2);
+            pane.getChildren().addAll(circle,c2);
+          }
+          default -> {
+            var circle = makeCircle(command.x(), command.y(), () -> removeAllCircles(pane, command));
+            addCircleToMap(command, circle);
+            pane.getChildren().add(circle);
+          }
+        };
+//        var circle = new Circle(e.getX(), e.getY(), 5);
+//        circle.setFill(Color.TRANSPARENT);
+//        circle.setStroke(Color.DEEPSKYBLUE);
+//
+//        circle.setOnMousePressed(ee -> {
+//          if (ee.getButton() == MouseButton.SECONDARY) {
+//            pathCommands.removeIf(c -> Math.abs(c.getX() - circle.getCenterX()) < 0.01 && Math.abs(c.getY() - circle.getCenterY())<0.01 );
+//            pane.getChildren().remove(circle);
+//            updateSVGPath();
+//          }else{
+//            double ox = ee.getX();
+//            double oy = ee.getY();
+//            double cx = circle.getCenterX();
+//            double cy = circle.getCenterY();
+//            circle.setOnMouseDragged(event -> {
+//              var dx = event.getX() - ox;
+//              var dy = event.getY() - oy;
+//              circle.setCenterX(cx + dx);
+//              circle.setCenterY(cy + dy);
+//              updateSVGPath();
+//            });
+//            ee.consume();
+//          }
+//        });
+//        pane.getChildren().add(circle);
         pathCommands.add(command);
 
         updateSVGPath();
@@ -130,4 +209,9 @@ public class SVGEditor2 extends Application {
 
     return hbox;
   }
+}
+
+@FunctionalInterface
+interface Deletable{
+  void run();
 }

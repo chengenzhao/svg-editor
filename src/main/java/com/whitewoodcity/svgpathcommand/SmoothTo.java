@@ -12,15 +12,7 @@ public record SmoothTo(SimpleDoubleProperty x2, SimpleDoubleProperty y2, SimpleD
     return x2.get();
   }
 
-  public SimpleDoubleProperty x2Property() {
-    return x2;
-  }
-
   public double getY2() {
     return y2.get();
-  }
-
-  public SimpleDoubleProperty y2Property() {
-    return y2;
   }
 }
