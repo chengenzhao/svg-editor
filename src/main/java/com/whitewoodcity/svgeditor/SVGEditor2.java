@@ -52,6 +52,14 @@ public class SVGEditor2 extends Application {
 
     pane.setOnMousePressed(e -> {
       if (e.getButton() == MouseButton.PRIMARY) {
+        SVGPathCommand command =
+        m.isSelected() ? new MoveTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
+        l.isSelected() ? new LineTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
+        t.isSelected() ? new TransitTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
+        c.isSelected() ? new CurveTo(new SimpleDoubleProperty(e.getX() - 10), new SimpleDoubleProperty(e.getY()), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY() - 10), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
+        s.isSelected() ? new SmoothTo(new SimpleDoubleProperty(e.getX() - 10), new SimpleDoubleProperty(e.getY()),new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
+        new QuadraticTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY() - 10),new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY()));
+
         var circle = new Circle(e.getX(), e.getY(), 5);
         circle.setFill(Color.TRANSPARENT);
         circle.setStroke(Color.DEEPSKYBLUE);
@@ -78,13 +86,6 @@ public class SVGEditor2 extends Application {
         });
         pane.getChildren().add(circle);
 
-        SVGPathCommand command =
-          m.isSelected() ? new MoveTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
-          l.isSelected() ? new LineTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
-          t.isSelected() ? new TransitTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
-          c.isSelected() ? new CurveTo(new SimpleDoubleProperty(e.getX() - 10), new SimpleDoubleProperty(e.getY()), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY() - 10), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
-          s.isSelected() ? new SmoothTo(new SimpleDoubleProperty(e.getX() - 10), new SimpleDoubleProperty(e.getY()),new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
-          new QuadraticTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY() - 10),new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY()));
 
         circle.centerXProperty().bindBidirectional(command.x());
         circle.centerYProperty().bindBidirectional(command.y());
