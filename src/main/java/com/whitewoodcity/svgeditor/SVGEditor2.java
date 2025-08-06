@@ -42,15 +42,15 @@ public class SVGEditor2 extends Application {
     stage.show();
   }
 
-  private Map<SVGPathCommand, List<Circle>> commandCircleMap = new HashMap<>();
+  private Map<SVGPathCommand, List<Shape>> commandCircleMap = new HashMap<>();
 
-  private void addCircleToMap(SVGPathCommand command, Circle circle){
+  private void addShapeToMap(SVGPathCommand command, Shape shape){
     var list = commandCircleMap.get(command);
     if(list == null) {
       list = new ArrayList<>();
       commandCircleMap.put(command, list);
     }
-    list.add(circle);
+    list.add(shape);
   }
 
   private void removeSVGPathCommand(Pane pane, SVGPathCommand command){
@@ -61,6 +61,16 @@ public class SVGEditor2 extends Application {
     svgPathCommands.remove(command);
   }
 
+  private Line makeLine(Circle c0, Circle c1){
+    var line = new Line();
+    line.startXProperty().bindBidirectional(c0.centerXProperty());
+    line.endXProperty().bindBidirectional(c1.centerXProperty());
+    line.startYProperty().bindBidirectional(c0.centerYProperty());
+    line.endYProperty().bindBidirectional(c1.centerYProperty());
+    line.setStroke(Color.RED);
+    line.getStrokeDashArray().addAll(5.0,5.0);
+    return line;
+  }
   private Circle makeCircle(SimpleDoubleProperty x, SimpleDoubleProperty y){
     return makeCircle(x,y,null);
   }
@@ -126,31 +136,37 @@ public class SVGEditor2 extends Application {
             var circle = makeCircle(command.x(), command.y(), () -> removeSVGPathCommand(pane, command));
             var c1 = makeCircle(c.x1(), c.y1());
             var c2 = makeCircle(c.x2(), c.y2());
+            var l = makeLine(c2,circle);
 
-            addCircleToMap(command, circle);
-            addCircleToMap(command, c1);
-            addCircleToMap(command, c2);
-            pane.getChildren().addAll(circle,c1,c2);
+            addShapeToMap(command, circle);
+            addShapeToMap(command, c1);
+            addShapeToMap(command, c2);
+            addShapeToMap(command, l);
+            pane.getChildren().addAll(circle,c1,c2,l);
           }
           case QuadraticTo q ->{
             var circle = makeCircle(command.x(), command.y(), () -> removeSVGPathCommand(pane, command));
             var c1 = makeCircle(q.x1(), q.y1());
+            var l = makeLine(c1,circle);
 
-            addCircleToMap(command, circle);
-            addCircleToMap(command, c1);
-            pane.getChildren().addAll(circle,c1);
+            addShapeToMap(command, circle);
+            addShapeToMap(command, c1);
+            addShapeToMap(command, l);
+            pane.getChildren().addAll(circle,c1,l);
           }
           case SmoothTo s -> {
             var circle = makeCircle(command.x(), command.y(), () -> removeSVGPathCommand(pane, command));
             var c2 = makeCircle(s.x2(), s.y2());
+            var l = makeLine(c2, circle);
 
-            addCircleToMap(command, circle);
-            addCircleToMap(command, c2);
-            pane.getChildren().addAll(circle,c2);
+            addShapeToMap(command, circle);
+            addShapeToMap(command, c2);
+            addShapeToMap(command, l);
+            pane.getChildren().addAll(circle,c2,l);
           }
           default -> {
             var circle = makeCircle(command.x(), command.y(), () -> removeSVGPathCommand(pane, command));
-            addCircleToMap(command, circle);
+            addShapeToMap(command, circle);
             pane.getChildren().add(circle);
           }
         };
