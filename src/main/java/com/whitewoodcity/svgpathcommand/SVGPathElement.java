@@ -2,7 +2,7 @@ package com.whitewoodcity.svgpathcommand;
 
 import javafx.beans.property.SimpleDoubleProperty;
 
-public sealed interface SVGPathCommand permits CurveTo, LineTo, MoveTo, QuadraticTo, SmoothTo, TransitTo {
+public sealed interface SVGPathElement permits CurveTo, LineTo, MoveTo, QuadraticTo, SmoothTo, TransitTo {
   String command();
   SimpleDoubleProperty x();
   SimpleDoubleProperty y();

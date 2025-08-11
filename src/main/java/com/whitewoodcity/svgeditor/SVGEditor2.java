@@ -18,7 +18,7 @@ public class SVGEditor2 extends Application {
   RadioButton c = new RadioButton("C");
   RadioButton z = new RadioButton("Z");
 
-  List<SVGPathCommand> svgPathCommands = new ArrayList<>();
+  List<SVGPathElement> svgPathElements = new ArrayList<>();
 
   SVGPath svgPath = new SVGPath();
 
@@ -26,25 +26,25 @@ public class SVGEditor2 extends Application {
   public void start(Stage stage) {
     var vBox = new VBox();
 
-    var hbox = getHBox();
+    var pathElements = getHBox();
 
     var pane = getPane();
 
-    vBox.getChildren().addAll(hbox, pane);
+    vBox.getChildren().addAll(pathElements, pane);
     vBox.setPrefWidth(pane.getPrefWidth());
-    vBox.setPrefHeight(pane.getPrefHeight() + hbox.getHeight());
+    vBox.setPrefHeight(pane.getPrefHeight() + pathElements.getHeight());
 
     Scene scene = new Scene(vBox, vBox.getPrefWidth(), vBox.getPrefHeight());
     vBox.prefWidthProperty().bind(scene.widthProperty());
     vBox.prefHeightProperty().bind(scene.heightProperty());
-    stage.setTitle("SVG Editor~!");
+    stage.setTitle("SVG Path Editor~!");
     stage.setScene(scene);
     stage.show();
   }
 
-  private Map<SVGPathCommand, List<Shape>> commandCircleMap = new HashMap<>();
+  private Map<SVGPathElement, List<Shape>> commandCircleMap = new HashMap<>();
 
-  private void addShapeToMap(SVGPathCommand command, Shape shape){
+  private void addShapeToMap(SVGPathElement command, Shape shape){
     var list = commandCircleMap.get(command);
     if(list == null) {
       list = new ArrayList<>();
@@ -53,12 +53,12 @@ public class SVGEditor2 extends Application {
     list.add(shape);
   }
 
-  private void removeSVGPathCommand(Pane pane, SVGPathCommand command){
+  private void removeSVGPathCommand(Pane pane, SVGPathElement command){
     var list = commandCircleMap.remove(command);
     if(list!=null){
       pane.getChildren().removeAll(list);
     }
-    svgPathCommands.remove(command);
+    svgPathElements.remove(command);
   }
 
   private Line makeLine(Circle c0, Circle c1){
@@ -123,8 +123,8 @@ public class SVGEditor2 extends Application {
 
     pane.setOnMousePressed(e -> {
       if (e.getButton() == MouseButton.PRIMARY) {
-        var previousCommand = svgPathCommands.size() > 0 ? svgPathCommands.getLast():null;
-        SVGPathCommand command = (svgPathCommands.size() < 1 || m.isSelected()) ? new MoveTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
+        var previousCommand = svgPathElements.size() > 0 ? svgPathElements.getLast():null;
+        SVGPathElement command = (svgPathElements.size() < 1 || m.isSelected()) ? new MoveTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
         l.isSelected() ? new LineTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
         t.isSelected() ? new TransitTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
         c.isSelected() ? new CurveTo(new SimpleDoubleProperty(previousCommand.getX() + 50), new SimpleDoubleProperty(previousCommand.getY()), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY() - 50), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
@@ -170,7 +170,7 @@ public class SVGEditor2 extends Application {
             pane.getChildren().add(circle);
           }
         };
-        svgPathCommands.add(command);
+        svgPathElements.add(command);
 
         updateSVGPath();
       }
@@ -181,7 +181,7 @@ public class SVGEditor2 extends Application {
 
   private void updateSVGPath() {
     StringBuilder content = new StringBuilder();
-    for (SVGPathCommand command : svgPathCommands) {
+    for (SVGPathElement command : svgPathElements) {
       content.append(command.command()).append(" ").append(switch (command) {
         case CurveTo curveTo -> curveTo.getX1() + "," + curveTo.getY1() + " " + curveTo.getX2() + "," + curveTo.getY2() + " ";
         case SmoothTo smoothTo -> smoothTo.getX2() + "," + smoothTo.getY2() + " ";
