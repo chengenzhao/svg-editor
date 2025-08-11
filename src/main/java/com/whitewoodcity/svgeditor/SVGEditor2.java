@@ -110,7 +110,7 @@ public class SVGEditor2 extends Application {
     pane.setPrefHeight(Screen.getPrimary().getBounds().getHeight() * .8);
     pane.setPrefWidth(Screen.getPrimary().getBounds().getWidth() * .8);
 
-    svgPath.setStroke(Color.BLACK);
+    svgPath.strokeProperty().bind(strokeParameters.getStroke().valueProperty());
     svgPath.strokeWidthProperty().bind(strokeParameters.getStrokeWidth().textProperty().map(t -> Double.parseDouble(t.toString())));
     svgPath.setFill(Color.TRANSPARENT);
     pane.getChildren().add(svgPath);
