@@ -3,6 +3,7 @@ module com.whitewoodcity.svgeditor {
   requires com.almasb.fxgl.all;
   requires javafx.graphics;
   requires javafx.base;
+  requires atlantafx.base;
 
   exports com.whitewoodcity.svgeditor;
 }

@@ -11,6 +11,7 @@ import java.util.Map;
 public class SVGEditor2 extends Application {
   PathElements pathElements = new PathElements();
   StrokeParameters strokeParameters = new StrokeParameters();
+  FillParameters fillParameters = new FillParameters();
 
   List<SVGPathElement> svgPathElements = new ArrayList<>();
 
@@ -24,7 +25,7 @@ public class SVGEditor2 extends Application {
 
     var pane = getPane();
 
-    vBox.getChildren().addAll(pathElements, strokeParameters, pane);
+    vBox.getChildren().addAll(pathElements, strokeParameters, fillParameters, pane);
     vBox.setPrefWidth(pane.getPrefWidth());
     vBox.setPrefHeight(pane.getPrefHeight() + pathElements.getHeight());
 
@@ -112,7 +113,7 @@ public class SVGEditor2 extends Application {
 
     svgPath.strokeProperty().bind(strokeParameters.getStroke().valueProperty());
     svgPath.strokeWidthProperty().bind(strokeParameters.getStrokeWidth().textProperty().map(t -> Double.parseDouble(t.toString())));
-    svgPath.setFill(Color.TRANSPARENT);
+    svgPath.fillProperty().bind(fillParameters.getFill().valueProperty());
     pane.getChildren().add(svgPath);
 
     pane.setOnMousePressed(e -> {
