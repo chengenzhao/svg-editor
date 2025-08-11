@@ -16,8 +16,8 @@ public class LeftColumn extends VBox {
 
   public LeftColumn() {
     var hbox = new HBox(zoomIn, zoomOut);
-    hbox.setPadding(new Insets(5,0,5,10));
-    hbox.setSpacing(10);
+    hbox.setPadding(new Insets(5,10,5,10));
+    hbox.setSpacing(5);
     hbox.setAlignment(Pos.BASELINE_LEFT);
 
     factor.setText("1.1");

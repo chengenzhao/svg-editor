@@ -239,10 +239,40 @@ public class SVGEditor2 extends Application {
             pane.getChildren().add(circle);
           }
         }
-        ;
         svgPathElements.add(command);
 
         updateSVGPath();
+
+      } else {
+
+        var ox = e.getX();
+        var oy = e.getY();
+
+        var oes = new ArrayList<MoveTo>();
+
+        for (var element : svgPathElements) {
+          oes.add(new MoveTo(element.getX(), element.getY()));
+        }
+
+        pane.setOnMouseDragged(event -> {
+
+          var dx = event.getX() - ox;
+          var dy = event.getY() - oy;
+
+          for (int i = 0; i < svgPathElements.size(); i++) {
+            var oe = oes.get(i);
+            var el = svgPathElements.get(i);
+            el.x().set(oe.getX() + dx);
+            el.y().set(oe.getY() + dy);
+          }
+
+          updateSVGPath();
+
+          event.consume();
+        });
+
+        pane.setOnMouseReleased(_ -> pane.setOnMouseDragged(_ -> {
+        }));
       }
     });
 

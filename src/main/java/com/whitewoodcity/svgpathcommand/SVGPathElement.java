@@ -8,4 +8,8 @@ public sealed interface SVGPathElement permits CurveTo, LineTo, MoveTo, Quadrati
   SimpleDoubleProperty y();
   default double getX(){return this.x().get();}
   default double getY(){return this.y().get();}
+
+  default SVGPathElement copyCoordinate(){
+    return new MoveTo(getX(), getY());
+  }
 }
