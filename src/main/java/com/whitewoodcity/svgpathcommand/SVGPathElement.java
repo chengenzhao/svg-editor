@@ -13,6 +13,8 @@ public sealed interface SVGPathElement permits CurveTo, LineTo, MoveTo, Quadrati
     return new MoveTo(getX(), getY());
   }
 
+  SVGPathElement clone();
+
   @FunctionalInterface
   public interface Apply{
     void apply(SimpleDoubleProperty originalValue, SimpleDoubleProperty property);

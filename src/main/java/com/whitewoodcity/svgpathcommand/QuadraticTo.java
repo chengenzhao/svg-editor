@@ -20,4 +20,8 @@ public record QuadraticTo(SimpleDoubleProperty x1, SimpleDoubleProperty y1, Simp
     this(new SimpleDoubleProperty(x1), new SimpleDoubleProperty(y1), new SimpleDoubleProperty(x), new SimpleDoubleProperty(y));
   }
 
+  @Override
+  public QuadraticTo clone() {
+    return new QuadraticTo(getX1(), getY1(),getX(), getY());
+  }
 }

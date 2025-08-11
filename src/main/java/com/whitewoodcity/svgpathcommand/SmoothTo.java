@@ -20,4 +20,8 @@ public record SmoothTo(SimpleDoubleProperty x2, SimpleDoubleProperty y2, SimpleD
     this(new SimpleDoubleProperty(x2), new SimpleDoubleProperty(y2), new SimpleDoubleProperty(x), new SimpleDoubleProperty(y));
   }
 
+  @Override
+  public SmoothTo clone() {
+    return new SmoothTo(getX2(), getY2(), getX(), getY());
+  }
 }

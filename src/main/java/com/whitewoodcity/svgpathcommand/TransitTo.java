@@ -12,4 +12,9 @@ public record TransitTo(SimpleDoubleProperty x, SimpleDoubleProperty y) implemen
   public TransitTo(double x, double y) {
     this(new SimpleDoubleProperty(x), new SimpleDoubleProperty(y));
   }
+
+  @Override
+  public TransitTo clone() {
+    return new TransitTo(getX(), getY());
+  }
 }

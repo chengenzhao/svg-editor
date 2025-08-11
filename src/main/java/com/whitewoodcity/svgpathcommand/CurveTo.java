@@ -28,4 +28,8 @@ public record CurveTo(SimpleDoubleProperty x1, SimpleDoubleProperty y1, SimpleDo
     this(new SimpleDoubleProperty(x1), new SimpleDoubleProperty(y1), new SimpleDoubleProperty(x2), new SimpleDoubleProperty(y2), new SimpleDoubleProperty(x), new SimpleDoubleProperty(y));
   }
 
+  @Override
+  public CurveTo clone() {
+    return new CurveTo(getX1(), getY1(), getX2(), getY2(), getX(), getY());
+  }
 }

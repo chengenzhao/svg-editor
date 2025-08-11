@@ -11,4 +11,9 @@ public record MoveTo(SimpleDoubleProperty x, SimpleDoubleProperty y) implements 
   public MoveTo(double x, double y) {
     this(new SimpleDoubleProperty(x), new SimpleDoubleProperty(y));
   }
+
+  @Override
+  public MoveTo clone() {
+    return new MoveTo(getX(), getY());
+  }
 }

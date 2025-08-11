@@ -169,8 +169,8 @@ public class SVGEditor2 extends Application {
           circle.setCenterY(cy + dy);
           updateSVGPath();
         });
-        e.consume();
       }
+      e.consume();
     });
 
     circle.centerXProperty().bindBidirectional(x);
@@ -248,10 +248,10 @@ public class SVGEditor2 extends Application {
         var ox = e.getX();
         var oy = e.getY();
 
-        var oes = new ArrayList<MoveTo>();
+        var oes = new ArrayList<SVGPathElement>();
 
         for (var element : svgPathElements) {
-          oes.add(new MoveTo(element.getX(), element.getY()));
+          oes.add(element.clone());
         }
 
         pane.setOnMouseDragged(event -> {
@@ -271,8 +271,7 @@ public class SVGEditor2 extends Application {
           event.consume();
         });
 
-        pane.setOnMouseReleased(_ -> pane.setOnMouseDragged(_ -> {
-        }));
+        pane.setOnMouseReleased(_ -> pane.setOnMouseDragged(_ -> {}));
       }
     });
 
