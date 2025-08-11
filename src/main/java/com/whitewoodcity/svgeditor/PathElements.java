@@ -5,7 +5,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 
-public class PathElements extends HBox {
+public class PathElements extends SVGEditorHeader {
 
   RadioButton m = new RadioButton("M");
   RadioButton l = new RadioButton("L");
@@ -16,6 +16,7 @@ public class PathElements extends HBox {
   RadioButton z = new RadioButton("Z");
 
   public PathElements() {
+    super();
     this.getChildren().addAll(m,l,t,s,q,c,z);
 
     ToggleGroup radioGroup = new ToggleGroup();
@@ -27,9 +28,6 @@ public class PathElements extends HBox {
     q.setToggleGroup(radioGroup);
     c.setToggleGroup(radioGroup);
     z.setToggleGroup(radioGroup);
-
-    this.setSpacing(3);
-    this.setPadding(new Insets(5,0,5,10));
 
     m.setSelected(true);
   }
