@@ -25,13 +25,13 @@ public class SVGEditor2 extends Application {
 
     var pane = getPane();
 
-    vBox.getChildren().addAll(pathElements, strokeParameters, fillParameters, pane);
-    vBox.setPrefWidth(pane.getPrefWidth());
-    vBox.setPrefHeight(pane.getPrefHeight() + pathElements.getHeight());
+    vBox.getChildren().addAll(pathElements, strokeParameters, fillParameters);
 
-    Scene scene = new Scene(vBox, vBox.getPrefWidth(), vBox.getPrefHeight());
-    vBox.prefWidthProperty().bind(scene.widthProperty());
-    vBox.prefHeightProperty().bind(scene.heightProperty());
+    var borderPane = new BorderPane();
+    borderPane.setTop(vBox);
+    borderPane.setCenter(pane);
+
+    Scene scene = new Scene(borderPane);
     stage.setTitle("SVG Path Editor~!");
     stage.setScene(scene);
     stage.show();
