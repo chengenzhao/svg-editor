@@ -14,9 +14,13 @@ public sealed interface SVGPathElement permits CurveTo, LineTo, MoveTo, Quadrati
   }
 
   SVGPathElement clone();
+  default void apply(SVGPathElement reference, Apply apply){
+    apply(reference, apply, apply);
+  }
+  void apply(SVGPathElement reference, Apply applyX, Apply applyY);
 
   @FunctionalInterface
   public interface Apply{
-    void apply(SimpleDoubleProperty originalValue, SimpleDoubleProperty property);
+    double apply(SimpleDoubleProperty originalValue);
   };
 }

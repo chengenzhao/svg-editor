@@ -24,4 +24,14 @@ public record SmoothTo(SimpleDoubleProperty x2, SimpleDoubleProperty y2, SimpleD
   public SmoothTo clone() {
     return new SmoothTo(getX2(), getY2(), getX(), getY());
   }
+
+  @Override
+  public void apply(SVGPathElement reference, Apply applyX, Apply applyY) {
+    if(reference instanceof SmoothTo smoothTo){
+      x.set(applyX.apply(smoothTo.x()));
+      y.set(applyY.apply(smoothTo.y()));
+      x2.set(applyX.apply(smoothTo.x2()));
+      y2.set(applyY.apply(smoothTo.y2()));
+    }else throw new RuntimeException("type error");
+  }
 }

@@ -32,4 +32,16 @@ public record CurveTo(SimpleDoubleProperty x1, SimpleDoubleProperty y1, SimpleDo
   public CurveTo clone() {
     return new CurveTo(getX1(), getY1(), getX2(), getY2(), getX(), getY());
   }
+
+  @Override
+  public void apply(SVGPathElement reference, Apply applyX, Apply applyY) {
+    if(reference instanceof CurveTo curveTo){
+      x.set(applyX.apply(curveTo.x()));
+      y.set(applyY.apply(curveTo.y()));
+      x1.set(applyX.apply(curveTo.x1()));
+      y1.set(applyY.apply(curveTo.y1()));
+      x2.set(applyX.apply(curveTo.x2()));
+      y2.set(applyY.apply(curveTo.y2()));
+    }else throw new RuntimeException("type error");
+  }
 }

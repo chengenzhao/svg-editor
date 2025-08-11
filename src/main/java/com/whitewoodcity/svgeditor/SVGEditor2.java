@@ -29,72 +29,13 @@ public class SVGEditor2 extends Application {
 
     left.getZoomIn().setOnAction(_ -> {
       for (SVGPathElement e : svgPathElements) {
-        switch (e) {
-          case SmoothTo s -> {
-            s.x2().set(s.getX2() * left.getFactor());
-            s.y2().set(s.getY2() * left.getFactor());
-
-            e.x().set(e.getX() * left.getFactor());
-            e.y().set(e.getY() * left.getFactor());
-          }
-          case QuadraticTo q -> {
-            q.x1().set(q.getX1() * left.getFactor());
-            q.y1().set(q.getY1() * left.getFactor());
-
-            e.x().set(e.getX() * left.getFactor());
-            e.y().set(e.getY() * left.getFactor());
-          }
-          case CurveTo c -> {
-            c.x1().set(c.getX1() * left.getFactor());
-            c.y1().set(c.getY1() * left.getFactor());
-
-            c.x2().set(c.getX2() * left.getFactor());
-            c.y2().set(c.getY2() * left.getFactor());
-
-            e.x().set(e.getX() * left.getFactor());
-            e.y().set(e.getY() * left.getFactor());
-          }
-          default -> {
-            e.x().set(e.getX() * left.getFactor());
-            e.y().set(e.getY() * left.getFactor());
-          }
-        }
+        e.apply(e, v -> v.doubleValue() * left.getFactor());
       }
       updateSVGPath();
     });
     left.getZoomOut().setOnAction(_ -> {
       for (SVGPathElement e : svgPathElements) {
-        switch (e) {
-          case SmoothTo s -> {
-            s.x2().set(s.getX2() / left.getFactor());
-            s.y2().set(s.getY2() / left.getFactor());
-
-            e.x().set(e.getX() / left.getFactor());
-            e.y().set(e.getY() / left.getFactor());
-          }
-          case QuadraticTo q -> {
-            q.x1().set(q.getX1() / left.getFactor());
-            q.y1().set(q.getY1() / left.getFactor());
-
-            e.x().set(e.getX() / left.getFactor());
-            e.y().set(e.getY() / left.getFactor());
-          }
-          case CurveTo c -> {
-            c.x1().set(c.getX1() / left.getFactor());
-            c.y1().set(c.getY1() / left.getFactor());
-
-            c.x2().set(c.getX2() / left.getFactor());
-            c.y2().set(c.getY2() / left.getFactor());
-
-            e.x().set(e.getX() / left.getFactor());
-            e.y().set(e.getY() / left.getFactor());
-          }
-
-          default -> {
-            e.x().set(e.getX() / left.getFactor());
-            e.y().set(e.getY() / left.getFactor());
-          }
-        }
+        e.apply(e, v -> v.doubleValue() / left.getFactor());
       }
       updateSVGPath();
     });
@@ -262,8 +203,8 @@ public class SVGEditor2 extends Application {
           for (int i = 0; i < svgPathElements.size(); i++) {
             var oe = oes.get(i);
             var el = svgPathElements.get(i);
-            el.x().set(oe.getX() + dx);
-            el.y().set(oe.getY() + dy);
+
+            el.apply(oe, v -> v.doubleValue() + dx, v -> v.doubleValue() + dy);
           }
 
           updateSVGPath();
