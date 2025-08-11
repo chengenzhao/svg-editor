@@ -20,16 +20,88 @@ public class SVGEditor2 extends Application {
   @Override
   public void start(Stage stage) {
     var vBox = new VBox();
-
-    pathElements.getZ().selectedProperty().addListener((_,_,_) -> updateSVGPath());
-
-    var pane = getPane();
-
+    pathElements.getZ().selectedProperty().addListener((_, _, _) -> updateSVGPath());
     vBox.getChildren().addAll(pathElements, strokeParameters, fillParameters);
 
     var borderPane = new BorderPane();
+
+    var left = new LeftColumn();
+
+    left.getZoomIn().setOnAction(_ -> {
+      for (SVGPathElement e : svgPathElements) {
+        switch (e) {
+          case SmoothTo s -> {
+            s.x2().set(s.getX2() * left.getFactor());
+            s.y2().set(s.getY2() * left.getFactor());
+
+            e.x().set(e.getX() * left.getFactor());
+            e.y().set(e.getY() * left.getFactor());
+          }
+          case QuadraticTo q -> {
+            q.x1().set(q.getX1() * left.getFactor());
+            q.y1().set(q.getY1() * left.getFactor());
+
+            e.x().set(e.getX() * left.getFactor());
+            e.y().set(e.getY() * left.getFactor());
+          }
+          case CurveTo c -> {
+            c.x1().set(c.getX1() * left.getFactor());
+            c.y1().set(c.getY1() * left.getFactor());
+
+            c.x2().set(c.getX2() * left.getFactor());
+            c.y2().set(c.getY2() * left.getFactor());
+
+            e.x().set(e.getX() * left.getFactor());
+            e.y().set(e.getY() * left.getFactor());
+          }
+          default -> {
+            e.x().set(e.getX() * left.getFactor());
+            e.y().set(e.getY() * left.getFactor());
+          }
+        }
+      }
+      updateSVGPath();
+    });
+    left.getZoomOut().setOnAction(_ -> {
+      for (SVGPathElement e : svgPathElements) {
+        switch (e) {
+          case SmoothTo s -> {
+            s.x2().set(s.getX2() / left.getFactor());
+            s.y2().set(s.getY2() / left.getFactor());
+
+            e.x().set(e.getX() / left.getFactor());
+            e.y().set(e.getY() / left.getFactor());
+          }
+          case QuadraticTo q -> {
+            q.x1().set(q.getX1() / left.getFactor());
+            q.y1().set(q.getY1() / left.getFactor());
+
+            e.x().set(e.getX() / left.getFactor());
+            e.y().set(e.getY() / left.getFactor());
+          }
+          case CurveTo c -> {
+            c.x1().set(c.getX1() / left.getFactor());
+            c.y1().set(c.getY1() / left.getFactor());
+
+            c.x2().set(c.getX2() / left.getFactor());
+            c.y2().set(c.getY2() / left.getFactor());
+
+            e.x().set(e.getX() / left.getFactor());
+            e.y().set(e.getY() / left.getFactor());
+          }
+
+          default -> {
+            e.x().set(e.getX() / left.getFactor());
+            e.y().set(e.getY() / left.getFactor());
+          }
+        }
+      }
+      updateSVGPath();
+    });
+
     borderPane.setTop(vBox);
-    borderPane.setCenter(pane);
+    borderPane.setCenter(getPane());
+    borderPane.setLeft(left);
 
     Scene scene = new Scene(borderPane);
     stage.setTitle("SVG Path Editor~!");
@@ -39,51 +111,53 @@ public class SVGEditor2 extends Application {
 
   private Map<SVGPathElement, List<Shape>> commandCircleMap = new HashMap<>();
 
-  private void addShapeToMap(SVGPathElement command, Shape shape){
+  private void addShapeToMap(SVGPathElement command, Shape shape) {
     var list = commandCircleMap.get(command);
-    if(list == null) {
+    if (list == null) {
       list = new ArrayList<>();
       commandCircleMap.put(command, list);
     }
     list.add(shape);
   }
 
-  private void removeSVGPathCommand(Pane pane, SVGPathElement command){
+  private void removeSVGPathCommand(Pane pane, SVGPathElement command) {
     var list = commandCircleMap.remove(command);
-    if(list!=null){
+    if (list != null) {
       pane.getChildren().removeAll(list);
     }
     svgPathElements.remove(command);
   }
 
-  private Line makeLine(Circle c0, Circle c1){
+  private Line makeLine(Circle c0, Circle c1) {
     var line = new Line();
     line.startXProperty().bindBidirectional(c0.centerXProperty());
     line.endXProperty().bindBidirectional(c1.centerXProperty());
     line.startYProperty().bindBidirectional(c0.centerYProperty());
     line.endYProperty().bindBidirectional(c1.centerYProperty());
     line.setStroke(Color.RED);
-    line.getStrokeDashArray().addAll(5.0,5.0);
+    line.getStrokeDashArray().addAll(5.0, 5.0);
     return line;
   }
-  private Circle makeCircle(SimpleDoubleProperty x, SimpleDoubleProperty y){
-    return makeCircle(x,y,null);
+
+  private Circle makeCircle(SimpleDoubleProperty x, SimpleDoubleProperty y) {
+    return makeCircle(x, y, null);
   }
-  private Circle makeCircle(SimpleDoubleProperty x, SimpleDoubleProperty y, Runnable deletable){
+
+  private Circle makeCircle(SimpleDoubleProperty x, SimpleDoubleProperty y, Runnable deletable) {
     var circle = new Circle(x.get(), y.get(), 5);
     circle.setFill(Color.TRANSPARENT);
-    if(deletable == null)
+    if (deletable == null)
       circle.setStroke(Color.RED);
     else
       circle.setStroke(Color.DEEPSKYBLUE);
 
     circle.setOnMousePressed(e -> {
       if (e.getButton() == MouseButton.SECONDARY) {
-        if(deletable!=null){
+        if (deletable != null) {
           deletable.run();
           updateSVGPath();
         }
-      }else{
+      } else {
         double ox = e.getX();
         double oy = e.getY();
         double cx = circle.getCenterX();
@@ -118,36 +192,36 @@ public class SVGEditor2 extends Application {
 
     pane.setOnMousePressed(e -> {
       if (e.getButton() == MouseButton.PRIMARY) {
-        var previousCommand = svgPathElements.size() > 0 ? svgPathElements.getLast():null;
+        var previousCommand = svgPathElements.size() > 0 ? svgPathElements.getLast() : null;
         SVGPathElement command = (svgPathElements.size() < 1 || pathElements.getM().isSelected()) ? new MoveTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
-        pathElements.getL().isSelected() ? new LineTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
-        pathElements.getT().isSelected() ? new TransitTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
-        pathElements.getC().isSelected() ? new CurveTo(new SimpleDoubleProperty(previousCommand.getX() + 50), new SimpleDoubleProperty(previousCommand.getY()), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY() - 50), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
-        pathElements.getS().isSelected() ? new SmoothTo(new SimpleDoubleProperty(e.getX() - 50), new SimpleDoubleProperty(e.getY()),new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
-        new QuadraticTo(new SimpleDoubleProperty((previousCommand.getX() + e.getX())/2), new SimpleDoubleProperty((previousCommand.getY()+e.getY())/2),new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY()));
+          pathElements.getL().isSelected() ? new LineTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
+            pathElements.getT().isSelected() ? new TransitTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
+              pathElements.getC().isSelected() ? new CurveTo(new SimpleDoubleProperty(previousCommand.getX() + 50), new SimpleDoubleProperty(previousCommand.getY()), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY() - 50), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
+                pathElements.getS().isSelected() ? new SmoothTo(new SimpleDoubleProperty(e.getX() - 50), new SimpleDoubleProperty(e.getY()), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
+                  new QuadraticTo(new SimpleDoubleProperty((previousCommand.getX() + e.getX()) / 2), new SimpleDoubleProperty((previousCommand.getY() + e.getY()) / 2), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY()));
 
-        switch (command){
+        switch (command) {
           case CurveTo c -> {
             var circle = makeCircle(command.x(), command.y(), () -> removeSVGPathCommand(pane, command));
             var c1 = makeCircle(c.x1(), c.y1());
             var c2 = makeCircle(c.x2(), c.y2());
-            var l = makeLine(c2,circle);
+            var l = makeLine(c2, circle);
 
             addShapeToMap(command, circle);
             addShapeToMap(command, c1);
             addShapeToMap(command, c2);
             addShapeToMap(command, l);
-            pane.getChildren().addAll(circle,c1,c2,l);
+            pane.getChildren().addAll(circle, c1, c2, l);
           }
-          case QuadraticTo q ->{
+          case QuadraticTo q -> {
             var circle = makeCircle(command.x(), command.y(), () -> removeSVGPathCommand(pane, command));
             var c1 = makeCircle(q.x1(), q.y1());
-            var l = makeLine(c1,circle);
+            var l = makeLine(c1, circle);
 
             addShapeToMap(command, circle);
             addShapeToMap(command, c1);
             addShapeToMap(command, l);
-            pane.getChildren().addAll(circle,c1,l);
+            pane.getChildren().addAll(circle, c1, l);
           }
           case SmoothTo s -> {
             var circle = makeCircle(command.x(), command.y(), () -> removeSVGPathCommand(pane, command));
@@ -157,14 +231,15 @@ public class SVGEditor2 extends Application {
             addShapeToMap(command, circle);
             addShapeToMap(command, c2);
             addShapeToMap(command, l);
-            pane.getChildren().addAll(circle,c2,l);
+            pane.getChildren().addAll(circle, c2, l);
           }
           default -> {
             var circle = makeCircle(command.x(), command.y(), () -> removeSVGPathCommand(pane, command));
             addShapeToMap(command, circle);
             pane.getChildren().add(circle);
           }
-        };
+        }
+        ;
         svgPathElements.add(command);
 
         updateSVGPath();
@@ -178,13 +253,14 @@ public class SVGEditor2 extends Application {
     StringBuilder content = new StringBuilder();
     for (SVGPathElement command : svgPathElements) {
       content.append(command.command()).append(" ").append(switch (command) {
-        case CurveTo curveTo -> curveTo.getX1() + "," + curveTo.getY1() + " " + curveTo.getX2() + "," + curveTo.getY2() + " ";
+        case CurveTo curveTo ->
+          curveTo.getX1() + "," + curveTo.getY1() + " " + curveTo.getX2() + "," + curveTo.getY2() + " ";
         case SmoothTo smoothTo -> smoothTo.getX2() + "," + smoothTo.getY2() + " ";
         case QuadraticTo quadraticTo -> quadraticTo.getX1() + "," + quadraticTo.getY1() + " ";
         default -> "";
       }).append(command.getX()).append(",").append(command.getY()).append(" ");
     }
-    if(pathElements.getZ().isSelected()) content.append("Z");
+    if (pathElements.getZ().isSelected()) content.append("Z");
     svgPath.setContent(content.toString());
   }
 

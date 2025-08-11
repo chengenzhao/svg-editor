@@ -29,7 +29,7 @@ public class PathElements extends SVGEditorHeader {
     c.setToggleGroup(radioGroup);
     z.setToggleGroup(radioGroup);
 
-    m.setSelected(true);
+    l.setSelected(true);
   }
 
   public RadioButton getM() {
