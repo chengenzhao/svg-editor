@@ -9,14 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 public class SVGEditor2 extends Application {
-
-  RadioButton m = new RadioButton("M");
-  RadioButton l = new RadioButton("L");
-  RadioButton t = new RadioButton("T");
-  RadioButton s = new RadioButton("S");
-  RadioButton q = new RadioButton("Q");
-  RadioButton c = new RadioButton("C");
-  RadioButton z = new RadioButton("Z");
+  PathElements pathElements = new PathElements();
+  StrokeParameters strokeParameters = new StrokeParameters();
 
   List<SVGPathElement> svgPathElements = new ArrayList<>();
 
@@ -26,11 +20,11 @@ public class SVGEditor2 extends Application {
   public void start(Stage stage) {
     var vBox = new VBox();
 
-    var pathElements = getHBox();
+    pathElements.getZ().selectedProperty().addListener((_,_,_) -> updateSVGPath());
 
     var pane = getPane();
 
-    vBox.getChildren().addAll(pathElements, pane);
+    vBox.getChildren().addAll(pathElements, strokeParameters, pane);
     vBox.setPrefWidth(pane.getPrefWidth());
     vBox.setPrefHeight(pane.getPrefHeight() + pathElements.getHeight());
 
@@ -117,18 +111,18 @@ public class SVGEditor2 extends Application {
     pane.setPrefWidth(Screen.getPrimary().getBounds().getWidth() * .8);
 
     svgPath.setStroke(Color.BLACK);
-    svgPath.setStrokeWidth(1);
+    svgPath.strokeWidthProperty().bind(strokeParameters.getStrokeWidth().textProperty().map(t -> Double.parseDouble(t.toString())));
     svgPath.setFill(Color.TRANSPARENT);
     pane.getChildren().add(svgPath);
 
     pane.setOnMousePressed(e -> {
       if (e.getButton() == MouseButton.PRIMARY) {
         var previousCommand = svgPathElements.size() > 0 ? svgPathElements.getLast():null;
-        SVGPathElement command = (svgPathElements.size() < 1 || m.isSelected()) ? new MoveTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
-        l.isSelected() ? new LineTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
-        t.isSelected() ? new TransitTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
-        c.isSelected() ? new CurveTo(new SimpleDoubleProperty(previousCommand.getX() + 50), new SimpleDoubleProperty(previousCommand.getY()), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY() - 50), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
-        s.isSelected() ? new SmoothTo(new SimpleDoubleProperty(e.getX() - 50), new SimpleDoubleProperty(e.getY()),new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
+        SVGPathElement command = (svgPathElements.size() < 1 || pathElements.getM().isSelected()) ? new MoveTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
+        pathElements.getL().isSelected() ? new LineTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
+        pathElements.getT().isSelected() ? new TransitTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
+        pathElements.getC().isSelected() ? new CurveTo(new SimpleDoubleProperty(previousCommand.getX() + 50), new SimpleDoubleProperty(previousCommand.getY()), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY() - 50), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
+        pathElements.getS().isSelected() ? new SmoothTo(new SimpleDoubleProperty(e.getX() - 50), new SimpleDoubleProperty(e.getY()),new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())):
         new QuadraticTo(new SimpleDoubleProperty((previousCommand.getX() + e.getX())/2), new SimpleDoubleProperty((previousCommand.getY()+e.getY())/2),new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY()));
 
         switch (command){
@@ -189,30 +183,8 @@ public class SVGEditor2 extends Application {
         default -> "";
       }).append(command.getX()).append(",").append(command.getY()).append(" ");
     }
-    if(z.isSelected()) content.append("Z");
+    if(pathElements.getZ().isSelected()) content.append("Z");
     svgPath.setContent(content.toString());
   }
 
-  private HBox getHBox() {
-    ToggleGroup radioGroup = new ToggleGroup();
-
-    m.setToggleGroup(radioGroup);
-    l.setToggleGroup(radioGroup);
-    t.setToggleGroup(radioGroup);
-    s.setToggleGroup(radioGroup);
-    q.setToggleGroup(radioGroup);
-    c.setToggleGroup(radioGroup);
-    z.setToggleGroup(radioGroup);
-
-    var hbox = new HBox(m, l, t, s, q, c,z);
-
-    hbox.setSpacing(3);
-    hbox.setPadding(new Insets(10));
-
-    m.setSelected(true);
-
-    z.selectedProperty().addListener((_,_,_) -> updateSVGPath());
-
-    return hbox;
-  }
 }
