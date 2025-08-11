@@ -23,4 +23,9 @@ public record CurveTo(SimpleDoubleProperty x1, SimpleDoubleProperty y1, SimpleDo
   public double getY2() {
     return y2.get();
   }
+
+  public CurveTo(double x1, double y1, double x2, double y2, double x, double y) {
+    this(new SimpleDoubleProperty(x1), new SimpleDoubleProperty(y1), new SimpleDoubleProperty(x2), new SimpleDoubleProperty(y2), new SimpleDoubleProperty(x), new SimpleDoubleProperty(y));
+  }
+
 }

@@ -12,4 +12,9 @@ public sealed interface SVGPathElement permits CurveTo, LineTo, MoveTo, Quadrati
   default SVGPathElement copyCoordinate(){
     return new MoveTo(getX(), getY());
   }
+
+  @FunctionalInterface
+  public interface Apply{
+    void apply(SimpleDoubleProperty originalValue, SimpleDoubleProperty property);
+  };
 }

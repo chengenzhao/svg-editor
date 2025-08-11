@@ -15,4 +15,9 @@ public record QuadraticTo(SimpleDoubleProperty x1, SimpleDoubleProperty y1, Simp
   public double getY1() {
     return y1.get();
   }
+
+  public QuadraticTo(double x1, double y1, double x, double y) {
+    this(new SimpleDoubleProperty(x1), new SimpleDoubleProperty(y1), new SimpleDoubleProperty(x), new SimpleDoubleProperty(y));
+  }
+
 }

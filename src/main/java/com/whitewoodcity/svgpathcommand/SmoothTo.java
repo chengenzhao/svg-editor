@@ -15,4 +15,9 @@ public record SmoothTo(SimpleDoubleProperty x2, SimpleDoubleProperty y2, SimpleD
   public double getY2() {
     return y2.get();
   }
+
+  public SmoothTo(double x2, double y2, double x, double y) {
+    this(new SimpleDoubleProperty(x2), new SimpleDoubleProperty(y2), new SimpleDoubleProperty(x), new SimpleDoubleProperty(y));
+  }
+
 }
