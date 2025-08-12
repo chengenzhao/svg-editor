@@ -1,12 +1,10 @@
 package com.whitewoodcity.svgeditor;
 
 import module javafx.controls;
-import com.whitewoodcity.svgpathcommand.*;
+import module java.base;
+import module com.gluonhq.scenebuilder.kit;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.whitewoodcity.svgpathcommand.*;
 
 public class SVGEditor2 extends Application {
   PathElements pathElements = new PathElements();

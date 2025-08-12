@@ -12,7 +12,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.10.2</junit.version>
-        <javafx.version>26-ea+2</javafx.version>
+        <javafx.version>25-ea+28</javafx.version>
         <fxcity.version>0.5.9</fxcity.version>
     </properties>
 
@@ -21,6 +21,11 @@
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.gluonhq.scenebuilder</groupId>
+            <artifactId>kit</artifactId>
+            <version>24.0.1</version>
         </dependency>
         <dependency>
             <groupId>io.github.chengenzhao</groupId>
