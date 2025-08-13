@@ -9,7 +9,7 @@ public class SVGEditor2 extends Application {
 
   private static SVGEditor2 applicationInstance;
 
-  public static SVGEditor2 getApplicationInstance() {
+  public static SVGEditor2 getAppCast() {
     return applicationInstance;
   }
 
