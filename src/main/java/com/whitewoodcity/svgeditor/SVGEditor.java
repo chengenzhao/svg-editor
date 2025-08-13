@@ -15,19 +15,19 @@ public class SVGEditor extends Application {
     region.setPrefWidth(50);
     region.setPrefHeight(50);
     var svgPath = new SVGPath();
-    svgPath.setContent("m 0,30 l 30,0");
-    svgPath.setStroke(Color.RED);
-    svgPath.setStrokeWidth(50);
+    svgPath.setContent("M 0,100 L 100,0 100,100 Z");
+    svgPath.setStroke(Color.BLUE);
+    svgPath.setFill(Color.PINK);
+    svgPath.setStrokeWidth(10);
     svgPath.setStrokeLineJoin(StrokeLineJoin.ROUND);
     svgPath.setStrokeLineCap(StrokeLineCap.ROUND);
-    svgPath.setFill(Color.TRANSPARENT);
 //    var effect = new GaussianBlur();
 //    svgPath.setEffect(effect);
 
-    var line = new Line(10,0,10,100);
-    line.setStrokeWidth(5);
-    line.setStroke(Color.GREEN);
-    line.setBlendMode(BlendMode.MULTIPLY);
+    var line = new Line(50,0,50,100);
+    line.setStrokeWidth(10);
+    line.setStroke(Color.BLUE);
+    line.setBlendMode(BlendMode.COLOR_DODGE);
     line.setCache(true);
     line.setCacheHint(CacheHint.DEFAULT);
     line.setClip(clone(svgPath));

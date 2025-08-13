@@ -60,6 +60,9 @@ public class SVGEditor2 extends Application {
   }
 
   private void removeSVGPathCommand(Pane pane, SVGPathElement command) {
+    if(commandCircleMap.size() > 1 && svgPathElements.indexOf(command) == 0){
+      return;
+    }
     var list = commandCircleMap.remove(command);
     if (list != null) {
       pane.getChildren().removeAll(list);
@@ -202,7 +205,7 @@ public class SVGEditor2 extends Application {
             var oe = oes.get(i);
             var el = svgPathElements.get(i);
 
-            el.apply(oe, v -> v.doubleValue() + dx, v -> v.doubleValue() + dy);
+            el.apply(oe, x -> x.doubleValue() + dx, y -> y.doubleValue() + dy);
           }
 
           updateSVGPath();
