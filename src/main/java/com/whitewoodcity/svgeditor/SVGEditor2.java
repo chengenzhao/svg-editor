@@ -6,6 +6,18 @@ import module java.base;
 import com.whitewoodcity.svgpathcommand.*;
 
 public class SVGEditor2 extends Application {
+
+  private static SVGEditor2 applicationInstance;
+
+  public static SVGEditor2 getApplicationInstance() {
+    return applicationInstance;
+  }
+
+  @Override
+  public void init() {
+    applicationInstance = this;
+  }
+
   PathElements pathElements = new PathElements();
   StrokeParameters strokeParameters = new StrokeParameters();
   FillParameters fillParameters = new FillParameters();
@@ -14,22 +26,28 @@ public class SVGEditor2 extends Application {
 
   SVGPath svgPath = new SVGPath();
 
+  public VBox topBox = new VBox();
+  public LeftColumn left = new LeftColumn();
+  public Pane center = getPane();
+
   @Override
   public void start(Stage stage) {
-    var topBox = new VBox();
+
     pathElements.getZ().selectedProperty().addListener((_, _, _) -> updateSVGPath());
     topBox.getChildren().addAll(pathElements, strokeParameters, fillParameters);
 
     var borderPane = new BorderPane();
 
-    var left = new LeftColumn();
-
     left.getZoomIn().setOnAction(_ -> updateSVGPathElements(svgPathElements, v -> v.doubleValue() * left.getFactor()));
     left.getZoomOut().setOnAction(_ -> updateSVGPathElements(svgPathElements, v -> v.doubleValue() / left.getFactor()));
 
+    var treeView = new TreeView<String>(new TreeItem<>("Vector Graphics"));
+    treeView.getRoot().getChildren().add(new TreeItem<>("Layer0"));
+
     borderPane.setTop(topBox);
-    borderPane.setCenter(getPane());
+    borderPane.setCenter(center);
     borderPane.setLeft(left);
+    borderPane.setRight(treeView);
 
     Scene scene = new Scene(borderPane);
     stage.setTitle("SVG Path Editor~!");
