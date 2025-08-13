@@ -31,7 +31,7 @@
  */
 package com.whitewoodcity.control.paintpicker.colorpicker;
 
-import com.oracle.javafx.scenebuilder.kit.util.PaintConvertUtil;
+import com.whitewoodcity.kit.util.PaintConvertUtil;
 import com.whitewoodcity.control.paintpicker.PaintPicker.Mode;
 import com.whitewoodcity.control.paintpicker.PaintPickerController;
 import com.whitewoodcity.control.paintpicker.gradientpicker.GradientPicker;

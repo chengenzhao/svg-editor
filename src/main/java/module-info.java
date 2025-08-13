@@ -4,7 +4,7 @@ module com.whitewoodcity.svgeditor {
   requires javafx.graphics;
   requires javafx.base;
   requires atlantafx.base;
-  requires com.gluonhq.scenebuilder.kit;
+  requires javafx.fxml;
 
   exports com.whitewoodcity.svgeditor;
   opens com.whitewoodcity.control.paintpicker to javafx.fxml;

@@ -2,7 +2,6 @@ package com.whitewoodcity.svgeditor;
 
 import module javafx.controls;
 import module java.base;
-import module com.gluonhq.scenebuilder.kit;
 
 import com.whitewoodcity.svgpathcommand.*;
 
@@ -17,28 +16,18 @@ public class SVGEditor2 extends Application {
 
   @Override
   public void start(Stage stage) {
-    var vBox = new VBox();
+    var topBox = new VBox();
     pathElements.getZ().selectedProperty().addListener((_, _, _) -> updateSVGPath());
-    vBox.getChildren().addAll(pathElements, strokeParameters, fillParameters);
+    topBox.getChildren().addAll(pathElements, strokeParameters, fillParameters);
 
     var borderPane = new BorderPane();
 
     var left = new LeftColumn();
 
-    left.getZoomIn().setOnAction(_ -> {
-      for (SVGPathElement e : svgPathElements) {
-        e.apply(e, v -> v.doubleValue() * left.getFactor());
-      }
-      updateSVGPath();
-    });
-    left.getZoomOut().setOnAction(_ -> {
-      for (SVGPathElement e : svgPathElements) {
-        e.apply(e, v -> v.doubleValue() / left.getFactor());
-      }
-      updateSVGPath();
-    });
+    left.getZoomIn().setOnAction(_ -> updateSVGPathElements(svgPathElements, v -> v.doubleValue() * left.getFactor()));
+    left.getZoomOut().setOnAction(_ -> updateSVGPathElements(svgPathElements, v -> v.doubleValue() / left.getFactor()));
 
-    borderPane.setTop(vBox);
+    borderPane.setTop(topBox);
     borderPane.setCenter(getPane());
     borderPane.setLeft(left);
 
@@ -201,14 +190,7 @@ public class SVGEditor2 extends Application {
           var dx = event.getX() - ox;
           var dy = event.getY() - oy;
 
-          for (int i = 0; i < svgPathElements.size(); i++) {
-            var oe = oes.get(i);
-            var el = svgPathElements.get(i);
-
-            el.apply(oe, x -> x.doubleValue() + dx, y -> y.doubleValue() + dy);
-          }
-
-          updateSVGPath();
+          updateSVGPathElements(oes,x -> x.doubleValue() + dx, y -> y.doubleValue() + dy);
 
           event.consume();
         });
@@ -222,17 +204,30 @@ public class SVGEditor2 extends Application {
 
   private void updateSVGPath() {
     StringBuilder content = new StringBuilder();
-    for (SVGPathElement command : svgPathElements) {
-      content.append(command.command()).append(" ").append(switch (command) {
+    for (SVGPathElement element : svgPathElements) {
+      content.append(element.command()).append(" ").append(switch (element) {
         case CurveTo curveTo ->
           curveTo.getX1() + "," + curveTo.getY1() + " " + curveTo.getX2() + "," + curveTo.getY2() + " ";
         case SmoothTo smoothTo -> smoothTo.getX2() + "," + smoothTo.getY2() + " ";
         case QuadraticTo quadraticTo -> quadraticTo.getX1() + "," + quadraticTo.getY1() + " ";
         default -> "";
-      }).append(command.getX()).append(",").append(command.getY()).append(" ");
+      }).append(element.getX()).append(",").append(element.getY()).append(" ");
     }
     if (pathElements.getZ().isSelected()) content.append("Z");
     svgPath.setContent(content.toString());
+  }
+
+  private void updateSVGPathElements(List<SVGPathElement> references, SVGPathElement.Apply apply){
+    updateSVGPathElements(references, apply, apply);
+  }
+  private void updateSVGPathElements(List<SVGPathElement> references, SVGPathElement.Apply applyX, SVGPathElement.Apply applyY){
+    for (int i = 0; i < svgPathElements.size(); i++) {
+      var re = references.get(i);
+      var e = svgPathElements.get(i);
+
+      e.apply(re, applyX, applyY);
+    }
+    updateSVGPath();
   }
 
 }

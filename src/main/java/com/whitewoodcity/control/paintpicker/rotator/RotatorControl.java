@@ -31,7 +31,7 @@
  */
 package com.whitewoodcity.control.paintpicker.rotator;
 
-import com.oracle.javafx.scenebuilder.kit.util.control.paintpicker.gradientpicker.GradientPicker;
+import com.whitewoodcity.control.paintpicker.gradientpicker.GradientPicker;
 import java.io.IOException;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
