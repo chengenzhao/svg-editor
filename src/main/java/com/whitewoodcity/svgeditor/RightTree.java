@@ -102,8 +102,11 @@ public class RightTree extends VBox {
 
     var up = new Button("↑");
     var down = new Button("↓");
-    hBox.getChildren().add(0, down);
-    hBox.getChildren().add(0, up);
+    up.setMinWidth(30);
+    down.setMinWidth(30);
+    var b = new HBox(up,down);
+    b.setAlignment(Pos.BASELINE_LEFT);
+    hBox.getChildren().add(0, b);
 
     var del = new Button("❌");
     hBox.getChildren().add(del);
@@ -141,8 +144,11 @@ public class RightTree extends VBox {
 
     var up = new Button("↑");
     var down = new Button("↓");
-    hBox.getChildren().add(0, down);
-    hBox.getChildren().add(0, up);
+    up.setMinWidth(30);
+    down.setMinWidth(30);
+    var b = new HBox(up,down);
+    b.setAlignment(Pos.BASELINE_LEFT);
+    hBox.getChildren().add(0, b);
 
     var del = new Button("❌");
     hBox.getChildren().add(del);
