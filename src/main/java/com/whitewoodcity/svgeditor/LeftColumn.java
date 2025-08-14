@@ -42,10 +42,13 @@ public class LeftColumn extends VBox {
         }
         case SVGPath path -> {
           var svgPathElements = SVGEditor2.getAppCast().rightTree.getSVGPathElements(path);
-          SVGEditor2.getAppCast().updateSVGPathElements(svgPathElements, svgPathElements, v -> v.doubleValue() * factor.getDouble());
+          var moveTo = svgPathElements.getFirst();
+          SVGEditor2.getAppCast().updateSVGPathElements(svgPathElements, svgPathElements,
+            x -> (x.doubleValue() - moveTo.getX()) * factor.getDouble() + moveTo.getX(),
+            y -> (y.doubleValue() - moveTo.getY()) * factor.getDouble() + moveTo.getY()
+          );
         }
         default -> {
-//          updateSVGPathElements(svgPathElements, v -> v.doubleValue() * left.getFactor());
         }
       }
     });
@@ -58,10 +61,13 @@ public class LeftColumn extends VBox {
         }
         case SVGPath path -> {
           var svgPathElements = SVGEditor2.getAppCast().rightTree.getSVGPathElements(path);
-          SVGEditor2.getAppCast().updateSVGPathElements(svgPathElements, svgPathElements, v -> v.doubleValue() / factor.getDouble());
+          var moveTo = svgPathElements.getFirst();
+          SVGEditor2.getAppCast().updateSVGPathElements(svgPathElements, svgPathElements,
+            x -> (x.doubleValue() - moveTo.getX()) / factor.getDouble() + moveTo.getX(),
+            y -> (y.doubleValue() - moveTo.getY()) / factor.getDouble() + moveTo.getY()
+            );
         }
         default -> {
-//          updateSVGPathElements(svgPathElements, v -> v.doubleValue() * left.getFactor());
         }
       }
     });
