@@ -35,16 +35,21 @@ public class RightTree extends VBox {
     treeView.getSelectionModel().selectedItemProperty().addListener((_,oldV,newV)->{
       if(oldV!=null) {
         switch (itemGraphicBiMap.get(oldV)) {
+          case null -> {}
           case ImageView view -> IO.print(view);
           case SVGPath svgPath -> {
             svgPath.strokeProperty().unbind();
             svgPath.strokeWidthProperty().unbind();
             svgPath.fillProperty().unbind();
+
+            var list = svgPathListMap.get(svgPath);
+            list.forEach(e -> commandCircleMap.get(e).forEach(s -> SVGEditor2.getAppCast().center.getChildren().remove(s)));
           }
           default -> IO.print("???");
         }
       }
       switch (itemGraphicBiMap.get(newV)){
+        case null -> {}
         case ImageView view-> IO.print(view);
         case SVGPath svgPath -> {
           var top = SVGEditor2.getAppCast().topBox;
@@ -54,7 +59,6 @@ public class RightTree extends VBox {
         }
         default -> IO.print("???");
       }
-      IO.println();
     });
   }
 
@@ -81,6 +85,7 @@ public class RightTree extends VBox {
     itemGraphicBiMap.put(item, imageView);
 
     treeView.getRoot().getChildren().add(0, item);
+    treeView.getSelectionModel().select(item);
 
     var up = new Button("↑");
     var down = new Button("↓");
@@ -117,6 +122,7 @@ public class RightTree extends VBox {
     svgPathListMap.put(svgPath, new ArrayList<SVGPathElement>());
 
     treeView.getRoot().getChildren().add(item);
+    treeView.getSelectionModel().select(item);
 
     var up = new Button("↑");
     var down = new Button("↓");
@@ -153,7 +159,16 @@ public class RightTree extends VBox {
 
   private void del(TreeItem<Node> item){
     treeView.getRoot().getChildren().remove(item);
-    SVGEditor2.getAppCast().center.getChildren().remove(itemGraphicBiMap.remove(item));
+    switch(itemGraphicBiMap.remove(item)){
+      case null -> {}
+      case ImageView view -> SVGEditor2.getAppCast().center.getChildren().remove(view);
+      case SVGPath path -> {
+        SVGEditor2.getAppCast().center.getChildren().remove(path);
+        svgPathListMap.get(path).forEach(e -> commandCircleMap.get(e).forEach(s -> SVGEditor2.getAppCast().center.getChildren().remove(s)));
+      }
+      default -> {}
+    }
+
   }
 
   public List<SVGPathElement> getSVGPathElements(SVGPath svgPath){
