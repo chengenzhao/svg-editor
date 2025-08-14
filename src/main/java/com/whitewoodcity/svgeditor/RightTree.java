@@ -56,6 +56,9 @@ public class RightTree extends VBox {
           svgPath.strokeProperty().bind(top.strokeParameters.getStroke().valueProperty());
           svgPath.strokeWidthProperty().bind(top.strokeParameters.getStrokeWidth().textProperty().map(t -> Double.parseDouble(t.toString())));
           svgPath.fillProperty().bind(top.fillParameters.getFill().valueProperty());
+
+          var list = svgPathListMap.get(svgPath);
+          list.forEach(e -> commandCircleMap.get(e).forEach(s -> SVGEditor2.getAppCast().center.getChildren().add(s)));
         }
         default -> IO.print("???");
       }
