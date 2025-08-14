@@ -45,11 +45,9 @@ public class LeftColumn extends VBox {
           var moveTo = svgPathElements.getFirst();
           SVGEditor2.getAppCast().updateSVGPathElements(svgPathElements, svgPathElements,
             x -> (x.doubleValue() - moveTo.getX()) * factor.getDouble() + moveTo.getX(),
-            y -> (y.doubleValue() - moveTo.getY()) * factor.getDouble() + moveTo.getY()
-          );
+            y -> (y.doubleValue() - moveTo.getY()) * factor.getDouble() + moveTo.getY());
         }
-        default -> {
-        }
+        default -> {}
       }
     });
     zoomOut.setOnAction(_ -> {
@@ -64,11 +62,9 @@ public class LeftColumn extends VBox {
           var moveTo = svgPathElements.getFirst();
           SVGEditor2.getAppCast().updateSVGPathElements(svgPathElements, svgPathElements,
             x -> (x.doubleValue() - moveTo.getX()) / factor.getDouble() + moveTo.getX(),
-            y -> (y.doubleValue() - moveTo.getY()) / factor.getDouble() + moveTo.getY()
-            );
+            y -> (y.doubleValue() - moveTo.getY()) / factor.getDouble() + moveTo.getY());
         }
-        default -> {
-        }
+        default -> {}
       }
     });
   }
