@@ -94,7 +94,7 @@ public class RightTree extends VBox {
 
     itemGraphicBiMap.put(item, imageView);
 
-    treeView.getRoot().getChildren().add(0, item);
+    treeView.getRoot().getChildren().add(item);
     treeView.getSelectionModel().select(item);
 
     var up = new Button("↑");
@@ -133,7 +133,7 @@ public class RightTree extends VBox {
     itemGraphicBiMap.put(item, svgPath);
     svgPathListMap.put(svgPath, new ArrayList<SVGPathElement>());
 
-    treeView.getRoot().getChildren().add(item);
+    treeView.getRoot().getChildren().add(0,item);
     treeView.getSelectionModel().select(item);
 
     var up = new Button("↑");
