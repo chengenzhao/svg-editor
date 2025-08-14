@@ -57,6 +57,9 @@ public class RightTree extends VBox {
         }
         case SVGPath svgPath -> {
           var top = SVGEditor2.getAppCast().topBox;
+          top.strokeParameters.getStroke().setValue((Color) (svgPath.getStroke()==null?Color.BLACK:svgPath.getStroke()));
+          top.strokeParameters.getStrokeWidth().setPrefWidth(svgPath.getStrokeWidth());
+          top.fillParameters.getFill().setValue((Color) svgPath.getFill());
           svgPath.strokeProperty().bind(top.strokeParameters.getStroke().valueProperty());
           svgPath.strokeWidthProperty().bind(top.strokeParameters.getStrokeWidth().textProperty().map(t -> Double.parseDouble(t.toString())));
           svgPath.fillProperty().bind(top.fillParameters.getFill().valueProperty());
@@ -107,6 +110,8 @@ public class RightTree extends VBox {
     down.setOnAction(_ -> moveDown(item));
 
     del.setOnAction(_ -> del(item));
+
+    sortPane();
   }
 
   public HBox createSVGPath(){
@@ -145,7 +150,20 @@ public class RightTree extends VBox {
 
     del.setOnAction(_ -> del(item));
 
+    sortPane();
+
     return hBox;
+  }
+
+  private void sortPane(){
+    SVGEditor2.getAppCast().center.getChildren().sort((n0,n1)->{
+      var i0 = itemGraphicBiMap.inverse().get(n0);
+      var i1 = itemGraphicBiMap.inverse().get(n1);
+      if(i0==null || i1==null) return 1;
+      var index0 = treeView.getRoot().getChildren().indexOf(i0);
+      var index1 = treeView.getRoot().getChildren().indexOf(i1);
+      return index1 - index0;
+    });
   }
 
   private void moveUp(TreeItem<Node> item){
@@ -154,6 +172,8 @@ public class RightTree extends VBox {
       treeView.getRoot().getChildren().add(index - 1, treeView.getRoot().getChildren().remove(index));
     }
     treeView.getSelectionModel().select(item);
+
+    sortPane();
   }
 
   private void moveDown(TreeItem<Node> item){
@@ -162,6 +182,8 @@ public class RightTree extends VBox {
       treeView.getRoot().getChildren().add(index + 1, treeView.getRoot().getChildren().remove(index));
     }
     treeView.getSelectionModel().select(item);
+
+    sortPane();
   }
 
   private void del(TreeItem<Node> item){
@@ -175,6 +197,7 @@ public class RightTree extends VBox {
       }
       default -> {}
     }
+    sortPane();
 
   }
 

@@ -11,7 +11,7 @@ public class StrokeParameters extends SVGEditorHeader {
   public StrokeParameters() {
     super();
     strokeWidth.setText("1");
-    strokeWidth.setPrefWidth(50);
+    strokeWidth.setMinWidth(40);
 
     stroke.setValue(Color.BLACK);
 
