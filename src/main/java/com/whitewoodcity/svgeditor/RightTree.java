@@ -1,20 +1,18 @@
 package com.whitewoodcity.svgeditor;
 
 import module javafx.controls;
-import com.almasb.fxgl.dsl.FXGL;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.whitewoodcity.javafx.binding.XBindings;
 
 import java.io.File;
-import java.util.List;
 
 public class RightTree extends VBox {
 
   public Button addVectorButton = new Button("Vector");
   public Button addBitmapButton = new Button("Bitmap");
   public TreeView treeView = new TreeView<Node>(new TreeItem<>());
-  private BiMap<HBox, Node> hBoxGraphicBiMap = HashBiMap.create();
+  private BiMap<TreeItem, Node> itemGraphicBiMap = HashBiMap.create();
 
   public RightTree() {
 
@@ -47,9 +45,45 @@ public class RightTree extends VBox {
     var image = new Image(file.toURI().toString());
     var imageView = new ImageView(image);
 
-    SVGEditor2.getAppCast().center.getChildren().add(0,imageView);
+    SVGEditor2.getAppCast().center.getChildren().add(0, imageView);
 
-    treeView.getRoot().getChildren().add(0,new TreeItem<>(new Label(file.getName())));
+    var hBox = new HBox(new Label(file.getName()));
+    hBox.setSpacing(10);
+    hBox.setPadding(new Insets(5));
+    hBox.setAlignment(Pos.BASELINE_LEFT);
+
+    var item = new TreeItem<>(hBox);
+
+    itemGraphicBiMap.put(item, imageView);
+
+    treeView.getRoot().getChildren().add(0, item);
+
+    var up = new Button("↑");
+    var down = new Button("↓");
+    hBox.getChildren().add(0, down);
+    hBox.getChildren().add(0, up);
+
+    var del = new Button("❌");
+    hBox.getChildren().add(del);
+
+    up.setOnAction(_ -> {
+      var index = treeView.getRoot().getChildren().indexOf(item);
+      if (index > 0) {
+        treeView.getRoot().getChildren().add(index - 1, treeView.getRoot().getChildren().remove(index));
+      }
+    });
+
+    down.setOnAction(_ -> {
+      var index = treeView.getRoot().getChildren().indexOf(item);
+      if (index >= 0 && index < treeView.getRoot().getChildren().size() - 1) {
+        treeView.getRoot().getChildren().add(index + 1, treeView.getRoot().getChildren().remove(index));
+      }
+    });
+
+    del.setOnAction(_ -> {
+      treeView.getRoot().getChildren().remove(item);
+      SVGEditor2.getAppCast().center.getChildren().remove(itemGraphicBiMap.remove(item));
+    });
   }
 
   public void createSVGPath() {
