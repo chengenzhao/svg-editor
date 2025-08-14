@@ -2,9 +2,13 @@ package com.whitewoodcity.svgeditor;
 
 import module javafx.controls;
 import module com.google.common;
+import module java.base;
 import com.whitewoodcity.javafx.binding.XBindings;
+import com.whitewoodcity.svgpathcommand.SVGPathElement;
 
 import java.io.File;
+import javafx.scene.control.Label;
+import com.whitewoodcity.svgpathcommand.SVGPathElement;
 
 public class RightTree extends VBox {
 
@@ -12,6 +16,8 @@ public class RightTree extends VBox {
   public Button addBitmapButton = new Button("Bitmap");
   public TreeView<Node> treeView = new TreeView<>(new TreeItem<Node>());
   private BiMap<TreeItem, Node> itemGraphicBiMap = HashBiMap.create();
+  private Map<SVGPath, List<SVGPathElement>> svgPathListMap = new HashMap<>();
+  private Map<SVGPathElement, List<Shape>> commandCircleMap = new HashMap<>();
 
   public RightTree() {
 
@@ -22,23 +28,21 @@ public class RightTree extends VBox {
     buttonBox.setAlignment(Pos.BASELINE_LEFT);
     buttonBox.setSpacing(10);
     buttonBox.setPadding(new Insets(10));
-    var hbox = createSVGPath();
-    hbox.getChildren().removeLast();
     treeView.setShowRoot(false);
     treeView.prefHeightProperty().bind(XBindings.reduceDoubleValue(this.heightProperty(), buttonBox.heightProperty(), (vh, rh) -> vh - rh));
     this.getChildren().addAll(buttonBox, treeView);
 
-    treeView.getSelectionModel().selectFirst();
-
     treeView.getSelectionModel().selectedItemProperty().addListener((_,oldV,newV)->{
-      switch (itemGraphicBiMap.get(oldV)){
-        case ImageView view-> IO.print(view);
-        case SVGPath svgPath -> {
-          svgPath.strokeProperty().unbind();
-          svgPath.strokeWidthProperty().unbind();
-          svgPath.fillProperty().unbind();
+      if(oldV!=null) {
+        switch (itemGraphicBiMap.get(oldV)) {
+          case ImageView view -> IO.print(view);
+          case SVGPath svgPath -> {
+            svgPath.strokeProperty().unbind();
+            svgPath.strokeWidthProperty().unbind();
+            svgPath.fillProperty().unbind();
+          }
+          default -> IO.print("???");
         }
-        default -> IO.print("???");
       }
       switch (itemGraphicBiMap.get(newV)){
         case ImageView view-> IO.print(view);
@@ -100,6 +104,8 @@ public class RightTree extends VBox {
   public HBox createSVGPath(String name) {
     SVGPath svgPath = new SVGPath();
 
+    SVGEditor2.getAppCast().center.getChildren().add(svgPath);
+
     var hBox = new HBox(new Label(name));
     hBox.setSpacing(10);
     hBox.setPadding(new Insets(5));
@@ -108,6 +114,7 @@ public class RightTree extends VBox {
     var item = new TreeItem<Node>(hBox);
 
     itemGraphicBiMap.put(item, svgPath);
+    svgPathListMap.put(svgPath, new ArrayList<SVGPathElement>());
 
     treeView.getRoot().getChildren().add(item);
 
@@ -149,4 +156,11 @@ public class RightTree extends VBox {
     SVGEditor2.getAppCast().center.getChildren().remove(itemGraphicBiMap.remove(item));
   }
 
+  public List<SVGPathElement> getSVGPathElements(SVGPath svgPath){
+    return svgPathListMap.get(svgPath);
+  }
+
+  public Map<SVGPathElement, List<Shape>> getCommandCircleMap() {
+    return commandCircleMap;
+  }
 }
