@@ -58,9 +58,9 @@ public class SVGEditor2 extends Application {
   }
 
   private void removeSVGPathCommand(Pane pane, List<SVGPathElement> svgPathElements, SVGPathElement command) {
-//    if(rightTree.getCommandCircleMap().size() > 1 && svgPathElements.indexOf(command) == 0){
-//      return;
-//    }
+    if(svgPathElements.size() > 1 && svgPathElements.indexOf(command) == 0){
+      return;
+    }
     var list = rightTree.getCommandCircleMap().remove(command);
     if (list != null) {
       pane.getChildren().removeAll(list);
