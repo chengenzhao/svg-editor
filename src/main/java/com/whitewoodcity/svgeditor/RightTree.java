@@ -3,9 +3,9 @@ package com.whitewoodcity.svgeditor;
 import module javafx.controls;
 import module com.google.common;
 import module java.base;
+
 import com.whitewoodcity.javafx.binding.XBindings;
 import com.whitewoodcity.svgpathcommand.SVGPathElement;
-
 import java.io.File;
 import javafx.scene.control.Label;
 import com.whitewoodcity.svgpathcommand.SVGPathElement;
