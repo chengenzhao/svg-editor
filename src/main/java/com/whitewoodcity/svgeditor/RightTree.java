@@ -36,7 +36,9 @@ public class RightTree extends VBox {
       if(oldV!=null) {
         switch (itemGraphicBiMap.get(oldV)) {
           case null -> {}
-          case ImageView view -> IO.print(view);
+          case ImageView view -> {
+
+          }
           case SVGPath svgPath -> {
             svgPath.strokeProperty().unbind();
             svgPath.strokeWidthProperty().unbind();
@@ -50,7 +52,9 @@ public class RightTree extends VBox {
       }
       switch (itemGraphicBiMap.get(newV)){
         case null -> {}
-        case ImageView view-> IO.print(view);
+        case ImageView view-> {
+
+        }
         case SVGPath svgPath -> {
           var top = SVGEditor2.getAppCast().topBox;
           svgPath.strokeProperty().bind(top.strokeParameters.getStroke().valueProperty());
