@@ -4,6 +4,7 @@ import module javafx.controls;
 import module java.base;
 
 import com.whitewoodcity.svgpathcommand.*;
+import javafx.scene.control.Label;
 
 public class SVGEditor2 extends Application {
 
@@ -29,6 +30,7 @@ public class SVGEditor2 extends Application {
   public VBox topBox = new VBox();
   public LeftColumn left = new LeftColumn();
   public Pane center = getPane();
+  public RightTree rightTree = new RightTree();
 
   @Override
   public void start(Stage stage) {
@@ -41,13 +43,11 @@ public class SVGEditor2 extends Application {
     left.getZoomIn().setOnAction(_ -> updateSVGPathElements(svgPathElements, v -> v.doubleValue() * left.getFactor()));
     left.getZoomOut().setOnAction(_ -> updateSVGPathElements(svgPathElements, v -> v.doubleValue() / left.getFactor()));
 
-    var treeView = new TreeView<String>(new TreeItem<>("Vector Graphics"));
-    treeView.getRoot().getChildren().add(new TreeItem<>("Layer0"));
-
     borderPane.setTop(topBox);
     borderPane.setCenter(center);
     borderPane.setLeft(left);
-    borderPane.setRight(treeView);
+    borderPane.setRight(rightTree);
+    borderPane.setBottom(new Pane(new Label("here is bottom")));
 
     Scene scene = new Scene(borderPane);
     stage.setTitle("SVG Path Editor~!");
