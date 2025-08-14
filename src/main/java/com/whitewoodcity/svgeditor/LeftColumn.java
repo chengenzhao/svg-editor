@@ -5,8 +5,12 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.SVGPath;
+
+import javax.swing.*;
 
 public class LeftColumn extends VBox {
 
@@ -28,6 +32,39 @@ public class LeftColumn extends VBox {
     hbox1.alignmentProperty().bind(hbox.alignmentProperty());
 
     this.getChildren().addAll(hbox,hbox1);
+
+    zoomIn.setOnAction(_ -> {
+      var node = SVGEditor2.getAppCast().rightTree.currentNodeInPane();
+      switch (node){
+        case ImageView view -> {
+          view.setFitWidth(view.getFitWidth() * factor.getDouble());
+          view.setFitHeight(view.getFitHeight() * factor.getDouble());
+        }
+        case SVGPath path -> {
+          var svgPathElements = SVGEditor2.getAppCast().rightTree.getSVGPathElements(path);
+          SVGEditor2.getAppCast().updateSVGPathElements(svgPathElements, svgPathElements, v -> v.doubleValue() * factor.getDouble());
+        }
+        default -> {
+//          updateSVGPathElements(svgPathElements, v -> v.doubleValue() * left.getFactor());
+        }
+      }
+    });
+    zoomOut.setOnAction(_ -> {
+      var node = SVGEditor2.getAppCast().rightTree.currentNodeInPane();
+      switch (node){
+        case ImageView view -> {
+          view.setFitWidth(view.getFitWidth() / factor.getDouble());
+          view.setFitHeight(view.getFitHeight() / factor.getDouble());
+        }
+        case SVGPath path -> {
+          var svgPathElements = SVGEditor2.getAppCast().rightTree.getSVGPathElements(path);
+          SVGEditor2.getAppCast().updateSVGPathElements(svgPathElements, svgPathElements, v -> v.doubleValue() / factor.getDouble());
+        }
+        default -> {
+//          updateSVGPathElements(svgPathElements, v -> v.doubleValue() * left.getFactor());
+        }
+      }
+    });
   }
 
   public Button getZoomIn() {

@@ -8,6 +8,7 @@ module com.whitewoodcity.svgeditor {
   requires com.almasb.fxgl.all;
   requires com.google.common;
   requires jdk.compiler;
+  requires java.desktop;
 
   exports com.whitewoodcity.svgeditor;
   opens com.whitewoodcity.control.paintpicker to javafx.fxml;

@@ -242,10 +242,10 @@ public class SVGEditor2 extends Application {
     }
   }
 
-  private void updateSVGPathElements(List<SVGPathElement> elements,List<SVGPathElement> references, SVGPathElement.Apply apply){
+  public void updateSVGPathElements(List<SVGPathElement> elements,List<SVGPathElement> references, SVGPathElement.Apply apply){
     updateSVGPathElements(elements, references, apply, apply);
   }
-  private void updateSVGPathElements(List<SVGPathElement> elements, List<SVGPathElement> references, SVGPathElement.Apply applyX, SVGPathElement.Apply applyY){
+  public void updateSVGPathElements(List<SVGPathElement> elements, List<SVGPathElement> references, SVGPathElement.Apply applyX, SVGPathElement.Apply applyY){
     for (int i = 0; i < elements.size(); i++) {
       var re = references.get(i);
       var e = elements.get(i);

@@ -82,6 +82,9 @@ public class RightTree extends VBox {
     File file = fileChooser.showOpenDialog(this.getScene().getWindow());
     var image = new Image(file.toURI().toString());
     var imageView = new ImageView(image);
+    imageView.setPreserveRatio(true);
+    imageView.setFitWidth(image.getWidth());
+    imageView.setFitHeight(image.getHeight());
 
     SVGEditor2.getAppCast().center.getChildren().add(0, imageView);
 
