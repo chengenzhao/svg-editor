@@ -66,28 +66,36 @@ public class RightTree extends VBox {
     var del = new Button("❌");
     hBox.getChildren().add(del);
 
-    up.setOnAction(_ -> {
-      var index = treeView.getRoot().getChildren().indexOf(item);
-      if (index > 0) {
-        treeView.getRoot().getChildren().add(index - 1, treeView.getRoot().getChildren().remove(index));
-      }
-    });
+    up.setOnAction(_ -> moveUp(item));
 
-    down.setOnAction(_ -> {
-      var index = treeView.getRoot().getChildren().indexOf(item);
-      if (index >= 0 && index < treeView.getRoot().getChildren().size() - 1) {
-        treeView.getRoot().getChildren().add(index + 1, treeView.getRoot().getChildren().remove(index));
-      }
-    });
+    down.setOnAction(_ -> moveDown(item));
 
-    del.setOnAction(_ -> {
-      treeView.getRoot().getChildren().remove(item);
-      SVGEditor2.getAppCast().center.getChildren().remove(itemGraphicBiMap.remove(item));
-    });
+    del.setOnAction(_ -> del(item));
   }
 
   public void createSVGPath() {
 
+  }
+
+  private void moveUp(TreeItem item){
+    var index = treeView.getRoot().getChildren().indexOf(item);
+    if (index > 0) {
+      treeView.getRoot().getChildren().add(index - 1, treeView.getRoot().getChildren().remove(index));
+    }
+    treeView.getSelectionModel().select(item);
+  }
+
+  private void moveDown(TreeItem item){
+    var index = treeView.getRoot().getChildren().indexOf(item);
+    if (index >= 0 && index < treeView.getRoot().getChildren().size() - 1) {
+      treeView.getRoot().getChildren().add(index + 1, treeView.getRoot().getChildren().remove(index));
+    }
+    treeView.getSelectionModel().select(item);
+  }
+
+  private void del(TreeItem item){
+    treeView.getRoot().getChildren().remove(item);
+    SVGEditor2.getAppCast().center.getChildren().remove(itemGraphicBiMap.remove(item));
   }
 
 }
