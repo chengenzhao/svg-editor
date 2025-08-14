@@ -5,6 +5,8 @@ module com.whitewoodcity.svgeditor {
   requires javafx.base;
   requires atlantafx.base;
   requires javafx.fxml;
+  requires com.almasb.fxgl.all;
+  requires com.google.common;
 
   exports com.whitewoodcity.svgeditor;
   opens com.whitewoodcity.control.paintpicker to javafx.fxml;

@@ -13,18 +13,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.10.2</junit.version>
         <fxcity.version>0.5.11</fxcity.version>
+        <guava.version>33.4.8-jre</guava.version>
     </properties>
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>com.gluonhq.scenebuilder</groupId>-->
-<!--            <artifactId>kit</artifactId>-->
-<!--            <version>24.0.1</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>io.github.chengenzhao</groupId>
             <artifactId>fxcity</artifactId>
             <version>${fxcity.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
