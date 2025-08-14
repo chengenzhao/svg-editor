@@ -22,23 +22,40 @@ public class RightTree extends VBox {
     buttonBox.setAlignment(Pos.BASELINE_LEFT);
     buttonBox.setSpacing(10);
     buttonBox.setPadding(new Insets(10));
-    treeView.getRoot().getChildren().add(new TreeItem<>(new Label("Layer0")));
+    var hbox = createSVGPath();
+    hbox.getChildren().removeLast();
     treeView.setShowRoot(false);
     treeView.prefHeightProperty().bind(XBindings.reduceDoubleValue(this.heightProperty(), buttonBox.heightProperty(), (vh, rh) -> vh - rh));
     this.getChildren().addAll(buttonBox, treeView);
 
     treeView.getSelectionModel().selectFirst();
 
-//    treeView.setOnMouseClicked(e -> {
-//      if (e.getButton() == MouseButton.SECONDARY) {
-//        treeView.getSelectionModel().clearSelection();
-//        e.consume();
-//      }
-//    });
+    treeView.getSelectionModel().selectedItemProperty().addListener((_,oldV,newV)->{
+      switch (itemGraphicBiMap.get(oldV)){
+        case ImageView view-> IO.print(view);
+        case SVGPath svgPath -> {
+          svgPath.strokeProperty().unbind();
+          svgPath.strokeWidthProperty().unbind();
+          svgPath.fillProperty().unbind();
+        }
+        default -> IO.print("???");
+      }
+      switch (itemGraphicBiMap.get(newV)){
+        case ImageView view-> IO.print(view);
+        case SVGPath svgPath -> {
+          var top = SVGEditor2.getAppCast().topBox;
+          svgPath.strokeProperty().bind(top.strokeParameters.getStroke().valueProperty());
+          svgPath.strokeWidthProperty().bind(top.strokeParameters.getStrokeWidth().textProperty().map(t -> Double.parseDouble(t.toString())));
+          svgPath.fillProperty().bind(top.fillParameters.getFill().valueProperty());
+        }
+        default -> IO.print("???");
+      }
+      IO.println();
+    });
   }
 
-  public TreeItem<Node> currentSelection(){
-    return treeView.getSelectionModel().getSelectedItem();
+  public Node currentNodeInPane(){
+    return itemGraphicBiMap.get(treeView.getSelectionModel().getSelectedItem());
   }
 
   public void createImageView() {
@@ -76,8 +93,39 @@ public class RightTree extends VBox {
     del.setOnAction(_ -> del(item));
   }
 
-  public void createSVGPath() {
+  public HBox createSVGPath(){
+    return createSVGPath("Layer "+treeView.getRoot().getChildren().size());
+  }
 
+  public HBox createSVGPath(String name) {
+    SVGPath svgPath = new SVGPath();
+
+    var hBox = new HBox(new Label(name));
+    hBox.setSpacing(10);
+    hBox.setPadding(new Insets(5));
+    hBox.setAlignment(Pos.BASELINE_LEFT);
+
+    var item = new TreeItem<Node>(hBox);
+
+    itemGraphicBiMap.put(item, svgPath);
+
+    treeView.getRoot().getChildren().add(item);
+
+    var up = new Button("↑");
+    var down = new Button("↓");
+    hBox.getChildren().add(0, down);
+    hBox.getChildren().add(0, up);
+
+    var del = new Button("❌");
+    hBox.getChildren().add(del);
+
+    up.setOnAction(_ -> moveUp(item));
+
+    down.setOnAction(_ -> moveDown(item));
+
+    del.setOnAction(_ -> del(item));
+
+    return hBox;
   }
 
   private void moveUp(TreeItem<Node> item){
