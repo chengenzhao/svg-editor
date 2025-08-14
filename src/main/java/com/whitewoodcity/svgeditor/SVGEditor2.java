@@ -42,7 +42,6 @@ public class SVGEditor2 extends Application {
 //    left.getZoomIn().setOnAction(_ -> updateSVGPathElements(svgPathElements, v -> v.doubleValue() * left.getFactor()));
 //    left.getZoomOut().setOnAction(_ -> updateSVGPathElements(svgPathElements, v -> v.doubleValue() / left.getFactor()));
 
-
     Scene scene = new Scene(borderPane);
     stage.setTitle("SVG Path Editor~!");
     stage.setScene(scene);
@@ -197,6 +196,23 @@ public class SVGEditor2 extends Application {
           var dy = event.getY() - oy;
 
           updateSVGPathElements(svgPathElements, oes,x -> x.doubleValue() + dx, y -> y.doubleValue() + dy);
+
+          event.consume();
+        });
+
+        pane.setOnMouseReleased(_ -> pane.setOnMouseDragged(_ -> {}));
+      } else if(rightTree.currentNodeInPane() instanceof ImageView imageView){
+        var ox = e.getX();
+        var oy = e.getY();
+        var vx = imageView.getX();
+        var vy = imageView.getY();
+        pane.setOnMouseDragged(event -> {
+
+          var dx = event.getX() - ox;
+          var dy = event.getY() - oy;
+
+          imageView.setX(vx + dx);
+          imageView.setY(vy + dy);
 
           event.consume();
         });
