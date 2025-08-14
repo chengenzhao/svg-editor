@@ -1,8 +1,7 @@
 package com.whitewoodcity.svgeditor;
 
 import module javafx.controls;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
+import module com.google.common;
 import com.whitewoodcity.javafx.binding.XBindings;
 
 import java.io.File;
@@ -11,7 +10,7 @@ public class RightTree extends VBox {
 
   public Button addVectorButton = new Button("Vector");
   public Button addBitmapButton = new Button("Bitmap");
-  public TreeView treeView = new TreeView<Node>(new TreeItem<>());
+  public TreeView<Node> treeView = new TreeView<>(new TreeItem<Node>());
   private BiMap<TreeItem, Node> itemGraphicBiMap = HashBiMap.create();
 
   public RightTree() {
@@ -38,6 +37,10 @@ public class RightTree extends VBox {
 //    });
   }
 
+  public TreeItem<Node> currentSelection(){
+    return treeView.getSelectionModel().getSelectedItem();
+  }
+
   public void createImageView() {
     FileChooser fileChooser = new FileChooser();
     fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image files", "*.PNG", "*.JPG"));
@@ -52,7 +55,7 @@ public class RightTree extends VBox {
     hBox.setPadding(new Insets(5));
     hBox.setAlignment(Pos.BASELINE_LEFT);
 
-    var item = new TreeItem<>(hBox);
+    var item = new TreeItem<Node>(hBox);
 
     itemGraphicBiMap.put(item, imageView);
 
@@ -77,7 +80,7 @@ public class RightTree extends VBox {
 
   }
 
-  private void moveUp(TreeItem item){
+  private void moveUp(TreeItem<Node> item){
     var index = treeView.getRoot().getChildren().indexOf(item);
     if (index > 0) {
       treeView.getRoot().getChildren().add(index - 1, treeView.getRoot().getChildren().remove(index));
@@ -85,7 +88,7 @@ public class RightTree extends VBox {
     treeView.getSelectionModel().select(item);
   }
 
-  private void moveDown(TreeItem item){
+  private void moveDown(TreeItem<Node> item){
     var index = treeView.getRoot().getChildren().indexOf(item);
     if (index >= 0 && index < treeView.getRoot().getChildren().size() - 1) {
       treeView.getRoot().getChildren().add(index + 1, treeView.getRoot().getChildren().remove(index));
@@ -93,7 +96,7 @@ public class RightTree extends VBox {
     treeView.getSelectionModel().select(item);
   }
 
-  private void del(TreeItem item){
+  private void del(TreeItem<Node> item){
     treeView.getRoot().getChildren().remove(item);
     SVGEditor2.getAppCast().center.getChildren().remove(itemGraphicBiMap.remove(item));
   }
