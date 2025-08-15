@@ -191,24 +191,29 @@ public class RightTree extends VBox {
   }
 
   private void moveUp(TreeItem<Node> item){
-    var index = treeView.getRoot().getChildren().indexOf(item);
+    var children = item.getParent().getChildren();
+    var index = children.indexOf(item);
     if (index > 0) {
-      treeView.getRoot().getChildren().add(index - 1, treeView.getRoot().getChildren().remove(index));
+      children.add(index - 1, children.remove(index));
     }
     rearrangePane();
     treeView.getSelectionModel().select(item);
   }
 
   private void moveDown(TreeItem<Node> item){
-    var index = treeView.getRoot().getChildren().indexOf(item);
-    if (index >= 0 && index < treeView.getRoot().getChildren().size() - 1) {
-      treeView.getRoot().getChildren().add(index + 1, treeView.getRoot().getChildren().remove(index));
+    var children = item.getParent().getChildren();
+    var index = children.indexOf(item);
+    if (index >= 0 && index < children.size() - 1) {
+      children.add(index + 1, children.remove(index));
     }
     rearrangePane();
     treeView.getSelectionModel().select(item);
   }
 
   private void del(TreeItem<Node> item){
+    if(item.getChildren().size()>0){
+      item.getChildren().forEach(c -> del(c));
+    }
     delRecursively(item, treeView.getRoot().getChildren());
     switch(itemGraphicBiMap.remove(item)){
       case null -> {}
