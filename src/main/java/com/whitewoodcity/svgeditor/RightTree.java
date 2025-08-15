@@ -43,6 +43,12 @@ public class RightTree extends VBox {
             svgPath.strokeWidthProperty().unbind();
             svgPath.fillProperty().unbind();
 
+            switch (svgPath.getEffect()){
+              case null -> {}
+              case GaussianBlur gaussianBlur -> gaussianBlur.radiusProperty().unbind();
+              default -> {}
+            }
+
             var list = svgPathListMap.get(svgPath);
             list.forEach(e -> commandCircleMap.get(e).forEach(s -> SVGEditor2.getAppCast().center.getChildren().remove(s)));
           }
@@ -80,6 +86,7 @@ public class RightTree extends VBox {
     FileChooser fileChooser = new FileChooser();
     fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image files", "*.PNG", "*.JPG"));
     File file = fileChooser.showOpenDialog(this.getScene().getWindow());
+    if(file == null) return;
     var image = new Image(file.toURI().toString());
     var imageView = new ImageView(image);
     imageView.setPreserveRatio(true);

@@ -5,6 +5,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -46,6 +47,14 @@ public class LeftColumn extends VBox {
           SVGEditor2.getAppCast().updateSVGPathElements(svgPathElements, svgPathElements,
             x -> (x.doubleValue() - moveTo.getX()) * factor.getDouble() + moveTo.getX(),
             y -> (y.doubleValue() - moveTo.getY()) * factor.getDouble() + moveTo.getY());
+
+          switch (path.getEffect()){
+            case null -> {}
+            case GaussianBlur gaussianBlur-> {
+              SVGEditor2.getAppCast().topBox.effectParameters.zoomIn(factor.getDouble());
+            }
+            default -> {}
+          }
         }
         default -> {}
       }
@@ -63,6 +72,14 @@ public class LeftColumn extends VBox {
           SVGEditor2.getAppCast().updateSVGPathElements(svgPathElements, svgPathElements,
             x -> (x.doubleValue() - moveTo.getX()) / factor.getDouble() + moveTo.getX(),
             y -> (y.doubleValue() - moveTo.getY()) / factor.getDouble() + moveTo.getY());
+
+          switch (path.getEffect()){
+            case null -> {}
+            case GaussianBlur gaussianBlur-> {
+              SVGEditor2.getAppCast().topBox.effectParameters.zoomOut(factor.getDouble());
+            }
+            default -> {}
+          }
         }
         default -> {}
       }
