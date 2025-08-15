@@ -8,7 +8,6 @@ import com.whitewoodcity.javafx.binding.XBindings;
 import com.whitewoodcity.svgpathcommand.SVGPathElement;
 import java.io.File;
 import javafx.scene.control.Label;
-import com.whitewoodcity.svgpathcommand.SVGPathElement;
 
 public class RightTree extends VBox {
 
@@ -98,7 +97,6 @@ public class RightTree extends VBox {
     itemGraphicBiMap.put(item, imageView);
 
     treeView.getRoot().getChildren().add(item);
-    treeView.getSelectionModel().select(item);
 
     var up = new Button("↑");
     var down = new Button("↓");
@@ -117,7 +115,8 @@ public class RightTree extends VBox {
 
     del.setOnAction(_ -> del(item));
 
-    sortPane();
+    rearrangePane();
+    treeView.getSelectionModel().select(item);
   }
 
   public HBox createSVGPath(){
@@ -140,7 +139,6 @@ public class RightTree extends VBox {
     svgPathListMap.put(svgPath, new ArrayList<SVGPathElement>());
 
     treeView.getRoot().getChildren().add(0,item);
-    treeView.getSelectionModel().select(item);
 
     var up = new Button("↑");
     var down = new Button("↓");
@@ -159,20 +157,23 @@ public class RightTree extends VBox {
 
     del.setOnAction(_ -> del(item));
 
-    sortPane();
+    rearrangePane();
+    treeView.getSelectionModel().select(item);
 
     return hBox;
   }
 
-  private void sortPane(){
-    SVGEditor2.getAppCast().center.getChildren().sort((n0,n1)->{
-      var i0 = itemGraphicBiMap.inverse().get(n0);
-      var i1 = itemGraphicBiMap.inverse().get(n1);
-      if(i0==null || i1==null) return 1;
-      var index0 = treeView.getRoot().getChildren().indexOf(i0);
-      var index1 = treeView.getRoot().getChildren().indexOf(i1);
-      return index1 - index0;
-    });
+  private void rearrangePane(){
+    var nodes = SVGEditor2.getAppCast().center.getChildren();
+    nodes.clear();
+    var list = treeView.getRoot().getChildren();
+    for(var item:list){
+      var l = item.getChildren();
+      for(var i:l){
+        nodes.add(0, itemGraphicBiMap.get(i));
+      }
+      nodes.add(0,itemGraphicBiMap.get(item));
+    }
   }
 
   private void moveUp(TreeItem<Node> item){
@@ -180,9 +181,8 @@ public class RightTree extends VBox {
     if (index > 0) {
       treeView.getRoot().getChildren().add(index - 1, treeView.getRoot().getChildren().remove(index));
     }
+    rearrangePane();
     treeView.getSelectionModel().select(item);
-
-    sortPane();
   }
 
   private void moveDown(TreeItem<Node> item){
@@ -190,9 +190,8 @@ public class RightTree extends VBox {
     if (index >= 0 && index < treeView.getRoot().getChildren().size() - 1) {
       treeView.getRoot().getChildren().add(index + 1, treeView.getRoot().getChildren().remove(index));
     }
+    rearrangePane();
     treeView.getSelectionModel().select(item);
-
-    sortPane();
   }
 
   private void del(TreeItem<Node> item){
@@ -206,8 +205,7 @@ public class RightTree extends VBox {
       }
       default -> {}
     }
-    sortPane();
-
+    rearrangePane();
   }
 
   public List<SVGPathElement> getSVGPathElements(SVGPath svgPath){
