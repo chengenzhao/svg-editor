@@ -119,11 +119,11 @@ public class RightTree extends VBox {
     treeView.getSelectionModel().select(item);
   }
 
-  public HBox createSVGPath(){
-    return createSVGPath("Layer "+treeView.getRoot().getChildren().size());
+  public TreeItem<Node> createSVGPath(){
+    return createSVGPath("Layer "+treeView.getRoot().getChildren().size(), null);
   }
 
-  public HBox createSVGPath(String name) {
+  public TreeItem<Node> createSVGPath(String name,TreeItem<Node> parent) {
     SVGPath svgPath = new SVGPath();
 
     SVGEditor2.getAppCast().center.getChildren().add(svgPath);
@@ -138,7 +138,16 @@ public class RightTree extends VBox {
     itemGraphicBiMap.put(item, svgPath);
     svgPathListMap.put(svgPath, new ArrayList<SVGPathElement>());
 
-    treeView.getRoot().getChildren().add(0,item);
+    if(parent!=null) {
+      parent.getChildren().add(0, item);
+
+      svgPath.setCache(true);
+//      svgPath.setBlendMode(BlendMode.MULTIPLY);
+//        n.setCacheHint(CacheHint.QUALITY);
+      svgPath.setClip(clone((SVGPath) itemGraphicBiMap.get(parent)));
+    }
+    else
+      treeView.getRoot().getChildren().add(0,item);
 
     var up = new Button("↑");
     var down = new Button("↓");
@@ -149,18 +158,23 @@ public class RightTree extends VBox {
     hBox.getChildren().add(0, b);
 
     var del = new Button("❌");
-    hBox.getChildren().add(del);
+    hBox.getChildren().addAll(del);
+    del.setOnAction(_ -> del(item));
+
+    if(parent==null) {
+      var plus = new Button("+");
+      hBox.getChildren().addAll(plus);
+      plus.setOnAction(_ -> createSVGPath("SubLayer" + item.getChildren().size(),item));
+    }
 
     up.setOnAction(_ -> moveUp(item));
 
     down.setOnAction(_ -> moveDown(item));
 
-    del.setOnAction(_ -> del(item));
-
     rearrangePane();
     treeView.getSelectionModel().select(item);
 
-    return hBox;
+    return item;
   }
 
   private void rearrangePane(){
@@ -214,5 +228,16 @@ public class RightTree extends VBox {
 
   public Map<SVGPathElement, List<Shape>> getCommandCircleMap() {
     return commandCircleMap;
+  }
+
+  public SVGPath clone(SVGPath path){
+    var svgPath = new SVGPath();
+    svgPath.contentProperty().bind(path.contentProperty());
+    svgPath.strokeProperty().bind(path.strokeProperty());
+    svgPath.strokeWidthProperty().bind(path.strokeWidthProperty());
+    svgPath.strokeLineJoinProperty().bind(path.strokeLineJoinProperty());
+    svgPath.strokeLineCapProperty().bind(path.strokeLineCapProperty());
+    svgPath.effectProperty().bind(path.effectProperty());
+    return svgPath;
   }
 }
