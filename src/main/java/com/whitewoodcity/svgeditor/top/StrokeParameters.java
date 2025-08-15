@@ -29,4 +29,12 @@ public class StrokeParameters extends SVGEditorHeader {
   public ColorPicker getStroke() {
     return stroke;
   }
+
+  public void zoomIn(double factor){
+    strokeWidth.setText(strokeWidth.getDouble() * factor +"");
+  }
+
+  public void zoomOut(double factor){
+    strokeWidth.setText(strokeWidth.getDouble() / factor +"");
+  }
 }

@@ -48,6 +48,8 @@ public class LeftColumn extends VBox {
             x -> (x.doubleValue() - moveTo.getX()) * factor.getDouble() + moveTo.getX(),
             y -> (y.doubleValue() - moveTo.getY()) * factor.getDouble() + moveTo.getY());
 
+          SVGEditor2.getAppCast().topBox.strokeParameters.zoomIn(factor.getDouble());
+
           switch (path.getEffect()){
             case null -> {}
             case GaussianBlur gaussianBlur-> {
@@ -72,6 +74,8 @@ public class LeftColumn extends VBox {
           SVGEditor2.getAppCast().updateSVGPathElements(svgPathElements, svgPathElements,
             x -> (x.doubleValue() - moveTo.getX()) / factor.getDouble() + moveTo.getX(),
             y -> (y.doubleValue() - moveTo.getY()) / factor.getDouble() + moveTo.getY());
+
+          SVGEditor2.getAppCast().topBox.strokeParameters.zoomOut(factor.getDouble());
 
           switch (path.getEffect()){
             case null -> {}
