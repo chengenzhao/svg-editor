@@ -32,19 +32,11 @@ public class EffectParameters extends SVGEditorHeader {
         case null -> {
           node.setEffect(null);
           this.getChildren().subList(2,this.getChildren().size()).clear();
-          zoomedFields.clear();
         }
         case "GaussianBlur" -> {
           if(node.getEffect() == null)
             node.setEffect(new GaussianBlur());
-          var effect = (GaussianBlur)node.getEffect();
-          this.getChildren().subList(2,this.getChildren().size()).clear();
-          var radius = new NumberField(10000);
-          zoomedFields.add(radius);
-          radius.setPrefWidth(40);
-          radius.setText(effect.getRadius()+"");
-          effect.radiusProperty().bind(radius.textProperty().map(t -> Double.parseDouble(t)));
-          this.getChildren().addAll(new Spacer(10),radius, new Label("Radius"));
+          layout(node.getEffect());
         }
         default -> {}
       }
@@ -53,19 +45,12 @@ public class EffectParameters extends SVGEditorHeader {
 
   public void setNode(Node node) {
     this.node = node;
+    zoomedFields.clear();
     switch (node.getEffect()){
       case null -> choiceBox.setValue(null);
       case GaussianBlur gaussianBlur-> {
         choiceBox.setValue("GaussianBlur");
-
-        var effect = (GaussianBlur)node.getEffect();
-        this.getChildren().subList(2,this.getChildren().size()).clear();
-        var radius = new NumberField(10000);
-        zoomedFields.add(radius);
-        radius.setPrefWidth(40);
-        radius.setText(effect.getRadius()+"");
-        effect.radiusProperty().bind(radius.textProperty().map(t -> Double.parseDouble(t)));
-        this.getChildren().addAll(new Spacer(10),radius, new Label("Radius"));
+        layout(gaussianBlur);
       }
       default -> choiceBox.setValue(null);
     }
@@ -77,5 +62,21 @@ public class EffectParameters extends SVGEditorHeader {
 
   public void zoomOut(double factor){
     zoomedFields.forEach(e -> e.setText(e.getDouble() / factor +""));
+  }
+
+  private void layout(Effect effect){
+    switch (effect){
+      case null -> {}
+      case GaussianBlur gaussianBlur ->{
+        this.getChildren().subList(2,this.getChildren().size()).clear();
+        var radius = new NumberField(10000);
+        zoomedFields.add(radius);
+        radius.setPrefWidth(40);
+        radius.setText(gaussianBlur.getRadius()+"");
+        gaussianBlur.radiusProperty().bind(radius.textProperty().map(t -> Double.parseDouble(t)));
+        this.getChildren().addAll(new Spacer(10),radius, new Label("Radius"));
+      }
+      default -> {}
+    }
   }
 }
