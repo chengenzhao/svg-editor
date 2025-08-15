@@ -1,9 +1,8 @@
-package com.whitewoodcity.svgeditor;
+package com.whitewoodcity.svgeditor.top;
 
-import javafx.geometry.Insets;
+import com.whitewoodcity.svgeditor.SVGEditorHeader;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.HBox;
 
 public class PathElements extends SVGEditorHeader {
 

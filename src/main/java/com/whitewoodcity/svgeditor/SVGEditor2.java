@@ -37,11 +37,6 @@ public class SVGEditor2 extends Application {
     rightTree.createSVGPath();
     rightTree.treeView.getSelectionModel().selectFirst();
 
-    topBox.pathElements.getZ().selectedProperty().addListener((_, _, _) -> updateSVGPath());
-
-//    left.getZoomIn().setOnAction(_ -> updateSVGPathElements(svgPathElements, v -> v.doubleValue() * left.getFactor()));
-//    left.getZoomOut().setOnAction(_ -> updateSVGPathElements(svgPathElements, v -> v.doubleValue() / left.getFactor()));
-
     Scene scene = new Scene(borderPane);
     stage.setTitle("SVG Path Editor~!");
     stage.setScene(scene);
@@ -224,7 +219,7 @@ public class SVGEditor2 extends Application {
     return pane;
   }
 
-  private void updateSVGPath() {
+  public void updateSVGPath() {
     if(rightTree.currentNodeInPane() instanceof SVGPath svgPath){
       var svgPathElements = rightTree.getSVGPathElements(svgPath);
       StringBuilder content = new StringBuilder();

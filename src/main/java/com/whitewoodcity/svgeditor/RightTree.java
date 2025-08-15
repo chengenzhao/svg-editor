@@ -57,8 +57,9 @@ public class RightTree extends VBox {
         case SVGPath svgPath -> {
           var top = SVGEditor2.getAppCast().topBox;
           top.strokeParameters.getStroke().setValue((Color) (svgPath.getStroke()==null?Color.BLACK:svgPath.getStroke()));
-          top.strokeParameters.getStrokeWidth().setPrefWidth(svgPath.getStrokeWidth());
+          top.strokeParameters.getStrokeWidth().setText(svgPath.getStrokeWidth()+"");
           top.fillParameters.getFill().setValue((Color) svgPath.getFill());
+          top.effectParameters.setNode(svgPath);
           svgPath.strokeProperty().bind(top.strokeParameters.getStroke().valueProperty());
           svgPath.strokeWidthProperty().bind(top.strokeParameters.getStrokeWidth().textProperty().map(t -> Double.parseDouble(t.toString())));
           svgPath.fillProperty().bind(top.fillParameters.getFill().valueProperty());
