@@ -42,18 +42,19 @@ public class LeftColumn extends VBox {
           view.setFitHeight(view.getFitHeight() * factor.getDouble());
         }
         case SVGPath path -> {
-          var svgPathElements = SVGEditor2.getAppCast().rightTree.getSVGPathElements(path);
+          var app = SVGEditor2.getAppCast();
+          var svgPathElements = app.rightTree.getSVGPathElements(path);
           var moveTo = svgPathElements.getFirst();
-          SVGEditor2.getAppCast().updateSVGPathElements(svgPathElements, svgPathElements,
+          app.updateSVGPathElements(svgPathElements, svgPathElements,
             x -> (x.doubleValue() - moveTo.getX()) * factor.getDouble() + moveTo.getX(),
             y -> (y.doubleValue() - moveTo.getY()) * factor.getDouble() + moveTo.getY());
 
-          SVGEditor2.getAppCast().topBox.strokeParameters.zoomIn(factor.getDouble());
+          app.topBox.strokeParameters.zoomIn(factor.getDouble());
 
           switch (path.getEffect()){
             case null -> {}
             case GaussianBlur gaussianBlur-> {
-              SVGEditor2.getAppCast().topBox.effectParameters.zoomIn(factor.getDouble());
+              app.topBox.effectParameters.zoomIn(factor.getDouble());
             }
             default -> {}
           }
@@ -69,18 +70,19 @@ public class LeftColumn extends VBox {
           view.setFitHeight(view.getFitHeight() / factor.getDouble());
         }
         case SVGPath path -> {
-          var svgPathElements = SVGEditor2.getAppCast().rightTree.getSVGPathElements(path);
+          var app = SVGEditor2.getAppCast();
+          var svgPathElements = app.rightTree.getSVGPathElements(path);
           var moveTo = svgPathElements.getFirst();
-          SVGEditor2.getAppCast().updateSVGPathElements(svgPathElements, svgPathElements,
+          app.updateSVGPathElements(svgPathElements, svgPathElements,
             x -> (x.doubleValue() - moveTo.getX()) / factor.getDouble() + moveTo.getX(),
             y -> (y.doubleValue() - moveTo.getY()) / factor.getDouble() + moveTo.getY());
 
-          SVGEditor2.getAppCast().topBox.strokeParameters.zoomOut(factor.getDouble());
+          app.topBox.strokeParameters.zoomOut(factor.getDouble());
 
           switch (path.getEffect()){
             case null -> {}
             case GaussianBlur gaussianBlur-> {
-              SVGEditor2.getAppCast().topBox.effectParameters.zoomOut(factor.getDouble());
+              app.topBox.effectParameters.zoomOut(factor.getDouble());
             }
             default -> {}
           }
