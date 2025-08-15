@@ -209,7 +209,7 @@ public class RightTree extends VBox {
   }
 
   private void del(TreeItem<Node> item){
-    treeView.getRoot().getChildren().remove(item);
+    delRecursively(item, treeView.getRoot().getChildren());
     switch(itemGraphicBiMap.remove(item)){
       case null -> {}
       case ImageView view -> SVGEditor2.getAppCast().center.getChildren().remove(view);
@@ -220,6 +220,13 @@ public class RightTree extends VBox {
       default -> {}
     }
     rearrangePane();
+  }
+
+  private void delRecursively(TreeItem<Node> item, ObservableList<TreeItem<Node>> list){
+    if(list.contains(item)) list.remove(item);
+    for(var i:list){
+      delRecursively(item, i.getChildren());
+    }
   }
 
   public List<SVGPathElement> getSVGPathElements(SVGPath svgPath){
