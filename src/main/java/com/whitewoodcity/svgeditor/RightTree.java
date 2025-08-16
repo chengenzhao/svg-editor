@@ -67,7 +67,7 @@ public class RightTree extends VBox {
           top.fillParameters.getFill().setValue((Color) svgLayer.getFill());
           top.effectParameters.setNode(svgLayer);
           svgLayer.strokeProperty().bind(top.strokeParameters.getStroke().valueProperty());
-          svgLayer.strokeWidthProperty().bind(top.strokeParameters.getStrokeWidth().textProperty().map(t -> Double.parseDouble(t.toString())));
+          svgLayer.strokeWidthProperty().bind(top.strokeParameters.getStrokeWidth().valueProperty());
           svgLayer.fillProperty().bind(top.fillParameters.getFill().valueProperty());
 
           var list = svgLayer.getSvgPathElements();
