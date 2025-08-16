@@ -43,22 +43,12 @@ public class LeftColumn extends VBox {
           view.setFitHeight(view.getFitHeight() * factor.getDouble());
         }
         case SVGLayer path -> {
-          var app = SVGEditor2.getAppCast();
-          var svgPathElements = path.getSvgPathElements();
-          var moveTo = svgPathElements.getFirst();
-          app.updateSVGPathElements(svgPathElements, svgPathElements,
-            x -> (x.doubleValue() - moveTo.getX()) * factor.getDouble() + moveTo.getX(),
-            y -> (y.doubleValue() - moveTo.getY()) * factor.getDouble() + moveTo.getY());
-
-          path.setStrokeWidth(path.getStrokeWidth() * factor.getDouble());
-
-          switch (path.getEffect()){
-            case null -> {}
-            case GaussianBlur gaussianBlur-> {
-              gaussianBlur.setRadius(gaussianBlur.getRadius() * factor.getDouble());
-            }
-            default -> {}
-          }
+          var minX = path.getMinX();
+          var minY = path.getMinY();
+          path.trim(minX, minY);
+          path.zoom(factor.getDouble());
+          path.move(minX, minY);
+          SVGEditor2.getAppCast().updateSVGPath();
         }
         default -> {}
       }
@@ -71,22 +61,13 @@ public class LeftColumn extends VBox {
           view.setFitHeight(view.getFitHeight() / factor.getDouble());
         }
         case SVGLayer path -> {
-          var app = SVGEditor2.getAppCast();
-          var svgPathElements = path.getSvgPathElements();
-          var moveTo = svgPathElements.getFirst();
-          app.updateSVGPathElements(svgPathElements, svgPathElements,
-            x -> (x.doubleValue() - moveTo.getX()) / factor.getDouble() + moveTo.getX(),
-            y -> (y.doubleValue() - moveTo.getY()) / factor.getDouble() + moveTo.getY());
 
-          path.setStrokeWidth(path.getStrokeWidth() / factor.getDouble());
-
-          switch (path.getEffect()){
-            case null -> {}
-            case GaussianBlur gaussianBlur-> {
-              gaussianBlur.setRadius(gaussianBlur.getRadius() / factor.getDouble());
-            }
-            default -> {}
-          }
+          var minX = path.getMinX();
+          var minY = path.getMinY();
+          path.trim(minX, minY);
+          path.zoom(1.0/factor.getDouble());
+          path.move(minX, minY);
+          SVGEditor2.getAppCast().updateSVGPath();
         }
         default -> {}
       }
