@@ -15,7 +15,7 @@ public class NumberField extends TextField {
   }
 
   public NumberField(int minValue, int maxValue) {
-    assert(minValue <= maxValue);
+    assert (minValue <= maxValue);
     this.minValue = minValue;
     this.maxValue = maxValue;
 
@@ -27,12 +27,13 @@ public class NumberField extends TextField {
         value.set(0);
         positionCaret(1);
         return null;
-      }if (newText.trim().equals(".")) {
+      }
+      if (newText.trim().equals(".")) {
         setText("0.");
         positionCaret(2);
         value.set(0);
         return null;
-      }  else if (!validate(newText)) {
+      } else if (!validate(newText)) {
         setText(oldText);
         value.set(Double.parseDouble(oldText));
         return null;
@@ -50,8 +51,7 @@ public class NumberField extends TextField {
         value.set(Double.parseDouble(newText));
         return c;
       }
-    }
-    ));
+    }));
   }
 
   protected boolean validate(String s) {
@@ -63,7 +63,7 @@ public class NumberField extends TextField {
     }
   }
 
-  public double getDouble(){
+  public double getDouble() {
     return Double.parseDouble(getText());
   }
 
