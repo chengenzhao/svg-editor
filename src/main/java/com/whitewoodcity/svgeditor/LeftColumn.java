@@ -50,12 +50,12 @@ public class LeftColumn extends VBox {
             x -> (x.doubleValue() - moveTo.getX()) * factor.getDouble() + moveTo.getX(),
             y -> (y.doubleValue() - moveTo.getY()) * factor.getDouble() + moveTo.getY());
 
-          app.topBox.strokeParameters.zoomIn(factor.getDouble());
+          path.setStrokeWidth(path.getStrokeWidth() * factor.getDouble());
 
           switch (path.getEffect()){
             case null -> {}
             case GaussianBlur gaussianBlur-> {
-              app.topBox.effectParameters.zoomIn(factor.getDouble());
+              gaussianBlur.setRadius(gaussianBlur.getRadius() * factor.getDouble());
             }
             default -> {}
           }
@@ -78,12 +78,12 @@ public class LeftColumn extends VBox {
             x -> (x.doubleValue() - moveTo.getX()) / factor.getDouble() + moveTo.getX(),
             y -> (y.doubleValue() - moveTo.getY()) / factor.getDouble() + moveTo.getY());
 
-          app.topBox.strokeParameters.zoomOut(factor.getDouble());
+          path.setStrokeWidth(path.getStrokeWidth() / factor.getDouble());
 
           switch (path.getEffect()){
             case null -> {}
             case GaussianBlur gaussianBlur-> {
-              app.topBox.effectParameters.zoomOut(factor.getDouble());
+              gaussianBlur.setRadius(gaussianBlur.getRadius() / factor.getDouble());
             }
             default -> {}
           }

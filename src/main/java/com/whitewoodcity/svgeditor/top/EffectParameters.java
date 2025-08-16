@@ -56,13 +56,13 @@ public class EffectParameters extends SVGEditorHeader {
     }
   }
 
-  public void zoomIn(double factor){
-    zoomedFields.forEach(e -> e.setText(e.getDouble() * factor +""));
-  }
-
-  public void zoomOut(double factor){
-    zoomedFields.forEach(e -> e.setText(e.getDouble() / factor +""));
-  }
+//  public void zoomIn(double factor){
+//    zoomedFields.forEach(e -> e.setText(e.getDouble() * factor +""));
+//  }
+//
+//  public void zoomOut(double factor){
+//    zoomedFields.forEach(e -> e.setText(e.getDouble() / factor +""));
+//  }
 
   private void layout(Effect effect){
     switch (effect){
