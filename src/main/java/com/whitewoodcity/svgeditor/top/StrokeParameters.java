@@ -30,11 +30,4 @@ public class StrokeParameters extends SVGEditorHeader {
     return stroke;
   }
 
-//  public void zoomIn(double factor){
-//    strokeWidth.setText(strokeWidth.getDouble() * factor +"");
-//  }
-//
-//  public void zoomOut(double factor){
-//    strokeWidth.setText(strokeWidth.getDouble() / factor +"");
-//  }
 }

@@ -10,7 +10,21 @@ public class SVGEditor extends Application {
     var rect = new Rectangle(0,0,50,50);
     rect.setFill(Color.TRANSPARENT);
     rect.setStroke(Color.BLUE);
-    var group = new Group(rect);
+
+    var svgpath = new SVGPath();
+    svgpath.setContent("M 0,0 T 40,0 40,40 0,40 Z");
+
+    var group = new Group(svgpath);
+
+    var r = new Rotate(0,20,20);
+
+    group.getTransforms().add(r);
+
+    KeyValue keyValue = new KeyValue(r.angleProperty(), 360);
+    KeyFrame keyFrame = new KeyFrame(Duration.seconds(3), keyValue);
+    Timeline timeline = new Timeline(keyFrame);
+    timeline.setCycleCount(Timeline.INDEFINITE);
+    timeline.play();
 
     var cross = new Circle(10);
     cross.setStroke(Color.RED);
