@@ -5,7 +5,7 @@ import module com.google.common;
 import module java.base;
 
 import com.whitewoodcity.javafx.binding.XBindings;
-import com.whitewoodcity.svgpathcommand.SVGPathElement;
+import com.whitewoodcity.fxgl.vectorview.svgpathcommand.SVGPathElement;
 import java.io.File;
 import javafx.scene.control.Label;
 

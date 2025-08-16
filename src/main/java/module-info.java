@@ -17,5 +17,4 @@ module com.whitewoodcity.svgeditor {
   opens com.whitewoodcity.control.paintpicker.images to javafx.fxml;
   opens com.whitewoodcity.control.paintpicker.rotator to javafx.fxml;
   opens com.whitewoodcity.control.paintpicker.slider to javafx.fxml;
-  exports com.whitewoodcity.svgeditor.top;
 }

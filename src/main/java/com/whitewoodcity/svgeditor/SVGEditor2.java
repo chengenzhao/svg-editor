@@ -3,7 +3,7 @@ package com.whitewoodcity.svgeditor;
 import module javafx.controls;
 import module java.base;
 
-import com.whitewoodcity.svgpathcommand.*;
+import com.whitewoodcity.fxgl.vectorview.svgpathcommand.*;
 import javafx.scene.control.Label;
 
 public class SVGEditor2 extends Application {
