@@ -2,8 +2,10 @@ package com.whitewoodcity.svgeditor;
 
 import module javafx.controls;
 import module java.base;
+import module com.whitewoodcity.fxcity;
 
 import com.whitewoodcity.fxgl.vectorview.svgpathcommand.*;
+
 import javafx.scene.control.Label;
 
 public class SVGEditor2 extends Application {
@@ -121,8 +123,8 @@ public class SVGEditor2 extends Application {
     pane.setPrefWidth(Screen.getPrimary().getBounds().getWidth() * .8);
 
     pane.setOnMousePressed(e -> {
-      if (e.getButton() == MouseButton.PRIMARY && rightTree.currentNodeInPane() instanceof SVGPath svgPath) {
-        var svgPathElements = rightTree.getSVGPathElements(svgPath);
+      if (e.getButton() == MouseButton.PRIMARY && rightTree.currentNodeInPane() instanceof SVGLayer svgPath) {
+        var svgPathElements = svgPath.getSvgPathElements();
         var previousCommand = svgPathElements.size() > 0 ? svgPathElements.getLast() : null;
         SVGPathElement command = (svgPathElements.size() < 1 || topBox.pathElements.getM().isSelected()) ? new MoveTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
           topBox.pathElements.getL().isSelected() ? new LineTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
@@ -174,8 +176,8 @@ public class SVGEditor2 extends Application {
 
         updateSVGPath();
 
-      } else if(rightTree.currentNodeInPane() instanceof SVGPath svgPath){
-        var svgPathElements = rightTree.getSVGPathElements(svgPath);
+      } else if(rightTree.currentNodeInPane() instanceof SVGLayer svgPath){
+        var svgPathElements = svgPath.getSvgPathElements();
         var ox = e.getX();
         var oy = e.getY();
 
@@ -220,20 +222,8 @@ public class SVGEditor2 extends Application {
   }
 
   public void updateSVGPath() {
-    if(rightTree.currentNodeInPane() instanceof SVGPath svgPath){
-      var svgPathElements = rightTree.getSVGPathElements(svgPath);
-      StringBuilder content = new StringBuilder();
-      for (SVGPathElement element : svgPathElements) {
-        content.append(element.command()).append(" ").append(switch (element) {
-          case CurveTo curveTo ->
-            curveTo.getX1() + "," + curveTo.getY1() + " " + curveTo.getX2() + "," + curveTo.getY2() + " ";
-          case SmoothTo smoothTo -> smoothTo.getX2() + "," + smoothTo.getY2() + " ";
-          case QuadraticTo quadraticTo -> quadraticTo.getX1() + "," + quadraticTo.getY1() + " ";
-          default -> "";
-        }).append(element.getX()).append(",").append(element.getY()).append(" ");
-      }
-      if (topBox.pathElements.getZ().isSelected()) content.append("Z");
-      svgPath.setContent(content.toString());
+    if(rightTree.currentNodeInPane() instanceof SVGLayer svgLayer){
+      svgLayer.draw(topBox.pathElements.getZ().isSelected() ? "Z":"");
     }
   }
 

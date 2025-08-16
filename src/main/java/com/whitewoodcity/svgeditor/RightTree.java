@@ -3,6 +3,7 @@ package com.whitewoodcity.svgeditor;
 import module javafx.controls;
 import module com.google.common;
 import module java.base;
+import module com.whitewoodcity.fxcity;
 
 import com.whitewoodcity.javafx.binding.XBindings;
 import com.whitewoodcity.fxgl.vectorview.svgpathcommand.SVGPathElement;
@@ -15,7 +16,6 @@ public class RightTree extends VBox {
   public Button addBitmapButton = new Button("Bitmap");
   public TreeView<Node> treeView = new TreeView<>(new TreeItem<Node>());
   private BiMap<TreeItem, Node> itemGraphicBiMap = HashBiMap.create();
-  private Map<SVGPath, List<SVGPathElement>> svgPathListMap = new HashMap<>();
   private Map<SVGPathElement, List<Shape>> commandCircleMap = new HashMap<>();
 
   public RightTree() {
@@ -38,18 +38,18 @@ public class RightTree extends VBox {
           case ImageView view -> {
 
           }
-          case SVGPath svgPath -> {
-            svgPath.strokeProperty().unbind();
-            svgPath.strokeWidthProperty().unbind();
-            svgPath.fillProperty().unbind();
+          case SVGLayer svgLayer -> {
+            svgLayer.strokeProperty().unbind();
+            svgLayer.strokeWidthProperty().unbind();
+            svgLayer.fillProperty().unbind();
 
-            switch (svgPath.getEffect()){
+            switch (svgLayer.getEffect()){
               case null -> {}
               case GaussianBlur gaussianBlur -> gaussianBlur.radiusProperty().unbind();
               default -> {}
             }
 
-            var list = svgPathListMap.get(svgPath);
+            var list = svgLayer.getSvgPathElements();
             list.forEach(e -> commandCircleMap.get(e).forEach(s -> SVGEditor2.getAppCast().center.getChildren().remove(s)));
           }
           default -> IO.print("???");
@@ -60,17 +60,17 @@ public class RightTree extends VBox {
         case ImageView view-> {
 
         }
-        case SVGPath svgPath -> {
+        case SVGLayer svgLayer -> {
           var top = SVGEditor2.getAppCast().topBox;
-          top.strokeParameters.getStroke().setValue((Color) (svgPath.getStroke()==null?Color.BLACK:svgPath.getStroke()));
-          top.strokeParameters.getStrokeWidth().setText(svgPath.getStrokeWidth()+"");
-          top.fillParameters.getFill().setValue((Color) svgPath.getFill());
-          top.effectParameters.setNode(svgPath);
-          svgPath.strokeProperty().bind(top.strokeParameters.getStroke().valueProperty());
-          svgPath.strokeWidthProperty().bind(top.strokeParameters.getStrokeWidth().textProperty().map(t -> Double.parseDouble(t.toString())));
-          svgPath.fillProperty().bind(top.fillParameters.getFill().valueProperty());
+          top.strokeParameters.getStroke().setValue((Color) (svgLayer.getStroke()==null?Color.BLACK:svgLayer.getStroke()));
+          top.strokeParameters.getStrokeWidth().setText(svgLayer.getStrokeWidth()+"");
+          top.fillParameters.getFill().setValue((Color) svgLayer.getFill());
+          top.effectParameters.setNode(svgLayer);
+          svgLayer.strokeProperty().bind(top.strokeParameters.getStroke().valueProperty());
+          svgLayer.strokeWidthProperty().bind(top.strokeParameters.getStrokeWidth().textProperty().map(t -> Double.parseDouble(t.toString())));
+          svgLayer.fillProperty().bind(top.fillParameters.getFill().valueProperty());
 
-          var list = svgPathListMap.get(svgPath);
+          var list = svgLayer.getSvgPathElements();
           list.forEach(e -> commandCircleMap.get(e).forEach(s -> SVGEditor2.getAppCast().center.getChildren().add(s)));
         }
         default -> IO.print("???");
@@ -132,9 +132,9 @@ public class RightTree extends VBox {
   }
 
   public TreeItem<Node> createSVGPath(String name,TreeItem<Node> parent) {
-    SVGPath svgPath = new SVGPath();
+    SVGLayer svgLayer = new SVGLayer();
 
-    SVGEditor2.getAppCast().center.getChildren().add(svgPath);
+    SVGEditor2.getAppCast().center.getChildren().add(svgLayer);
 
     var hBox = new HBox(new Label(name));
     hBox.setSpacing(10);
@@ -143,16 +143,15 @@ public class RightTree extends VBox {
 
     var item = new TreeItem<Node>(hBox);
 
-    itemGraphicBiMap.put(item, svgPath);
-    svgPathListMap.put(svgPath, new ArrayList<SVGPathElement>());
+    itemGraphicBiMap.put(item, svgLayer);
 
     if(parent!=null) {
       parent.getChildren().add(0, item);
 
-      svgPath.setCache(true);
+      svgLayer.setCache(true);
 //      svgPath.setBlendMode(BlendMode.MULTIPLY);
 //        n.setCacheHint(CacheHint.QUALITY);
-      svgPath.setClip(clone((SVGPath) itemGraphicBiMap.get(parent)));
+      svgLayer.setClip(((SVGLayer)itemGraphicBiMap.get(parent)).daemon());
     }
     else
       treeView.getRoot().getChildren().add(0,item);
@@ -226,9 +225,9 @@ public class RightTree extends VBox {
     switch(itemGraphicBiMap.remove(item)){
       case null -> {}
       case ImageView view -> SVGEditor2.getAppCast().center.getChildren().remove(view);
-      case SVGPath path -> {
-        SVGEditor2.getAppCast().center.getChildren().remove(path);
-        svgPathListMap.get(path).forEach(e -> commandCircleMap.get(e).forEach(s -> SVGEditor2.getAppCast().center.getChildren().remove(s)));
+      case SVGLayer layer -> {
+        SVGEditor2.getAppCast().center.getChildren().remove(layer);
+        layer.getSvgPathElements().forEach(e -> commandCircleMap.get(e).forEach(s -> SVGEditor2.getAppCast().center.getChildren().remove(s)));
       }
       default -> {}
     }
@@ -242,22 +241,7 @@ public class RightTree extends VBox {
     }
   }
 
-  public List<SVGPathElement> getSVGPathElements(SVGPath svgPath){
-    return svgPathListMap.get(svgPath);
-  }
-
   public Map<SVGPathElement, List<Shape>> getCommandCircleMap() {
     return commandCircleMap;
-  }
-
-  public SVGPath clone(SVGPath path){
-    var svgPath = new SVGPath();
-    svgPath.contentProperty().bind(path.contentProperty());
-    svgPath.strokeProperty().bind(path.strokeProperty());
-    svgPath.strokeWidthProperty().bind(path.strokeWidthProperty());
-    svgPath.strokeLineJoinProperty().bind(path.strokeLineJoinProperty());
-    svgPath.strokeLineCapProperty().bind(path.strokeLineCapProperty());
-    svgPath.effectProperty().bind(path.effectProperty());
-    return svgPath;
   }
 }

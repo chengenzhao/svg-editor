@@ -1,6 +1,7 @@
 package com.whitewoodcity.svgeditor;
 
 import com.whitewoodcity.control.NumberField;
+import com.whitewoodcity.fxgl.vectorview.SVGLayer;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -41,9 +42,9 @@ public class LeftColumn extends VBox {
           view.setFitWidth(view.getFitWidth() * factor.getDouble());
           view.setFitHeight(view.getFitHeight() * factor.getDouble());
         }
-        case SVGPath path -> {
+        case SVGLayer path -> {
           var app = SVGEditor2.getAppCast();
-          var svgPathElements = app.rightTree.getSVGPathElements(path);
+          var svgPathElements = path.getSvgPathElements();
           var moveTo = svgPathElements.getFirst();
           app.updateSVGPathElements(svgPathElements, svgPathElements,
             x -> (x.doubleValue() - moveTo.getX()) * factor.getDouble() + moveTo.getX(),
@@ -69,9 +70,9 @@ public class LeftColumn extends VBox {
           view.setFitWidth(view.getFitWidth() / factor.getDouble());
           view.setFitHeight(view.getFitHeight() / factor.getDouble());
         }
-        case SVGPath path -> {
+        case SVGLayer path -> {
           var app = SVGEditor2.getAppCast();
-          var svgPathElements = app.rightTree.getSVGPathElements(path);
+          var svgPathElements = path.getSvgPathElements();
           var moveTo = svgPathElements.getFirst();
           app.updateSVGPathElements(svgPathElements, svgPathElements,
             x -> (x.doubleValue() - moveTo.getX()) / factor.getDouble() + moveTo.getX(),
