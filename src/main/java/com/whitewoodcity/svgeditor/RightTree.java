@@ -39,13 +39,14 @@ public class RightTree extends VBox {
 
           }
           case SVGLayer svgLayer -> {
+            var top = SVGEditor2.getAppCast().topBox;
             svgLayer.strokeProperty().unbind();
-            svgLayer.strokeWidthProperty().unbind();
+            svgLayer.strokeWidthProperty().unbindBidirectional(top.strokeParameters.getStrokeWidth().valueProperty());
             svgLayer.fillProperty().unbind();
 
             switch (svgLayer.getEffect()){
               case null -> {}
-              case GaussianBlur gaussianBlur -> gaussianBlur.radiusProperty().unbind();
+              case GaussianBlur gaussianBlur -> gaussianBlur.radiusProperty().unbindBidirectional(top.effectParameters.getZoomedFields().getFirst().valueProperty());
               default -> {}
             }
 
@@ -66,8 +67,9 @@ public class RightTree extends VBox {
           top.strokeParameters.getStrokeWidth().setText(svgLayer.getStrokeWidth()+"");
           top.fillParameters.getFill().setValue((Color) svgLayer.getFill());
           top.effectParameters.setNode(svgLayer);
+
           svgLayer.strokeProperty().bind(top.strokeParameters.getStroke().valueProperty());
-          svgLayer.strokeWidthProperty().bind(top.strokeParameters.getStrokeWidth().valueProperty());
+          svgLayer.strokeWidthProperty().bindBidirectional(top.strokeParameters.getStrokeWidth().valueProperty());
           svgLayer.fillProperty().bind(top.fillParameters.getFill().valueProperty());
 
           var list = svgLayer.getSvgPathElements();

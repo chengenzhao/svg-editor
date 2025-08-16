@@ -73,10 +73,14 @@ public class EffectParameters extends SVGEditorHeader {
         zoomedFields.add(radius);
         radius.setPrefWidth(40);
         radius.setText(gaussianBlur.getRadius()+"");
-        gaussianBlur.radiusProperty().bind(radius.valueProperty());
+        gaussianBlur.radiusProperty().bindBidirectional(radius.valueProperty());
         this.getChildren().addAll(new Spacer(10),radius, new Label("Radius"));
       }
       default -> {}
     }
+  }
+
+  public List<NumberField> getZoomedFields() {
+    return zoomedFields;
   }
 }
