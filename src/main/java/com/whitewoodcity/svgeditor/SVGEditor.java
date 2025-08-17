@@ -16,7 +16,7 @@ public class SVGEditor extends Application {
 
     var group = new Group(svgpath);
 
-    var r = new Rotate(0,20,20);
+    var r = new Rotate(0,100,20);
 
     group.getTransforms().add(r);
 

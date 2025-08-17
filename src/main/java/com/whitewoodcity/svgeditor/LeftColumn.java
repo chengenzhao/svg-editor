@@ -12,8 +12,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 
-import javax.swing.*;
-
 public class LeftColumn extends VBox {
 
   private Button zoomIn = new Button("+");
