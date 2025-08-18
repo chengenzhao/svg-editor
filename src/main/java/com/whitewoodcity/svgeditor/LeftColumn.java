@@ -41,11 +41,10 @@ public class LeftColumn extends VBox {
           view.setFitHeight(view.getFitHeight() * factor.getDouble());
         }
         case SVGLayer path -> {
-          var minX = path.getMinX();
-          var minY = path.getMinY();
-          path.trim(minX, minY);
+          var coordinate = path.getMinXY();
+          path.trim(coordinate);
           path.zoom(factor.getDouble());
-          path.move(minX, minY);
+          path.move(coordinate);
           SVGEditor2.getAppCast().updateSVGPath();
         }
         default -> {}
@@ -59,12 +58,10 @@ public class LeftColumn extends VBox {
           view.setFitHeight(view.getFitHeight() / factor.getDouble());
         }
         case SVGLayer path -> {
-
-          var minX = path.getMinX();
-          var minY = path.getMinY();
-          path.trim(minX, minY);
+          var coordinate = path.getMinXY();
+          path.trim(coordinate);
           path.zoom(1.0/factor.getDouble());
-          path.move(minX, minY);
+          path.move(coordinate);
           SVGEditor2.getAppCast().updateSVGPath();
         }
         default -> {}

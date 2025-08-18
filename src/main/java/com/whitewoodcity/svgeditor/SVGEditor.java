@@ -12,13 +12,14 @@ public class SVGEditor extends Application {
     rect.setStroke(Color.BLUE);
 
     var svgpath = new SVGPath();
-    svgpath.setContent("M 0,0 T 40,0 40,40 0,40 Z");
+    svgpath.setContent("M 100,0 T 140,0 140,40 100,40 Z");
 
-    var group = new Group(svgpath);
+//    var group = new Group(svgpath);
+//    group.setTranslateX(100);
 
-    var r = new Rotate(0,100,20);
+    var r = new Rotate(0,100,0);
 
-    group.getTransforms().add(r);
+    svgpath.getTransforms().add(r);
 
     KeyValue keyValue = new KeyValue(r.angleProperty(), 360);
     KeyFrame keyFrame = new KeyFrame(Duration.seconds(3), keyValue);
@@ -28,8 +29,8 @@ public class SVGEditor extends Application {
 
     var cross = new Circle(10);
     cross.setStroke(Color.RED);
-    cross.centerXProperty().bindBidirectional(group.layoutXProperty());
-    cross.centerYProperty().bindBidirectional(group.layoutYProperty());
+//    cross.centerXProperty().bindBidirectional(group.layoutXProperty());
+//    cross.centerYProperty().bindBidirectional(group.layoutYProperty());
 
     cross.setOnMousePressed(e -> {
       var ox = e.getX();
@@ -46,7 +47,7 @@ public class SVGEditor extends Application {
       });
     });
 
-    pane.getChildren().addAll(group,cross);
+    pane.getChildren().addAll(svgpath,cross);
 
     Scene scene = new Scene(pane);
     stage.setTitle("Hello!");
