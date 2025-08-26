@@ -6,7 +6,7 @@ import module java.base;
 import module com.whitewoodcity.fxcity;
 
 import com.whitewoodcity.javafx.binding.XBindings;
-import com.whitewoodcity.fxgl.vectorview.svgpathcommand.SVGPathElement;
+
 import java.io.File;
 import javafx.scene.control.Label;
 
@@ -14,16 +14,25 @@ public class RightTree extends VBox {
 
   public Button addVectorButton = new Button("Vector");
   public Button addBitmapButton = new Button("Bitmap");
+  public Button showJsonButton = new Button("show json");
   public TreeView<Node> treeView = new TreeView<>(new TreeItem<Node>());
   private BiMap<TreeItem, Node> itemGraphicBiMap = HashBiMap.create();
-  private Map<SVGPathElement, List<Shape>> commandCircleMap = new HashMap<>();
+//  private Map<SVGPathElement, List<Shape>> commandCircleMap = new HashMap<>();
 
   public RightTree() {
 
     addVectorButton.setOnAction(_ -> createSVGPath());
     addBitmapButton.setOnAction(_ -> createImageView());
+    showJsonButton.setOnAction(_ -> {
+      for(var c:SVGEditor2.getAppCast().center.getChildren()){
+        switch (c){
+          case SVGLayer layer -> IO.println(layer.toJson());
+          default -> {}
+        }
+      }
+    });
 
-    var buttonBox = new HBox(new Label("+"), addVectorButton, addBitmapButton);
+    var buttonBox = new HBox(new Label("+"), addVectorButton, addBitmapButton, showJsonButton);
     buttonBox.setAlignment(Pos.BASELINE_LEFT);
     buttonBox.setSpacing(10);
     buttonBox.setPadding(new Insets(10));
@@ -51,7 +60,8 @@ public class RightTree extends VBox {
             }
 
             var list = svgLayer.getSvgPathElements();
-            list.forEach(e -> commandCircleMap.get(e).forEach(s -> SVGEditor2.getAppCast().center.getChildren().remove(s)));
+            SVGEditor2.getAppCast().cleanShapes();
+//            list.forEach(e -> commandCircleMap.get(e).forEach(s -> SVGEditor2.getAppCast().center.getChildren().remove(s)));
           }
           default -> IO.print("???");
         }
@@ -73,7 +83,8 @@ public class RightTree extends VBox {
           svgLayer.fillProperty().bind(top.fillParameters.getFill().valueProperty());
 
           var list = svgLayer.getSvgPathElements();
-          list.forEach(e -> commandCircleMap.get(e).forEach(s -> SVGEditor2.getAppCast().center.getChildren().add(s)));
+          SVGEditor2.getAppCast().buildEditableShapes(list);
+//          list.forEach(e -> commandCircleMap.get(e).forEach(s -> SVGEditor2.getAppCast().center.getChildren().add(s)));
         }
         default -> IO.print("???");
       }
@@ -220,8 +231,11 @@ public class RightTree extends VBox {
   }
 
   private void del(TreeItem<Node> item){
+    SVGEditor2.getAppCast().cleanShapes();
     if(item.getChildren().size()>0){
-      item.getChildren().forEach(c -> del(c));
+      var l = new ArrayList<>(item.getChildren());
+      l.forEach(c -> del(c));
+      item.getChildren().clear();
     }
     delRecursively(item, treeView.getRoot().getChildren());
     switch(itemGraphicBiMap.remove(item)){
@@ -229,11 +243,12 @@ public class RightTree extends VBox {
       case ImageView view -> SVGEditor2.getAppCast().center.getChildren().remove(view);
       case SVGLayer layer -> {
         SVGEditor2.getAppCast().center.getChildren().remove(layer);
-        layer.getSvgPathElements().forEach(e -> commandCircleMap.get(e).forEach(s -> SVGEditor2.getAppCast().center.getChildren().remove(s)));
+//        layer.getSvgPathElements().forEach(e -> commandCircleMap.get(e).forEach(s -> SVGEditor2.getAppCast().center.getChildren().remove(s)));
       }
       default -> {}
     }
     rearrangePane();
+    treeView.getSelectionModel().select(null);
   }
 
   private void delRecursively(TreeItem<Node> item, ObservableList<TreeItem<Node>> list){
@@ -243,7 +258,7 @@ public class RightTree extends VBox {
     }
   }
 
-  public Map<SVGPathElement, List<Shape>> getCommandCircleMap() {
-    return commandCircleMap;
-  }
+//  public Map<SVGPathElement, List<Shape>> getCommandCircleMap() {
+//    return commandCircleMap;
+//  }
 }
