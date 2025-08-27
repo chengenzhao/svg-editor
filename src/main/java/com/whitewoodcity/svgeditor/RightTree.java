@@ -16,15 +16,19 @@ public class RightTree extends VBox {
 
   public Button addVectorButton = new Button("Vector");
   public Button addBitmapButton = new Button("Bitmap");
-  public Button showJsonButton = new Button("save json");
+  public Button save = new Button("save");
+  public Button load = new Button("load");
   public TreeView<Node> treeView = new TreeView<>(new TreeItem<Node>());
   private BiMap<TreeItem, Node> itemGraphicBiMap = HashBiMap.create();
 
   public RightTree() {
 
-    addVectorButton.setOnAction(_ -> createSVGPath());
+    addVectorButton.setOnAction(_ -> {
+      var item = createSVGPath();
+      treeView.getSelectionModel().select(item);
+    });
     addBitmapButton.setOnAction(_ -> createImageView());
-    showJsonButton.setOnAction(_ -> {
+    save.setOnAction(_ -> {
       var window = SVGEditor2.getAppCast().center.getScene().getWindow();
 
       var fileChooser = new FileChooser();
@@ -33,23 +37,36 @@ public class RightTree extends VBox {
       var file = fileChooser.showSaveDialog(window);
       if(file!=null){
         var svgl = (SVGLayer)SVGEditor2.getAppCast().center.getChildren().getFirst();
-        IO.println(svgl);
         try{
           Files.write(Paths.get(file.getPath()), svgl.toJson().getBytes());
         } catch (IOException e) {
           throw new RuntimeException(e);
         }
       }
+    });
+    load.setOnAction(_ -> {
+      var window = SVGEditor2.getAppCast().center.getScene().getWindow();
 
-//      for(var c:SVGEditor2.getAppCast().center.getChildren()){
-//        switch (c){
-//          case SVGLayer layer -> IO.println(layer.toJson());
-//          default -> {}
-//        }
-//      }
+      var fileChooser = new FileChooser();
+      fileChooser.setTitle("What file would you like to load?");
+      fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("svgl files","svgl"));
+      var file = fileChooser.showOpenDialog(window);
+      if(file!=null){
+        try{
+          var json = Files.readString(Paths.get(file.getPath()));
+          var item = createSVGPath();
+          var svgl = (SVGLayer)itemGraphicBiMap.get(item);
+          svgl.fromJson(json);
+          svgl.draw("");
+          treeView.getSelectionModel().select(item);
+
+        } catch (IOException e) {
+          throw new RuntimeException(e);
+        }
+      }
     });
 
-    var buttonBox = new HBox(new Label("+"), addVectorButton, addBitmapButton, showJsonButton);
+    var buttonBox = new HBox(new Label("+"), addVectorButton, addBitmapButton, save, load);
     buttonBox.setAlignment(Pos.BASELINE_LEFT);
     buttonBox.setSpacing(10);
     buttonBox.setPadding(new Insets(10));
@@ -207,7 +224,6 @@ public class RightTree extends VBox {
     down.setOnAction(_ -> moveDown(item));
 
     rearrangePane();
-    treeView.getSelectionModel().select(item);
 
     return item;
   }
