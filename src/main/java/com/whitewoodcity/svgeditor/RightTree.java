@@ -138,7 +138,7 @@ public class RightTree extends VBox {
     imageView.setFitWidth(image.getWidth());
     imageView.setFitHeight(image.getHeight());
 
-    SVGEditor2.getAppCast().center.getChildren().add(0, imageView);
+    SVGEditor2.getAppCast().center.getChildren().addFirst(imageView);
 
     var hBox = new HBox(new Label(file.getName()));
     hBox.setSpacing(10);
@@ -157,7 +157,7 @@ public class RightTree extends VBox {
     down.setMinWidth(30);
     var b = new HBox(up,down);
     b.setAlignment(Pos.BASELINE_LEFT);
-    hBox.getChildren().add(0, b);
+    hBox.getChildren().addFirst(b);
 
     var del = new Button("❌");
     hBox.getChildren().add(del);
@@ -191,7 +191,7 @@ public class RightTree extends VBox {
     itemGraphicBiMap.put(item, svgLayer);
 
     if(parent!=null) {
-      parent.getChildren().add(0, item);
+      parent.getChildren().addFirst(item);
 
       svgLayer.setCache(true);
 //      svgPath.setBlendMode(BlendMode.MULTIPLY);
@@ -199,7 +199,7 @@ public class RightTree extends VBox {
       svgLayer.setClip(((SVGLayer)itemGraphicBiMap.get(parent)).daemon());
     }
     else
-      treeView.getRoot().getChildren().add(0,item);
+      treeView.getRoot().getChildren().addFirst(item);
 
     var up = new Button("↑");
     var down = new Button("↓");
@@ -207,7 +207,7 @@ public class RightTree extends VBox {
     down.setMinWidth(30);
     var b = new HBox(up,down);
     b.setAlignment(Pos.BASELINE_LEFT);
-    hBox.getChildren().add(0, b);
+    hBox.getChildren().addFirst(b);
 
     var del = new Button("❌");
     hBox.getChildren().addAll(del);
@@ -216,7 +216,10 @@ public class RightTree extends VBox {
     if(parent==null) {
       var plus = new Button("+");
       hBox.getChildren().addAll(plus);
-      plus.setOnAction(_ -> createSVGPath("SubLayer" + item.getChildren().size(),item));
+      plus.setOnAction(_ -> {
+        var subItem = createSVGPath("SubLayer" + item.getChildren().size(),item);
+        treeView.getSelectionModel().select(subItem);
+      });
     }
 
     up.setOnAction(_ -> moveUp(item));
@@ -235,9 +238,9 @@ public class RightTree extends VBox {
     for(var item:list){
       var l = item.getChildren();
       for(var i:l){
-        nodes.add(0, itemGraphicBiMap.get(i));
+        nodes.addFirst(itemGraphicBiMap.get(i));
       }
-      nodes.add(0,itemGraphicBiMap.get(item));
+      nodes.addFirst(itemGraphicBiMap.get(item));
     }
   }
 
