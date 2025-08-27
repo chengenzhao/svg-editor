@@ -8,28 +8,45 @@ import module com.whitewoodcity.fxcity;
 import com.whitewoodcity.javafx.binding.XBindings;
 
 import java.io.File;
+import java.nio.file.Files;
+
 import javafx.scene.control.Label;
 
 public class RightTree extends VBox {
 
   public Button addVectorButton = new Button("Vector");
   public Button addBitmapButton = new Button("Bitmap");
-  public Button showJsonButton = new Button("show json");
+  public Button showJsonButton = new Button("save json");
   public TreeView<Node> treeView = new TreeView<>(new TreeItem<Node>());
   private BiMap<TreeItem, Node> itemGraphicBiMap = HashBiMap.create();
-//  private Map<SVGPathElement, List<Shape>> commandCircleMap = new HashMap<>();
 
   public RightTree() {
 
     addVectorButton.setOnAction(_ -> createSVGPath());
     addBitmapButton.setOnAction(_ -> createImageView());
     showJsonButton.setOnAction(_ -> {
-      for(var c:SVGEditor2.getAppCast().center.getChildren()){
-        switch (c){
-          case SVGLayer layer -> IO.println(layer.toJson());
-          default -> {}
+      var window = SVGEditor2.getAppCast().center.getScene().getWindow();
+
+      var fileChooser = new FileChooser();
+      fileChooser.setTitle("What file would you like to save?");
+      fileChooser.setInitialFileName("layer.svgl");
+      var file = fileChooser.showSaveDialog(window);
+      if(file!=null){
+        var svgl = (SVGLayer)SVGEditor2.getAppCast().center.getChildren().getFirst();
+        IO.println(svgl);
+        try{
+          Files.write(Paths.get(file.getPath()), svgl.toJson().getBytes());
+        } catch (IOException e) {
+          throw new RuntimeException(e);
         }
       }
+
+//      for(var c:SVGEditor2.getAppCast().center.getChildren()){
+//        switch (c){
+//          case SVGLayer layer -> IO.println(layer.toJson());
+//          default -> {}
+//        }
+//      }
     });
 
     var buttonBox = new HBox(new Label("+"), addVectorButton, addBitmapButton, showJsonButton);
@@ -61,7 +78,6 @@ public class RightTree extends VBox {
 
             var list = svgLayer.getSvgPathElements();
             SVGEditor2.getAppCast().cleanShapes();
-//            list.forEach(e -> commandCircleMap.get(e).forEach(s -> SVGEditor2.getAppCast().center.getChildren().remove(s)));
           }
           default -> IO.print("???");
         }
@@ -84,7 +100,6 @@ public class RightTree extends VBox {
 
           var list = svgLayer.getSvgPathElements();
           SVGEditor2.getAppCast().buildEditableShapes(list);
-//          list.forEach(e -> commandCircleMap.get(e).forEach(s -> SVGEditor2.getAppCast().center.getChildren().add(s)));
         }
         default -> IO.print("???");
       }
@@ -243,7 +258,6 @@ public class RightTree extends VBox {
       case ImageView view -> SVGEditor2.getAppCast().center.getChildren().remove(view);
       case SVGLayer layer -> {
         SVGEditor2.getAppCast().center.getChildren().remove(layer);
-//        layer.getSvgPathElements().forEach(e -> commandCircleMap.get(e).forEach(s -> SVGEditor2.getAppCast().center.getChildren().remove(s)));
       }
       default -> {}
     }
@@ -258,7 +272,4 @@ public class RightTree extends VBox {
     }
   }
 
-//  public Map<SVGPathElement, List<Shape>> getCommandCircleMap() {
-//    return commandCircleMap;
-//  }
 }
