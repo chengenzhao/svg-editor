@@ -57,9 +57,7 @@ public class RightTree extends VBox {
           var item = createSVGPath();
           var svgl = (SVGLayer)itemGraphicBiMap.get(item);
           svgl.fromJson(json);
-          svgl.draw("");
           treeView.getSelectionModel().select(item);
-
         } catch (IOException e) {
           throw new RuntimeException(e);
         }
