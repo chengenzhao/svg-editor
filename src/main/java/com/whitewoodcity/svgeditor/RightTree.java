@@ -35,8 +35,7 @@ public class RightTree extends VBox {
       fileChooser.setTitle("What file would you like to save?");
       fileChooser.setInitialFileName("layer.svgl");
       var file = fileChooser.showSaveDialog(window);
-      if(file!=null){
-        var svgl = (SVGLayer)SVGEditor2.getAppCast().center.getChildren().getFirst();
+      if(file!=null && currentNodeInPane() instanceof SVGLayer svgl){
         try{
           Files.write(Paths.get(file.getPath()), svgl.toJson().getBytes());
         } catch (IOException e) {
@@ -115,6 +114,9 @@ public class RightTree extends VBox {
 
           var list = svgLayer.getSvgPathElements();
           SVGEditor2.getAppCast().buildEditableShapes(list);
+
+          if(svgLayer.getContent().endsWith("Z"))
+            SVGEditor2.getAppCast().topBox.pathElements.getZ().setSelected(true);
         }
         default -> IO.print("???");
       }
