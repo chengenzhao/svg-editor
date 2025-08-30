@@ -6,16 +6,12 @@ import module java.base;
 import module javafx.controls;
 import javafx.scene.control.Label;
 
-import java.nio.file.Files;
-
 public class RightTree extends VBox {
 
   public Button addVectorButton = new Button("Vector");
   public Button addBitmapButton = new Button("Bitmap");
-  public Button save = new Button("save");
-  public Button load = new Button("load");
-  public TreeView<Node> treeView = new TreeView<>(new TreeItem<Node>());
-  private final BiMap<TreeItem, Node> itemGraphicBiMap = HashBiMap.create();
+  public TreeView<Node> treeView = new TreeView<>(new TreeItem<>());
+  private final BiMap<TreeItem<Node>, Node> itemGraphicBiMap = HashBiMap.create();
 
   public RightTree() {
 
@@ -24,42 +20,8 @@ public class RightTree extends VBox {
       treeView.getSelectionModel().select(item);
     });
     addBitmapButton.setOnAction(_ -> createImageView());
-    save.setOnAction(_ -> {
-      var window = SVGEditor2.getAppCast().center.getScene().getWindow();
 
-      var fileChooser = new FileChooser();
-      fileChooser.setTitle("What file would you like to save?");
-      fileChooser.setInitialFileName("layer.svgl");
-      var file = fileChooser.showSaveDialog(window);
-      if(file!=null && currentNodeInPane() instanceof SVGLayer svgl){
-        try{
-          Files.write(Paths.get(file.getPath()), svgl.toJson().getBytes());
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
-      }
-    });
-    load.setOnAction(_ -> {
-      var window = SVGEditor2.getAppCast().center.getScene().getWindow();
-
-      var fileChooser = new FileChooser();
-      fileChooser.setTitle("What file would you like to load?");
-      fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("svgl files","svgl"));
-      var file = fileChooser.showOpenDialog(window);
-      if(file!=null){
-        try{
-          var json = Files.readString(Paths.get(file.getPath()));
-          var item = createSVGPath();
-          var svgl = (SVGLayer)itemGraphicBiMap.get(item);
-          svgl.fromJson(json);
-          treeView.getSelectionModel().select(item);
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
-      }
-    });
-
-    var buttonBox = new HBox(new Label("+"), addVectorButton, addBitmapButton, save, load);
+    var buttonBox = new HBox(new Label("+"), addVectorButton, addBitmapButton);
     buttonBox.setAlignment(Pos.BASELINE_LEFT);
     buttonBox.setSpacing(10);
     buttonBox.setPadding(new Insets(10));
@@ -283,4 +245,7 @@ public class RightTree extends VBox {
     }
   }
 
+  public Node getNodeByItem(TreeItem<Node> item){
+    return this.itemGraphicBiMap.get(item);
+  }
 }

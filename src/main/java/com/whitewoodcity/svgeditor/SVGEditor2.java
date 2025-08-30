@@ -11,9 +11,14 @@ import javafx.scene.control.Label;
 public class SVGEditor2 extends Application {
 
   private static SVGEditor2 applicationInstance;
+  private static Stage stage;
 
   public static SVGEditor2 getAppCast() {
     return applicationInstance;
+  }
+
+  public static Stage getStage() {
+    return stage;
   }
 
   @Override
@@ -21,6 +26,7 @@ public class SVGEditor2 extends Application {
     applicationInstance = this;
   }
 
+  public MenuBar menuBar = new MenuBar();
   public TopBox topBox = new TopBox();
   public LeftColumn left = new LeftColumn();
   public Pane center = getPane();
@@ -29,6 +35,8 @@ public class SVGEditor2 extends Application {
 
   @Override
   public void start(Stage stage) {
+    SVGEditor2.stage = stage;
+
     var borderPane = new BorderPane();
 
     borderPane.setTop(topBox);
@@ -40,7 +48,7 @@ public class SVGEditor2 extends Application {
     rightTree.createSVGPath();
     rightTree.treeView.getSelectionModel().selectFirst();
 
-    Scene scene = new Scene(borderPane);
+    Scene scene = new Scene(new VBox(menuBar, borderPane));
     stage.setTitle("SVG Path Editor~!");
     stage.setScene(scene);
     stage.show();
