@@ -1,16 +1,12 @@
 package com.whitewoodcity.svgeditor;
 
-import module javafx.controls;
 import module com.google.common;
-import module java.base;
 import module com.whitewoodcity.fxcity;
-
-import com.whitewoodcity.javafx.binding.XBindings;
-
-import java.io.File;
-import java.nio.file.Files;
-
+import module java.base;
+import module javafx.controls;
 import javafx.scene.control.Label;
+
+import java.nio.file.Files;
 
 public class RightTree extends VBox {
 
@@ -19,7 +15,7 @@ public class RightTree extends VBox {
   public Button save = new Button("save");
   public Button load = new Button("load");
   public TreeView<Node> treeView = new TreeView<>(new TreeItem<Node>());
-  private BiMap<TreeItem, Node> itemGraphicBiMap = HashBiMap.create();
+  private final BiMap<TreeItem, Node> itemGraphicBiMap = HashBiMap.create();
 
   public RightTree() {
 
@@ -85,9 +81,8 @@ public class RightTree extends VBox {
             svgLayer.fillProperty().unbind();
 
             switch (svgLayer.getEffect()){
-              case null -> {}
               case GaussianBlur gaussianBlur -> gaussianBlur.radiusProperty().unbindBidirectional(top.effectParameters.getZoomedFields().getFirst().valueProperty());
-              default -> {}
+              case null, default -> {}
             }
 
             var list = svgLayer.getSvgPathElements();
@@ -266,26 +261,23 @@ public class RightTree extends VBox {
 
   private void del(TreeItem<Node> item){
     SVGEditor2.getAppCast().cleanShapes();
-    if(item.getChildren().size()>0){
+    if(!item.getChildren().isEmpty()){
       var l = new ArrayList<>(item.getChildren());
-      l.forEach(c -> del(c));
+      l.forEach(this::del);
       item.getChildren().clear();
     }
     delRecursively(item, treeView.getRoot().getChildren());
     switch(itemGraphicBiMap.remove(item)){
-      case null -> {}
       case ImageView view -> SVGEditor2.getAppCast().center.getChildren().remove(view);
-      case SVGLayer layer -> {
-        SVGEditor2.getAppCast().center.getChildren().remove(layer);
-      }
-      default -> {}
+      case SVGLayer layer -> SVGEditor2.getAppCast().center.getChildren().remove(layer);
+      case null, default -> {}
     }
     rearrangePane();
     treeView.getSelectionModel().select(null);
   }
 
   private void delRecursively(TreeItem<Node> item, ObservableList<TreeItem<Node>> list){
-    if(list.contains(item)) list.remove(item);
+    list.remove(item);
     for(var i:list){
       delRecursively(item, i.getChildren());
     }

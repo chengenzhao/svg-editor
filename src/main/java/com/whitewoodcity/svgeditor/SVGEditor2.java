@@ -25,7 +25,7 @@ public class SVGEditor2 extends Application {
   public LeftColumn left = new LeftColumn();
   public Pane center = getPane();
   public RightTree rightTree = new RightTree();
-  private Map<SVGPathElement, List<Shape>> commandCircleMap = new HashMap<>();
+  private final Map<SVGPathElement, List<Shape>> commandCircleMap = new HashMap<>();
 
   @Override
   public void start(Stage stage) {
@@ -98,11 +98,7 @@ public class SVGEditor2 extends Application {
   }
 
   private void addShapeToMap(SVGPathElement command, Shape shape) {
-    var list = commandCircleMap.get(command);
-    if (list == null) {
-      list = new ArrayList<>();
-      commandCircleMap.put(command, list);
-    }
+    var list = commandCircleMap.computeIfAbsent(command, k -> new ArrayList<>());
     list.add(shape);
   }
 
@@ -177,8 +173,8 @@ public class SVGEditor2 extends Application {
     pane.setOnMousePressed(e -> {
       if (e.getButton() == MouseButton.PRIMARY && rightTree.currentNodeInPane() instanceof SVGLayer svgPath) {
         var svgPathElements = svgPath.getSvgPathElements();
-        var previousCommand = svgPathElements.size() > 0 ? svgPathElements.getLast() : null;
-        SVGPathElement command = (svgPathElements.size() < 1 || topBox.pathElements.getM().isSelected()) ? new MoveTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
+        var previousCommand = !svgPathElements.isEmpty() ? svgPathElements.getLast() : null;
+        SVGPathElement command = (svgPathElements.isEmpty() || topBox.pathElements.getM().isSelected()) ? new MoveTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
           topBox.pathElements.getL().isSelected() ? new LineTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
             topBox.pathElements.getT().isSelected() ? new TransitTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
               topBox.pathElements.getC().isSelected() ? new CurveTo(new SimpleDoubleProperty(previousCommand.getX() + 50), new SimpleDoubleProperty(previousCommand.getY()), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY() - 50), new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
