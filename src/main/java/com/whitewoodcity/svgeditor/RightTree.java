@@ -130,7 +130,11 @@ public class RightTree extends VBox {
   }
 
   public TreeItem<Node> createSVGPath(){
-    return createSVGPath("Layer "+treeView.getRoot().getChildren().size(), null);
+    return createSVGPath(null);
+  }
+
+  public TreeItem<Node> createSVGPath(TreeItem<Node> parent){
+    return createSVGPath("Layer "+treeView.getRoot().getChildren().size(), parent);
   }
 
   public TreeItem<Node> createSVGPath(String name,TreeItem<Node> parent) {
@@ -247,5 +251,17 @@ public class RightTree extends VBox {
 
   public Node getNodeByItem(TreeItem<Node> item){
     return this.itemGraphicBiMap.get(item);
+  }
+}
+
+class TreeItemReference{
+  private TreeItem<Node> item;
+
+  public TreeItem<Node> get() {
+    return item;
+  }
+
+  public void set(TreeItem<Node> item) {
+    this.item = item;
   }
 }
