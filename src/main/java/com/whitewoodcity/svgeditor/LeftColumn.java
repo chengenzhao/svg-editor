@@ -1,16 +1,14 @@
 package com.whitewoodcity.svgeditor;
 
 import com.whitewoodcity.control.NumberField;
-import com.whitewoodcity.fxgl.vectorview.SVGLayer;
+import com.whitewoodcity.fxgl.vectorview.JVGLayer;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.SVGPath;
 
 public class LeftColumn extends VBox {
 
@@ -40,7 +38,7 @@ public class LeftColumn extends VBox {
           view.setFitWidth(view.getFitWidth() * factor.getDouble());
           view.setFitHeight(view.getFitHeight() * factor.getDouble());
         }
-        case SVGLayer path -> {
+        case JVGLayer path -> {
           var coordinate = path.getMinXY();
           path.trim(coordinate);
           path.zoom(factor.getDouble());
@@ -57,7 +55,7 @@ public class LeftColumn extends VBox {
           view.setFitWidth(view.getFitWidth() / factor.getDouble());
           view.setFitHeight(view.getFitHeight() / factor.getDouble());
         }
-        case SVGLayer path -> {
+        case JVGLayer path -> {
           var coordinate = path.getMinXY();
           path.trim(coordinate);
           path.zoom(1.0/factor.getDouble());

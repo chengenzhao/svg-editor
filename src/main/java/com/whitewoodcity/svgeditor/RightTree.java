@@ -36,18 +36,18 @@ public class RightTree extends VBox {
           case ImageView view -> {
 
           }
-          case SVGLayer svgLayer -> {
+          case JVGLayer JVGLayer -> {
             var top = SVGEditor2.getAppCast().topBox;
-            svgLayer.strokeProperty().unbind();
-            svgLayer.strokeWidthProperty().unbindBidirectional(top.strokeParameters.getStrokeWidth().valueProperty());
-            svgLayer.fillProperty().unbind();
+            JVGLayer.strokeProperty().unbind();
+            JVGLayer.strokeWidthProperty().unbindBidirectional(top.strokeParameters.getStrokeWidth().valueProperty());
+            JVGLayer.fillProperty().unbind();
 
-            switch (svgLayer.getEffect()){
+            switch (JVGLayer.getEffect()){
               case GaussianBlur gaussianBlur -> gaussianBlur.radiusProperty().unbindBidirectional(top.effectParameters.getZoomedFields().getFirst().valueProperty());
               case null, default -> {}
             }
 
-            var list = svgLayer.getSvgPathElements();
+            var list = JVGLayer.getSvgPathElements();
             SVGEditor2.getAppCast().cleanShapes();
           }
           default -> IO.print("???");
@@ -58,21 +58,21 @@ public class RightTree extends VBox {
         case ImageView view-> {
 
         }
-        case SVGLayer svgLayer -> {
+        case JVGLayer JVGLayer -> {
           var top = SVGEditor2.getAppCast().topBox;
-          top.strokeParameters.getStroke().setValue((Color) (svgLayer.getStroke()==null?Color.BLACK:svgLayer.getStroke()));
-          top.strokeParameters.getStrokeWidth().setText(svgLayer.getStrokeWidth()+"");
-          top.fillParameters.getFill().setValue((Color) svgLayer.getFill());
-          top.effectParameters.setNode(svgLayer);
+          top.strokeParameters.getStroke().setValue((Color) (JVGLayer.getStroke()==null?Color.BLACK:JVGLayer.getStroke()));
+          top.strokeParameters.getStrokeWidth().setText(JVGLayer.getStrokeWidth()+"");
+          top.fillParameters.getFill().setValue((Color) JVGLayer.getFill());
+          top.effectParameters.setNode(JVGLayer);
 
-          svgLayer.strokeProperty().bind(top.strokeParameters.getStroke().valueProperty());
-          svgLayer.strokeWidthProperty().bindBidirectional(top.strokeParameters.getStrokeWidth().valueProperty());
-          svgLayer.fillProperty().bind(top.fillParameters.getFill().valueProperty());
+          JVGLayer.strokeProperty().bind(top.strokeParameters.getStroke().valueProperty());
+          JVGLayer.strokeWidthProperty().bindBidirectional(top.strokeParameters.getStrokeWidth().valueProperty());
+          JVGLayer.fillProperty().bind(top.fillParameters.getFill().valueProperty());
 
-          var list = svgLayer.getSvgPathElements();
+          var list = JVGLayer.getSvgPathElements();
           SVGEditor2.getAppCast().buildEditableShapes(list);
 
-          if(svgLayer.getContent().endsWith("Z"))
+          if(JVGLayer.getContent().endsWith("Z"))
             SVGEditor2.getAppCast().topBox.pathElements.getZ().setSelected(true);
         }
         default -> IO.print("???");
@@ -138,9 +138,9 @@ public class RightTree extends VBox {
   }
 
   public TreeItem<Node> createSVGPath(String name,TreeItem<Node> parent) {
-    SVGLayer svgLayer = new SVGLayer();
+    JVGLayer JVGLayer = new JVGLayer();
 
-    SVGEditor2.getAppCast().center.getChildren().add(svgLayer);
+    SVGEditor2.getAppCast().center.getChildren().add(JVGLayer);
 
     var hBox = new HBox(new Label(name));
     hBox.setSpacing(10);
@@ -149,15 +149,15 @@ public class RightTree extends VBox {
 
     var item = new TreeItem<Node>(hBox);
 
-    itemGraphicBiMap.put(item, svgLayer);
+    itemGraphicBiMap.put(item, JVGLayer);
 
     if(parent!=null) {
       parent.getChildren().addFirst(item);
 
-      svgLayer.setCache(true);
+      JVGLayer.setCache(true);
 //      svgPath.setBlendMode(BlendMode.MULTIPLY);
 //        n.setCacheHint(CacheHint.QUALITY);
-      svgLayer.setClip(((SVGLayer)itemGraphicBiMap.get(parent)).daemon());
+      JVGLayer.setClip(((JVGLayer)itemGraphicBiMap.get(parent)).daemon());
     }
     else
       treeView.getRoot().getChildren().addFirst(item);
@@ -235,7 +235,7 @@ public class RightTree extends VBox {
     delRecursively(item, treeView.getRoot().getChildren());
     switch(itemGraphicBiMap.remove(item)){
       case ImageView view -> SVGEditor2.getAppCast().center.getChildren().remove(view);
-      case SVGLayer layer -> SVGEditor2.getAppCast().center.getChildren().remove(layer);
+      case JVGLayer layer -> SVGEditor2.getAppCast().center.getChildren().remove(layer);
       case null, default -> {}
     }
     rearrangePane();

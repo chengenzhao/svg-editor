@@ -6,8 +6,8 @@ import module javafx.controls;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.whitewoodcity.fxgl.vectorview.SVGLayer;
-import com.whitewoodcity.fxgl.vectorview.VectorGraphics;
+import com.whitewoodcity.fxgl.vectorview.JVGLayer;
+import com.whitewoodcity.fxgl.vectorview.JVG;
 
 public class MenuBar extends javafx.scene.control.MenuBar {
   private MenuItem load = new MenuItem("Load");
@@ -24,12 +24,12 @@ public class MenuBar extends javafx.scene.control.MenuBar {
 
       var fileChooser = new FileChooser();
       fileChooser.setTitle("What file would you like to save?");
-      fileChooser.setInitialFileName("layers.asvg");
+      fileChooser.setInitialFileName("layers.jvg");
       var file = fileChooser.showSaveDialog(window);
       if (file != null) {
         try {
           Files.write(Paths.get(file.getPath()),
-            VectorGraphics.toJson(SVGEditor2.getAppCast().center.getChildren()).toString().getBytes());
+            JVG.toJson(SVGEditor2.getAppCast().center.getChildren()).toString().getBytes());
         } catch (IOException e) {
           throw new RuntimeException(e);
         }
@@ -41,9 +41,9 @@ public class MenuBar extends javafx.scene.control.MenuBar {
 
       var fileChooser = new FileChooser();
       fileChooser.setTitle("What file would you like to save?");
-      fileChooser.setInitialFileName("layer.svgl");
+      fileChooser.setInitialFileName("layer.jvgl");
       var file = fileChooser.showSaveDialog(window);
-      if (file != null && SVGEditor2.getAppCast().rightTree.currentNodeInPane() instanceof SVGLayer svgl) {
+      if (file != null && SVGEditor2.getAppCast().rightTree.currentNodeInPane() instanceof JVGLayer svgl) {
         try {
           Files.write(Paths.get(file.getPath()), svgl.toJsonString().getBytes());
         } catch (IOException e) {
@@ -57,7 +57,7 @@ public class MenuBar extends javafx.scene.control.MenuBar {
 
       var fileChooser = new FileChooser();
       fileChooser.setTitle("What file would you like to load?");
-      fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("svg files", "*.svgl","*.asvg"));
+      fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("jvg files", "*.jvgl","*.jvg"));
       var file = fileChooser.showOpenDialog(window);
       if (file != null) {
         try {
@@ -66,9 +66,9 @@ public class MenuBar extends javafx.scene.control.MenuBar {
           var json = new ObjectMapper().readTree(Files.readString(Paths.get(file.getPath())));
           switch (json){
             case ArrayNode arrayNode-> {
-              VectorGraphics.fromJson(obj -> {
+              JVG.fromJson(obj -> {
                 TreeItem<Node> item;
-                if(obj.has(SVGLayer.JsonKeys.CLIP.key())){
+                if(obj.has(JVGLayer.JsonKeys.CLIP.key())){
                   var parent = ref.get();
                   item = app.rightTree.createSVGPath(parent);
                 }else{
@@ -76,13 +76,13 @@ public class MenuBar extends javafx.scene.control.MenuBar {
                   item.setExpanded(true);
                   ref.set(item);
                 }
-                return (SVGLayer) app.rightTree.getNodeByItem(item);
+                return (JVGLayer) app.rightTree.getNodeByItem(item);
               }, arrayNode);
 
             }
             case ObjectNode objectNode -> {
               var item = app.rightTree.createSVGPath();
-              var svgl = (SVGLayer) app.rightTree.getNodeByItem(item);
+              var svgl = (JVGLayer) app.rightTree.getNodeByItem(item);
               svgl.fromJson(objectNode);
               app.rightTree.treeView.getSelectionModel().select(item);
             }

@@ -179,8 +179,8 @@ public class SVGEditor2 extends Application {
     pane.setPrefWidth(Screen.getPrimary().getBounds().getWidth() * .8);
 
     pane.setOnMousePressed(e -> {
-      if (e.getButton() == MouseButton.PRIMARY && rightTree.currentNodeInPane() instanceof SVGLayer svgPath) {
-        var svgPathElements = svgPath.getSvgPathElements();
+      if (e.getButton() == MouseButton.PRIMARY && rightTree.currentNodeInPane() instanceof JVGLayer layer) {
+        var svgPathElements = layer.getSvgPathElements();
         var previousCommand = !svgPathElements.isEmpty() ? svgPathElements.getLast() : null;
         SVGPathElement command = (svgPathElements.isEmpty() || topBox.pathElements.getM().isSelected()) ? new MoveTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
           topBox.pathElements.getL().isSelected() ? new LineTo(new SimpleDoubleProperty(e.getX()), new SimpleDoubleProperty(e.getY())) :
@@ -194,8 +194,8 @@ public class SVGEditor2 extends Application {
 
         updateSVGPath();
 
-      } else if(rightTree.currentNodeInPane() instanceof SVGLayer svgPath){
-        var svgPathElements = svgPath.getSvgPathElements();
+      } else if(rightTree.currentNodeInPane() instanceof JVGLayer layer){
+        var svgPathElements = layer.getSvgPathElements();
         var ox = e.getX();
         var oy = e.getY();
 
@@ -240,8 +240,8 @@ public class SVGEditor2 extends Application {
   }
 
   public void updateSVGPath() {
-    if(rightTree.currentNodeInPane() instanceof SVGLayer svgLayer){
-      svgLayer.draw(topBox.pathElements.getZ().isSelected() ? "Z":"");
+    if(rightTree.currentNodeInPane() instanceof JVGLayer layer){
+      layer.update(topBox.pathElements.getZ().isSelected() ? "Z":"");
     }
   }
 
