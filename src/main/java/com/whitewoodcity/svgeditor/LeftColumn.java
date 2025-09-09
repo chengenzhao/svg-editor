@@ -40,9 +40,9 @@ public class LeftColumn extends VBox {
         }
         case JVGLayer path -> {
           var coordinate = path.getMinXY();
-          path.trim(coordinate);
-          path.zoom(factor.getDouble());
-          path.move(coordinate);
+          path.trim(coordinate)
+            .zoom(factor.getDouble())
+            .move(coordinate);
           SVGEditor2.getAppCast().updateSVGPath();
         }
         default -> {}
@@ -57,9 +57,9 @@ public class LeftColumn extends VBox {
         }
         case JVGLayer path -> {
           var coordinate = path.getMinXY();
-          path.trim(coordinate);
-          path.zoom(1.0/factor.getDouble());
-          path.move(coordinate);
+          path.trim(coordinate)
+            .zoom(1.0/factor.getDouble())
+            .move(coordinate);
           SVGEditor2.getAppCast().updateSVGPath();
         }
         default -> {}
