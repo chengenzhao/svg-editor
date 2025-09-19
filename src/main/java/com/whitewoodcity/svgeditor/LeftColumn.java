@@ -32,7 +32,7 @@ public class LeftColumn extends VBox {
     this.getChildren().addAll(hbox,hbox1);
 
     zoomIn.setOnAction(_ -> {
-      var node = SVGEditor2.getAppCast().rightTree.currentNodeInPane();
+      var node = SVGEditor.getAppCast().rightTree.currentNodeInPane();
       switch (node){
         case ImageView view -> {
           view.setFitWidth(view.getFitWidth() * factor.getDouble());
@@ -43,13 +43,13 @@ public class LeftColumn extends VBox {
           path.trim(coordinate)
             .zoom(factor.getDouble())
             .move(coordinate);
-          SVGEditor2.getAppCast().updateSVGPath();
+          SVGEditor.getAppCast().updateSVGPath();
         }
         default -> {}
       }
     });
     zoomOut.setOnAction(_ -> {
-      var node = SVGEditor2.getAppCast().rightTree.currentNodeInPane();
+      var node = SVGEditor.getAppCast().rightTree.currentNodeInPane();
       switch (node){
         case ImageView view -> {
           view.setFitWidth(view.getFitWidth() / factor.getDouble());
@@ -60,7 +60,7 @@ public class LeftColumn extends VBox {
           path.trim(coordinate)
             .zoom(1.0/factor.getDouble())
             .move(coordinate);
-          SVGEditor2.getAppCast().updateSVGPath();
+          SVGEditor.getAppCast().updateSVGPath();
         }
         default -> {}
       }

@@ -14,6 +14,6 @@ public class TopBox extends VBox {
   public TopBox() {
     this.getChildren().addAll(pathElements, strokeParameters, fillParameters, effectParameters,blendModeChoice);
 
-    pathElements.getZ().selectedProperty().addListener((_, _, _) -> SVGEditor2.getAppCast().updateSVGPath());
+    pathElements.getZ().selectedProperty().addListener((_, _, _) -> SVGEditor.getAppCast().updateSVGPath());
   }
 }

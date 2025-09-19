@@ -10,12 +10,12 @@ import com.whitewoodcity.fxgl.vectorview.JVGLayer;
 import com.whitewoodcity.fxgl.vectorview.JVG;
 
 public class MenuBar extends javafx.scene.control.MenuBar {
-  private MenuItem load = new MenuItem("Load");
-  private MenuItem saveAll = new MenuItem("Save all layers");
-  private MenuItem saveLayer = new MenuItem("Save current layer");
+  private final MenuItem load = new MenuItem("Load");
+  private final MenuItem saveAll = new MenuItem("Save all layers");
+  private final MenuItem saveLayer = new MenuItem("Save current layer");
 
   public MenuBar() {
-    var mainMenu = new Menu("Save&Load");
+    var mainMenu = new Menu("Files");
     mainMenu.getItems().addAll(saveLayer, saveAll, load);
     getMenus().add(mainMenu);
 
@@ -29,7 +29,7 @@ public class MenuBar extends javafx.scene.control.MenuBar {
       if (file != null) {
         try {
           Files.write(Paths.get(file.getPath()),
-            JVG.toJson(SVGEditor2.getAppCast().center.getChildren()).toString().getBytes());
+            JVG.toJson(SVGEditor.getAppCast().center.getChildren()).toString().getBytes());
         } catch (IOException e) {
           throw new RuntimeException(e);
         }
@@ -43,7 +43,7 @@ public class MenuBar extends javafx.scene.control.MenuBar {
       fileChooser.setTitle("What file would you like to save?");
       fileChooser.setInitialFileName("layer.jvgl");
       var file = fileChooser.showSaveDialog(window);
-      if (file != null && SVGEditor2.getAppCast().rightTree.currentNodeInPane() instanceof JVGLayer svgl) {
+      if (file != null && SVGEditor.getAppCast().rightTree.currentNodeInPane() instanceof JVGLayer svgl) {
         try {
           Files.write(Paths.get(file.getPath()), svgl.toJsonString().getBytes());
         } catch (IOException e) {
@@ -62,7 +62,7 @@ public class MenuBar extends javafx.scene.control.MenuBar {
       if (file != null) {
         try {
           var ref = new TreeItemReference();
-          var app = SVGEditor2.getAppCast();
+          var app = SVGEditor.getAppCast();
           var json = new ObjectMapper().readTree(Files.readString(Paths.get(file.getPath())));
           switch (json){
             case ArrayNode arrayNode-> {

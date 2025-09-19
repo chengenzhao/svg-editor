@@ -8,12 +8,12 @@ import com.whitewoodcity.fxgl.vectorview.svgpathcommand.*;
 
 import javafx.scene.control.Label;
 
-public class SVGEditor2 extends Application {
+public class SVGEditor extends Application {
 
-  private static SVGEditor2 applicationInstance;
+  private static SVGEditor applicationInstance;
   private static Stage stage;
 
-  public static SVGEditor2 getAppCast() {
+  public static SVGEditor getAppCast() {
     return applicationInstance;
   }
 
@@ -35,7 +35,7 @@ public class SVGEditor2 extends Application {
 
   @Override
   public void start(Stage stage) {
-    SVGEditor2.stage = stage;
+    SVGEditor.stage = stage;
 
     var borderPane = new BorderPane();
 
