@@ -4,24 +4,20 @@ import module java.base;
 import atlantafx.base.controls.Spacer;
 import com.whitewoodcity.control.NumberField;
 import com.whitewoodcity.svgeditor.SVGEditorHeader;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.effect.Effect;
 import javafx.scene.effect.GaussianBlur;
-import javafx.scene.shape.Rectangle;
 
 public class EffectParameters extends SVGEditorHeader {
-  private ChoiceBox<String> choiceBox = new ChoiceBox<>();
+  private final ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
   private Node node;
 
-  private List<NumberField> zoomedFields = new ArrayList<>();
+  private final List<NumberField> zoomedFields = new ArrayList<>();
 
   public EffectParameters() {
-
-    this.choiceBox = choiceBox;
 
     choiceBox.getItems().addAll(null, "GaussianBlur");
 

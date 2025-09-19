@@ -12,9 +12,9 @@ import javafx.scene.layout.VBox;
 
 public class LeftColumn extends VBox {
 
-  private Button zoomIn = new Button("+");
-  private Button zoomOut = new Button("-");
-  private NumberField factor = new NumberField(1, 2);
+  private final Button zoomIn = new Button("+");
+  private final Button zoomOut = new Button("-");
+  private final NumberField factor = new NumberField(1, 2);
 
   public LeftColumn() {
     var hbox = new HBox(zoomIn, zoomOut);

@@ -36,18 +36,19 @@ public class RightTree extends VBox {
           case ImageView view -> {
 
           }
-          case JVGLayer JVGLayer -> {
+          case JVGLayer layer -> {
             var top = SVGEditor2.getAppCast().topBox;
-            JVGLayer.strokeProperty().unbind();
-            JVGLayer.strokeWidthProperty().unbindBidirectional(top.strokeParameters.getStrokeWidth().valueProperty());
-            JVGLayer.fillProperty().unbind();
+            layer.strokeProperty().unbind();
+            top.strokeParameters.getStrokeWidth().valueProperty().unbindBidirectional(layer.strokeWidthProperty());
+            top.blendModeChoice.getChoiceBox().valueProperty().unbindBidirectional(layer.blendModeProperty());
+            layer.fillProperty().unbind();
 
-            switch (JVGLayer.getEffect()){
+            switch (layer.getEffect()){
               case GaussianBlur gaussianBlur -> gaussianBlur.radiusProperty().unbindBidirectional(top.effectParameters.getZoomedFields().getFirst().valueProperty());
               case null, default -> {}
             }
 
-            var list = JVGLayer.getSvgPathElements();
+            var list = layer.getSvgPathElements();
             SVGEditor2.getAppCast().cleanShapes();
           }
           default -> IO.print("???");
@@ -58,21 +59,23 @@ public class RightTree extends VBox {
         case ImageView view-> {
 
         }
-        case JVGLayer JVGLayer -> {
+        case JVGLayer layer -> {
           var top = SVGEditor2.getAppCast().topBox;
-          top.strokeParameters.getStroke().setValue((Color) (JVGLayer.getStroke()==null?Color.BLACK:JVGLayer.getStroke()));
-          top.strokeParameters.getStrokeWidth().setText(JVGLayer.getStrokeWidth()+"");
-          top.fillParameters.getFill().setValue((Color) JVGLayer.getFill());
-          top.effectParameters.setNode(JVGLayer);
+          top.strokeParameters.getStroke().setValue((Color) (layer.getStroke()==null?Color.BLACK:layer.getStroke()));
+          top.strokeParameters.getStrokeWidth().setText(layer.getStrokeWidth()+"");
+          top.fillParameters.getFill().setValue((Color) layer.getFill());
+          top.effectParameters.setNode(layer);
 
-          JVGLayer.strokeProperty().bind(top.strokeParameters.getStroke().valueProperty());
-          JVGLayer.strokeWidthProperty().bindBidirectional(top.strokeParameters.getStrokeWidth().valueProperty());
-          JVGLayer.fillProperty().bind(top.fillParameters.getFill().valueProperty());
+          layer.strokeProperty().bind(top.strokeParameters.getStroke().valueProperty());
+          layer.fillProperty().bind(top.fillParameters.getFill().valueProperty());
 
-          var list = JVGLayer.getSvgPathElements();
+          top.strokeParameters.getStrokeWidth().valueProperty().bindBidirectional(layer.strokeWidthProperty());
+          top.blendModeChoice.getChoiceBox().valueProperty().bindBidirectional(layer.blendModeProperty());
+
+          var list = layer.getSvgPathElements();
           SVGEditor2.getAppCast().buildEditableShapes(list);
 
-          if(JVGLayer.getContent().endsWith("Z"))
+          if(layer.getContent().endsWith("Z"))
             SVGEditor2.getAppCast().topBox.pathElements.getZ().setSelected(true);
         }
         default -> IO.print("???");
