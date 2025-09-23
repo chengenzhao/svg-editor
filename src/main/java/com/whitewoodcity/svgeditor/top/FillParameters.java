@@ -13,7 +13,7 @@ public class FillParameters extends SVGEditorHeader {
 
     fill.setValue(Color.TRANSPARENT);
 
-    this.getChildren().addAll(fill,new Label("Fill"));
+    this.getChildren().addAll(new Label("Fill"),fill);
   }
 
   public ColorPicker getFill() {

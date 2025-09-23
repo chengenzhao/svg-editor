@@ -13,7 +13,7 @@ public class BlendModeChoice extends SVGEditorHeader {
     choiceBox.getItems().add(null);
     choiceBox.getItems().addAll(BlendMode.values());
 
-    this.getChildren().addAll(choiceBox, new Label("Blend Mode"));
+    this.getChildren().addAll(new Label("Blend Mode"),choiceBox);
   }
 
   public ChoiceBox<BlendMode> getChoiceBox() {

@@ -21,7 +21,7 @@ public class EffectParameters extends SVGEditorHeader {
 
     choiceBox.getItems().addAll(null, "GaussianBlur");
 
-    this.getChildren().addAll(choiceBox, new Label("Effect"));
+    this.getChildren().addAll(new Label("Effect"),choiceBox);
 
     choiceBox.getSelectionModel().selectedItemProperty().addListener((_,_,newV)->{
       switch (newV){

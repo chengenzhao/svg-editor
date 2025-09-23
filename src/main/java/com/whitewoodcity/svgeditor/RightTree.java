@@ -34,7 +34,8 @@ public class RightTree extends VBox {
         switch (itemGraphicBiMap.get(oldV)) {
           case null -> {}
           case ImageView view -> {
-
+            var top = SVGEditor.getAppCast().topBox;
+            top.opacityParameter.getSlider().valueProperty().unbindBidirectional(view.opacityProperty());;
           }
           case JVGLayer layer -> {
             var top = SVGEditor.getAppCast().topBox;
@@ -48,6 +49,8 @@ public class RightTree extends VBox {
               case null, default -> {}
             }
 
+            top.opacityParameter.getSlider().valueProperty().unbindBidirectional(layer.opacityProperty());
+
             var list = layer.getSvgPathElements();
             SVGEditor.getAppCast().cleanShapes();
           }
@@ -57,7 +60,8 @@ public class RightTree extends VBox {
       switch (itemGraphicBiMap.get(newV)){
         case null -> {}
         case ImageView view-> {
-
+          var top = SVGEditor.getAppCast().topBox;
+          top.opacityParameter.getSlider().valueProperty().bindBidirectional(view.opacityProperty());;
         }
         case JVGLayer layer -> {
           var top = SVGEditor.getAppCast().topBox;
@@ -68,6 +72,8 @@ public class RightTree extends VBox {
 
           layer.strokeProperty().bind(top.strokeParameters.getStroke().valueProperty());
           layer.fillProperty().bind(top.fillParameters.getFill().valueProperty());
+
+          top.opacityParameter.getSlider().valueProperty().bindBidirectional(layer.opacityProperty());
 
           top.strokeParameters.getStrokeWidth().valueProperty().bindBidirectional(layer.strokeWidthProperty());
           top.blendModeChoice.getChoiceBox().valueProperty().bindBidirectional(layer.blendModeProperty());

@@ -6,7 +6,7 @@ import javafx.scene.layout.HBox;
 
 public abstract class SVGEditorHeader extends HBox {
   public SVGEditorHeader() {
-    this.setSpacing(3);
+    this.setSpacing(5);
     this.setPadding(new Insets(5,0,5,10));
     this.setAlignment(Pos.BASELINE_LEFT);
   }

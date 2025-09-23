@@ -1,9 +1,9 @@
 package com.whitewoodcity.svgeditor.top;
 
+import module javafx.controls;
 import atlantafx.base.controls.Spacer;
 import com.whitewoodcity.control.NumberField;
 import com.whitewoodcity.svgeditor.SVGEditorHeader;
-import module javafx.controls;
 
 public class StrokeParameters extends SVGEditorHeader {
   private NumberField strokeWidth = new NumberField(0, 100);
@@ -17,8 +17,8 @@ public class StrokeParameters extends SVGEditorHeader {
     stroke.setValue(Color.BLACK);
 
     this.getChildren().addAll(
-      stroke, new Label("Stroke"), new Spacer(10),
-      strokeWidth, new Label("Stroke Width"), new Spacer(10)
+      new Label("Stroke"), stroke,new Spacer(10),
+      new Label("Stroke Width"), strokeWidth,new Spacer(10)
     );
   }
 
