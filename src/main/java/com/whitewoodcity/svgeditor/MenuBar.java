@@ -38,11 +38,7 @@ public class MenuBar extends javafx.scene.control.MenuBar {
     });
 
     showImage.setOnAction(_->{
-      WritableImage im = null;
-      SnapshotParameters params = new SnapshotParameters();
-      params.setFill(Color.TRANSPARENT);
-      im = new JVG(JVG.toJson(SVGEditor.getAppCast().center.getChildren()).toString()).snapshot(params,im);
-      IO.println(im.getWidth());
+      var im = new JVG(JVG.toJson(SVGEditor.getAppCast().center.getChildren()).toString()).toImage();
 
       Stage dialogStage = new Stage();
       dialogStage.initModality(Modality.WINDOW_MODAL);
