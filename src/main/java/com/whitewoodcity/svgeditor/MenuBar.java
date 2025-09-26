@@ -6,17 +6,18 @@ import module javafx.controls;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.whitewoodcity.fxgl.vectorview.JVGLayer;
 import com.whitewoodcity.fxgl.vectorview.JVG;
+import com.whitewoodcity.fxgl.vectorview.JVGLayer;
 
 public class MenuBar extends javafx.scene.control.MenuBar {
   private final MenuItem load = new MenuItem("Load");
   private final MenuItem saveAll = new MenuItem("Save all layers");
   private final MenuItem saveLayer = new MenuItem("Save current layer");
+  private final MenuItem showImage = new MenuItem("Show snapshot image");
 
   public MenuBar() {
     var mainMenu = new Menu("Files");
-    mainMenu.getItems().addAll(saveLayer, saveAll, load);
+    mainMenu.getItems().addAll(saveLayer, saveAll, load, showImage);
     getMenus().add(mainMenu);
 
     saveAll.setOnAction(_ -> {
@@ -34,6 +35,24 @@ public class MenuBar extends javafx.scene.control.MenuBar {
           throw new RuntimeException(e);
         }
       }
+    });
+
+    showImage.setOnAction(_->{
+      WritableImage im = null;
+      SnapshotParameters params = new SnapshotParameters();
+      params.setFill(Color.TRANSPARENT);
+      im = new JVG(JVG.toJson(SVGEditor.getAppCast().center.getChildren()).toString()).snapshot(params,im);
+      IO.println(im.getWidth());
+
+      Stage dialogStage = new Stage();
+      dialogStage.initModality(Modality.WINDOW_MODAL);
+
+      VBox vbox = new VBox(new ImageView(im));
+      vbox.setAlignment(Pos.CENTER);
+      vbox.setPadding(new Insets(15));
+
+      dialogStage.setScene(new Scene(vbox));
+      dialogStage.show();
     });
 
     saveLayer.setOnAction(_ -> {
