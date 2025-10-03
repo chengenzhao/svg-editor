@@ -37,7 +37,7 @@ public class MenuBar extends javafx.scene.control.MenuBar {
       }
     });
 
-    showImage.setOnAction(_->{
+    showImage.setOnAction(_ -> {
       var im = new JVG(JVG.toJson(SVGEditor.getAppCast().center.getChildren()).toString()).toImage();
 
       Stage dialogStage = new Stage();
@@ -72,28 +72,27 @@ public class MenuBar extends javafx.scene.control.MenuBar {
 
       var fileChooser = new FileChooser();
       fileChooser.setTitle("What file would you like to load?");
-      fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("jvg files", "*.jvgl","*.jvg"));
+      fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("jvg files", "*.jvgl", "*.jvg"));
       var file = fileChooser.showOpenDialog(window);
       if (file != null) {
         try {
           var ref = new TreeItemReference();
           var app = SVGEditor.getAppCast();
           var json = new ObjectMapper().readTree(Files.readString(Paths.get(file.getPath())));
-          switch (json){
-            case ArrayNode arrayNode-> {
+          switch (json) {
+            case ArrayNode arrayNode -> {
               JVG.fromJson(obj -> {
                 TreeItem<Node> item;
-                if(obj.has(JVGLayer.JsonKeys.CLIP.key())){
+                if (obj.has(JVGLayer.JsonKeys.CLIP.key())) {
                   var parent = ref.get();
-                  item = app.rightTree.createSVGPath(parent);
-                }else{
+                  item = app.rightTree.createSVGPath("SubLayer" + parent.getChildren().size(), parent);
+                } else {
                   item = app.rightTree.createSVGPath();
                   item.setExpanded(true);
                   ref.set(item);
                 }
                 return (JVGLayer) app.rightTree.getNodeByItem(item);
               }, arrayNode);
-
             }
             case ObjectNode objectNode -> {
               var item = app.rightTree.createSVGPath();
@@ -101,7 +100,8 @@ public class MenuBar extends javafx.scene.control.MenuBar {
               svgl.fromJson(objectNode);
               app.rightTree.treeView.getSelectionModel().select(item);
             }
-            default -> {}
+            default -> {
+            }
           }
         } catch (IOException e) {
           throw new RuntimeException(e);
