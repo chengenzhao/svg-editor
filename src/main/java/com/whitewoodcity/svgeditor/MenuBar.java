@@ -1,6 +1,5 @@
 package com.whitewoodcity.svgeditor;
 
-
 import module java.base;
 import module javafx.controls;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,13 +9,14 @@ import com.whitewoodcity.fxgl.vectorview.JVG;
 import com.whitewoodcity.fxgl.vectorview.JVGLayer;
 
 public class MenuBar extends javafx.scene.control.MenuBar {
-  private final MenuItem load = new MenuItem("Load");
-  private final MenuItem saveAll = new MenuItem("Save all layers");
-  private final MenuItem saveLayer = new MenuItem("Save current layer");
-  private final MenuItem showImage = new MenuItem("Show snapshot image");
 
   public MenuBar() {
     var mainMenu = new Menu("Files");
+    MenuItem load = new MenuItem("Load");
+    MenuItem saveAll = new MenuItem("Save all layers");
+    MenuItem saveLayer = new MenuItem("Save current layer");
+    MenuItem showImage = new MenuItem("Show snapshot image");
+
     mainMenu.getItems().addAll(saveLayer, saveAll, load, showImage);
     getMenus().add(mainMenu);
 
@@ -80,20 +80,18 @@ public class MenuBar extends javafx.scene.control.MenuBar {
           var app = SVGEditor.getAppCast();
           var json = new ObjectMapper().readTree(Files.readString(Paths.get(file.getPath())));
           switch (json) {
-            case ArrayNode arrayNode -> {
-              JVG.fromJson(obj -> {
-                TreeItem<Node> item;
-                if (obj.has(JVGLayer.JsonKeys.CLIP.key())) {
-                  var parent = ref.get();
-                  item = app.rightTree.createSVGPath("SubLayer" + parent.getChildren().size(), parent);
-                } else {
-                  item = app.rightTree.createSVGPath();
-                  item.setExpanded(true);
-                  ref.set(item);
-                }
-                return (JVGLayer) app.rightTree.getNodeByItem(item);
-              }, arrayNode);
-            }
+            case ArrayNode arrayNode -> JVG.fromJson(obj -> {
+              TreeItem<Node> item;
+              if (obj.has(JVGLayer.JsonKeys.CLIP.key())) {
+                var parent = ref.get();
+                item = app.rightTree.createSVGPath("SubLayer" + parent.getChildren().size(), parent);
+              } else {
+                item = app.rightTree.createSVGPath();
+                item.setExpanded(true);
+                ref.set(item);
+              }
+              return (JVGLayer) app.rightTree.getNodeByItem(item);
+            }, arrayNode);
             case ObjectNode objectNode -> {
               var item = app.rightTree.createSVGPath();
               var svgl = (JVGLayer) app.rightTree.getNodeByItem(item);
