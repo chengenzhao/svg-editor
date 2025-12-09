@@ -258,4 +258,8 @@ public class SVGEditor extends Application {
     updateSVGPath();
   }
 
+  public static void main(String... args) {
+    System.setProperty("prism.lcdtext", "false");
+    SVGEditor.launch(SVGEditor.class, args);
+  }
 }
