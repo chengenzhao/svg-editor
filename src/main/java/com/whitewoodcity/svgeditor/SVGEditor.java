@@ -1,12 +1,15 @@
 package com.whitewoodcity.svgeditor;
 
-import module javafx.controls;
-import module java.base;
 import module com.whitewoodcity.fxcity;
-
-import com.whitewoodcity.fxgl.vectorview.svgpathcommand.*;
-
+import module java.base;
+import module javafx.controls;
+import com.whitewoodcity.fxgl.vectorview.svgpathcommand.LineTo;
+import com.whitewoodcity.fxgl.vectorview.svgpathcommand.MoveTo;
+import javafx.application.Application;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
+import javafx.stage.Screen;
 
 public class SVGEditor extends Application {
 
@@ -52,6 +55,8 @@ public class SVGEditor extends Application {
     stage.setTitle("SVG Path Editor~!");
     stage.setScene(scene);
     stage.show();
+
+
   }
 
   public void cleanShapes(){
@@ -258,7 +263,7 @@ public class SVGEditor extends Application {
     updateSVGPath();
   }
 
-  public static void main(String... args) {
+  public static void main(String... args) throws Exception {
     System.setProperty("prism.lcdtext", "false");
     SVGEditor.launch(SVGEditor.class, args);
   }
