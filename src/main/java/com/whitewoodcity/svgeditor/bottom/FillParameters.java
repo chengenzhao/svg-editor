@@ -82,7 +82,7 @@ public class FillParameters extends SVGEditorHeader {
         var minusStop = new Button("-");
 
         addStop.setOnAction(_ -> addStop());
-        minusStop.setOnAction(_->minusStop());
+        minusStop.setOnAction(_-> minusStop());
 
         content.getChildren().clear();
         content.getChildren().addAll(
@@ -140,34 +140,68 @@ public class FillParameters extends SVGEditorHeader {
 
   private void addStop(){
     if(SVGEditor.getAppCast().rightTree.currentNodeInPane() instanceof JVGLayer l){
-      if(l.getFill() instanceof LinearGradient lg){
-        var stops = new ArrayList<>(lg.getStops());
-        var offset = (stops.getLast().getOffset() + stops.get(stops.size()-2).getOffset())/2;
-        stops.add(new Stop(offset,Color.BLACK));
-        var g = new LinearGradient(lg.getStartX(), lg.getStartY(),
-          lg.getEndX(), lg.getEndY(),lg.isProportional(), lg.getCycleMethod(), stops);
-        l.fillProperty().unbind();
-        l.setFill(g);
-        updateNBind(l);
+
+      List<Stop> stops = switch (l.getFill()){
+        case LinearGradient gradient -> new ArrayList<>(gradient.getStops());
+        case RadialGradient gradient -> new ArrayList<>(gradient.getStops());
+        default -> new ArrayList<>();
+      };
+
+      if(stops.size()<2) return;
+
+      var offset = (stops.getLast().getOffset() + stops.get(stops.size()-2).getOffset())/2;
+      stops.add(new Stop(offset,Color.BLACK));
+
+      switch (l.getFill()){
+        case LinearGradient lg -> {
+          var g = new LinearGradient(lg.getStartX(), lg.getStartY(),
+            lg.getEndX(), lg.getEndY(),lg.isProportional(), lg.getCycleMethod(), stops);
+          l.fillProperty().unbind();
+          l.setFill(g);
+          updateNBind(l);
+        }
+        case RadialGradient rg ->{
+          var g = new RadialGradient(rg.getFocusAngle(), rg.getFocusDistance(), rg.getCenterX(), rg.getCenterY(),
+            rg.getRadius(), rg.isProportional(), rg.getCycleMethod(), stops);
+          l.fillProperty().unbind();
+          l.setFill(g);
+          updateNBind(l);
+        }
+        default -> {}
       }
     }
   }
 
   private void minusStop(){
     if(SVGEditor.getAppCast().rightTree.currentNodeInPane() instanceof JVGLayer l){
-      if(l.getFill() instanceof LinearGradient lg){
-        if(lg.getStops().size()<=2) return;
-        var stops = new ArrayList<Stop>();
-        for(var s:lg.getStops()){
-          stops.add(new Stop(s.getOffset(), s.getColor()));
+
+      List<Stop> stops = switch (l.getFill()){
+        case LinearGradient gradient -> new ArrayList<>(gradient.getStops());
+        case RadialGradient gradient -> new ArrayList<>(gradient.getStops());
+        default -> new ArrayList<>();
+      };
+
+      if(stops.size()<=2) return;
+      stops.remove(stops.size()-2);
+
+      switch (l.getFill()) {
+        case LinearGradient lg -> {
+          var g = new LinearGradient(lg.getStartX(), lg.getStartY(),
+            lg.getEndX(), lg.getEndY(),lg.isProportional(), lg.getCycleMethod(), stops);
+          l.fillProperty().unbind();
+          l.setFill(g);
+          updateNBind(l);
         }
-        stops.remove(stops.size()-2);
-        var g = new LinearGradient(lg.getStartX(), lg.getStartY(),
-          lg.getEndX(), lg.getEndY(),lg.isProportional(), lg.getCycleMethod(), stops);
-        l.fillProperty().unbind();
-        l.setFill(g);
-        updateNBind(l);
+        case RadialGradient rg -> {
+          var g = new RadialGradient(rg.getFocusAngle(), rg.getFocusDistance(), rg.getCenterX(), rg.getCenterY(),
+            rg.getRadius(), rg.isProportional(), rg.getCycleMethod(), stops);
+          l.fillProperty().unbind();
+          l.setFill(g);
+          updateNBind(l);
+        }
+        default -> {}
       }
+
     }
   }
 }
