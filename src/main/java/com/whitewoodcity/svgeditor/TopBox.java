@@ -10,8 +10,6 @@ import javafx.scene.layout.VBox;
 public class TopBox extends VBox {
 
   public PathElements pathElements = new PathElements();
-//  public StrokeParameters strokeParameters = new StrokeParameters();
-//  public FillParameters fillParameters = new FillParameters();
   public EffectParameters effectParameters = new EffectParameters();
   public BlendModeChoice blendModeChoice = new BlendModeChoice();
   public OpacityParameter opacityParameter = new OpacityParameter();

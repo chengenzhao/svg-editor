@@ -10,6 +10,8 @@ module com.whitewoodcity.svgeditor {
   requires com.fasterxml.jackson.databind;
 
   exports com.whitewoodcity.svgeditor;
+  exports com.whitewoodcity.svgeditor.top;
+  exports com.whitewoodcity.svgeditor.bottom;
   opens com.whitewoodcity.control.paintpicker to javafx.fxml;
   opens com.whitewoodcity.control.paintpicker.colorpicker to javafx.fxml;
   opens com.whitewoodcity.control.paintpicker.gradientpicker to javafx.fxml;
