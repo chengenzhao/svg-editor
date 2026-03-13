@@ -1,4 +1,4 @@
-package com.whitewoodcity.svgeditor.top;
+package com.whitewoodcity.svgeditor.bottom;
 
 import module javafx.controls;
 import atlantafx.base.controls.Spacer;

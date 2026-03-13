@@ -33,7 +33,7 @@ public class SVGEditor extends Application {
   public LeftColumn left = new LeftColumn();
   public Pane center = getPane();
   public RightTree rightTree = new RightTree();
-  public Pane bottom = new BottomPane();
+  public BottomPane bottom = new BottomPane();
   private final Map<SVGPathElement, List<Shape>> commandCircleMap = new HashMap<>();
 
   @Override

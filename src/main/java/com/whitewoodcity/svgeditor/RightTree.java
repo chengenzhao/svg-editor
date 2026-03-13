@@ -39,8 +39,9 @@ public class RightTree extends VBox {
           }
           case JVGLayer layer -> {
             var top = SVGEditor.getAppCast().topBox;
+            var bottom = SVGEditor.getAppCast().bottom;
             layer.strokeProperty().unbind();
-            top.strokeParameters.getStrokeWidth().valueProperty().unbindBidirectional(layer.strokeWidthProperty());
+            bottom.strokeParameters.getStrokeWidth().valueProperty().unbindBidirectional(layer.strokeWidthProperty());
             top.blendModeChoice.getChoiceBox().valueProperty().unbindBidirectional(layer.blendModeProperty());
             layer.fillProperty().unbind();
 
@@ -65,17 +66,18 @@ public class RightTree extends VBox {
         }
         case JVGLayer layer -> {
           var top = SVGEditor.getAppCast().topBox;
-          top.strokeParameters.getStroke().setValue((Color) (layer.getStroke()==null?Color.BLACK:layer.getStroke()));
-          top.strokeParameters.getStrokeWidth().setText(layer.getStrokeWidth()+"");
-          top.fillParameters.getFill().setValue((Color) layer.getFill());
+          var bottom = SVGEditor.getAppCast().bottom;
+          bottom.strokeParameters.getStroke().setValue((Color) (layer.getStroke()==null?Color.BLACK:layer.getStroke()));
+          bottom.strokeParameters.getStrokeWidth().setText(layer.getStrokeWidth()+"");
+          bottom.fillParameters.getFill().setValue((Color) layer.getFill());
           top.effectParameters.setNode(layer);
 
-          layer.strokeProperty().bind(top.strokeParameters.getStroke().valueProperty());
-          layer.fillProperty().bind(top.fillParameters.getFill().valueProperty());
+          layer.strokeProperty().bind(bottom.strokeParameters.getStroke().valueProperty());
+          layer.fillProperty().bind(bottom.fillParameters.getFill().valueProperty());
 
           top.opacityParameter.getSlider().valueProperty().bindBidirectional(layer.opacityProperty());
 
-          top.strokeParameters.getStrokeWidth().valueProperty().bindBidirectional(layer.strokeWidthProperty());
+          bottom.strokeParameters.getStrokeWidth().valueProperty().bindBidirectional(layer.strokeWidthProperty());
           top.blendModeChoice.getChoiceBox().valueProperty().bindBidirectional(layer.blendModeProperty());
 
           var list = layer.getSvgPathElements();

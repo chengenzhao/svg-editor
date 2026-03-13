@@ -1,4 +1,4 @@
-package com.whitewoodcity.svgeditor.top;
+package com.whitewoodcity.svgeditor.bottom;
 
 import com.whitewoodcity.svgeditor.SVGEditorHeader;
 import javafx.scene.control.ColorPicker;
