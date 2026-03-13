@@ -56,7 +56,7 @@ public class SVGEditor extends Application {
     stage.setScene(scene);
     stage.show();
 
-
+    bottom.prefWidthProperty().bind(scene.widthProperty());
   }
 
   public void cleanShapes(){

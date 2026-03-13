@@ -69,11 +69,13 @@ public class RightTree extends VBox {
           var bottom = SVGEditor.getAppCast().bottom;
           bottom.strokeParameters.getStroke().setValue((Color) (layer.getStroke()==null?Color.BLACK:layer.getStroke()));
           bottom.strokeParameters.getStrokeWidth().setText(layer.getStrokeWidth()+"");
-          bottom.fillParameters.getFill().setValue((Color) layer.getFill());
           top.effectParameters.setNode(layer);
 
           layer.strokeProperty().bind(bottom.strokeParameters.getStroke().valueProperty());
-          layer.fillProperty().bind(bottom.fillParameters.getFill().valueProperty());
+          bottom.fillParameters.updateNBind(layer);
+//          bottom.fillParameters.update(layer.getFill());
+//          bottom.fillParameters.bind(layer.fillProperty());
+//          layer.fillProperty().bind(bottom.fillParameters.getFill().valueProperty());
 
           top.opacityParameter.getSlider().valueProperty().bindBidirectional(layer.opacityProperty());
 

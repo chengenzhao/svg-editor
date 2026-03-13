@@ -6,8 +6,8 @@ import com.whitewoodcity.control.NumberField;
 import com.whitewoodcity.svgeditor.SVGEditorHeader;
 
 public class StrokeParameters extends SVGEditorHeader {
-  private NumberField strokeWidth = new NumberField(0, 100);
-  private ColorPicker stroke = new ColorPicker();
+  private final NumberField strokeWidth = new NumberField(0, 100);
+  private final ColorPicker stroke = new ColorPicker();
 
   public StrokeParameters() {
     super();

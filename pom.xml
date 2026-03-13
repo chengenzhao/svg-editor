@@ -12,7 +12,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>6.0.0</junit.version>
-        <fxcity.version>1.1.0</fxcity.version>
+        <fxcity.version>1.1.2</fxcity.version>
         <guava.version>33.5.0-jre</guava.version>
     </properties>
 
