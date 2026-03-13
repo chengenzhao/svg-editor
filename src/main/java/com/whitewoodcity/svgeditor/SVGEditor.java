@@ -6,7 +6,6 @@ import module javafx.controls;
 import com.whitewoodcity.fxgl.vectorview.svgpathcommand.LineTo;
 import com.whitewoodcity.fxgl.vectorview.svgpathcommand.MoveTo;
 import javafx.application.Application;
-import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import javafx.stage.Screen;
@@ -34,6 +33,7 @@ public class SVGEditor extends Application {
   public LeftColumn left = new LeftColumn();
   public Pane center = getPane();
   public RightTree rightTree = new RightTree();
+  public Pane bottom = new BottomPane();
   private final Map<SVGPathElement, List<Shape>> commandCircleMap = new HashMap<>();
 
   @Override
@@ -46,7 +46,7 @@ public class SVGEditor extends Application {
     borderPane.setCenter(center);
     borderPane.setLeft(left);
     borderPane.setRight(rightTree);
-    borderPane.setBottom(new Pane(new Label("here is bottom")));
+    borderPane.setBottom(bottom);
 
     rightTree.createSVGPath();
     rightTree.treeView.getSelectionModel().selectFirst();
