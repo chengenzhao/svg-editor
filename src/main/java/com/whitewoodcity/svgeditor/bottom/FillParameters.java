@@ -30,7 +30,7 @@ public class FillParameters extends SVGEditorHeader {
         var fill = switch (newV) {
           case "Color" -> Color.BLACK;
           case "LinearGradient" ->
-            new LinearGradient(layer.getMinX(), layer.getMinY(), layer.getMaxXY().getX(), layer.getMinY(), false, CycleMethod.NO_CYCLE, new Stop(0, Color.WHITE), new Stop(1, Color.BLACK));
+            new LinearGradient(layer.getMinX(), layer.getMinY(), layer.getMaxXY().getX(), layer.getMaxXY().getY(), false, CycleMethod.NO_CYCLE, new Stop(0, Color.WHITE), new Stop(1, Color.BLACK));
           case "RadialGradient" ->
             new RadialGradient(0, 0, (layer.getMinX()+layer.getMaxXY().getX())/2, (layer.getMinY()+layer.getMaxXY().getY())/2, (layer.getMaxXY().getX() - layer.getMinX())/2, false, CycleMethod.NO_CYCLE, new Stop(0, Color.WHITE), new Stop(1, Color.BLACK));
           default -> Color.RED;
