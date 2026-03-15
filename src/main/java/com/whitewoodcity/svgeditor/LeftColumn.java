@@ -4,6 +4,7 @@ import com.whitewoodcity.control.NumberField;
 import com.whitewoodcity.fxgl.vectorview.JVGLayer;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -31,40 +32,34 @@ public class LeftColumn extends VBox {
 
     this.getChildren().addAll(hbox,hbox1);
 
-    zoomIn.setOnAction(_ -> {
-      var node = SVGEditor.getAppCast().rightTree.currentNodeInPane();
-      switch (node){
-        case ImageView view -> {
-          view.setFitWidth(view.getFitWidth() * factor.getDouble());
-          view.setFitHeight(view.getFitHeight() * factor.getDouble());
-        }
-        case JVGLayer path -> {
-          var coordinate = path.getMinXY();
-          path.trim(coordinate)
-            .zoom(factor.getDouble())
-            .move(coordinate);
-          SVGEditor.getAppCast().updateSVGPath();
-        }
-        default -> {}
+    zoomIn.setOnAction(_ -> zoomCurrentNode(factor.getDouble()));
+    zoomOut.setOnAction(_ -> zoomCurrentNode(1.0/factor.getDouble()));
+  }
+
+  public void zoomCurrentNode(double factor){
+    var node = SVGEditor.getAppCast().rightTree.currentNodeInPane();
+    zoom(node, factor);
+  }
+
+  public void zoom(Node node, double factor){
+    switch (node){
+      case ImageView view -> {
+        view.setFitWidth(view.getFitWidth() * factor);
+        view.setFitHeight(view.getFitHeight() * factor);
       }
-    });
-    zoomOut.setOnAction(_ -> {
-      var node = SVGEditor.getAppCast().rightTree.currentNodeInPane();
-      switch (node){
-        case ImageView view -> {
-          view.setFitWidth(view.getFitWidth() / factor.getDouble());
-          view.setFitHeight(view.getFitHeight() / factor.getDouble());
-        }
-        case JVGLayer path -> {
-          var coordinate = path.getMinXY();
-          path.trim(coordinate)
-            .zoom(1.0/factor.getDouble())
-            .move(coordinate);
-          SVGEditor.getAppCast().updateSVGPath();
-        }
-        default -> {}
-      }
-    });
+      case JVGLayer layer -> zoom(layer, factor);
+      default -> {}
+    }
+  }
+
+  public void zoom(JVGLayer layer, double factor){
+    layer.fillProperty().unbind();
+    var coordinate = layer.getMinXY();
+    layer.trim(coordinate)
+      .zoom(factor)
+      .move(coordinate);
+    SVGEditor.getAppCast().updateSVGPath();
+    SVGEditor.getAppCast().bottom.fillParameters.updateNBind(layer);
   }
 
   public Button getZoomIn() {
