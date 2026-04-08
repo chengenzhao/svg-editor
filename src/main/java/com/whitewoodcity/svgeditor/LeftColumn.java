@@ -34,7 +34,7 @@ public class LeftColumn extends VBox {
     hbox1.spacingProperty().bind(hbox.spacingProperty());
     hbox1.alignmentProperty().bind(hbox.alignmentProperty());
 
-    var hbox2 = new HBox(new Label("Global change:"), globalZoom);
+    var hbox2 = new HBox(new Label("Apply to allJVGlayers"), globalZoom);
     hbox2.paddingProperty().bind(hbox.paddingProperty());
     hbox2.spacingProperty().bind(hbox.spacingProperty());
     hbox2.alignmentProperty().bind(hbox.alignmentProperty());
