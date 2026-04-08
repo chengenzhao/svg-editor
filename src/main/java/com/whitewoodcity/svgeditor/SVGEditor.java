@@ -244,9 +244,13 @@ public class SVGEditor extends Application {
     return pane;
   }
 
+  public void updateSVGPath(JVGLayer layer){
+    layer.update(topBox.pathElements.getZ().isSelected() ? "Z":"");
+  }
+
   public void updateSVGPath() {
     if(rightTree.currentNodeInPane() instanceof JVGLayer layer){
-      layer.update(topBox.pathElements.getZ().isSelected() ? "Z":"");
+      updateSVGPath(layer);
     }
   }
 

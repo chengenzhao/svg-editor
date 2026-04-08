@@ -1,11 +1,14 @@
 package com.whitewoodcity.svgeditor;
 
 import com.whitewoodcity.control.NumberField;
+import com.whitewoodcity.fxgl.vectorview.JVG;
 import com.whitewoodcity.fxgl.vectorview.JVGLayer;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -16,6 +19,7 @@ public class LeftColumn extends VBox {
   private final Button zoomIn = new Button("+");
   private final Button zoomOut = new Button("-");
   private final NumberField factor = new NumberField(1, 2);
+  private final CheckBox globalZoom = new CheckBox();
 
   public LeftColumn() {
     var hbox = new HBox(zoomIn, zoomOut);
@@ -30,15 +34,49 @@ public class LeftColumn extends VBox {
     hbox1.spacingProperty().bind(hbox.spacingProperty());
     hbox1.alignmentProperty().bind(hbox.alignmentProperty());
 
-    this.getChildren().addAll(hbox,hbox1);
+    var hbox2 = new HBox(new Label("Global change:"), globalZoom);
+    hbox2.paddingProperty().bind(hbox.paddingProperty());
+    hbox2.spacingProperty().bind(hbox.spacingProperty());
+    hbox2.alignmentProperty().bind(hbox.alignmentProperty());
+    globalZoom.setSelected(false);
 
-    zoomIn.setOnAction(_ -> zoomCurrentNode(factor.getDouble()));
-    zoomOut.setOnAction(_ -> zoomCurrentNode(1.0/factor.getDouble()));
+    this.getChildren().addAll(hbox,hbox1,hbox2);
+
+    zoomIn.setOnAction(_ -> {
+      var f = factor.getDouble();
+      if (globalZoom.isSelected()) {
+        zoom(f);
+      } else {
+        zoomCurrentNode(f);
+      }
+    });
+    zoomOut.setOnAction(_ -> {
+      var f = 1.0/factor.getDouble();
+      if (globalZoom.isSelected()) {
+        zoom(f);
+      } else {
+        zoomCurrentNode(f);
+      }
+    });
+  }
+
+  public void zoom(double factor){
+    var jvg = new JVG(JVG.toJson(SVGEditor.getAppCast().center.getChildren()).toString());
+    var xy = jvg.getXY();
+    for(var node:SVGEditor.getAppCast().center.getChildren()){
+      if(node instanceof JVGLayer layer){
+        zoom(xy, layer, factor);
+      }
+    }
+    if(SVGEditor.getAppCast().rightTree.currentNodeInPane() instanceof JVGLayer layer)
+      SVGEditor.getAppCast().bottom.fillParameters.updateNBind(layer);
   }
 
   public void zoomCurrentNode(double factor){
     var node = SVGEditor.getAppCast().rightTree.currentNodeInPane();
     zoom(node, factor);
+    if(node instanceof JVGLayer layer)
+      SVGEditor.getAppCast().bottom.fillParameters.updateNBind(layer);
   }
 
   public void zoom(Node node, double factor){
@@ -52,14 +90,17 @@ public class LeftColumn extends VBox {
     }
   }
 
-  public void zoom(JVGLayer layer, double factor){
+  public void zoom(Point2D anchorPoint, JVGLayer layer, double factor){
     layer.fillProperty().unbind();
-    var coordinate = layer.getMinXY();
-    layer.trim(coordinate)
+    layer.trim(anchorPoint)
       .zoom(factor)
-      .move(coordinate);
-    SVGEditor.getAppCast().updateSVGPath();
-    SVGEditor.getAppCast().bottom.fillParameters.updateNBind(layer);
+      .move(anchorPoint);
+    SVGEditor.getAppCast().updateSVGPath(layer);
+  }
+
+  public void zoom(JVGLayer layer, double factor){
+    var coordinate = layer.getMinXY();
+    zoom(coordinate, layer, factor);
   }
 
   public Button getZoomIn() {
