@@ -5,8 +5,10 @@ import module javafx.controls;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.whitewoodcity.control.NumberField;
 import com.whitewoodcity.fxgl.vectorview.JVG;
 import com.whitewoodcity.fxgl.vectorview.JVGLayer;
+import javafx.scene.control.Label;
 
 public class MenuBar extends javafx.scene.control.MenuBar {
 
@@ -17,8 +19,12 @@ public class MenuBar extends javafx.scene.control.MenuBar {
     MenuItem saveLayer = new MenuItem("Save current layer");
     MenuItem showImage = new MenuItem("Show snapshot image");
 
+    var globalSetting = new Menu("Global Setting");
+    var translation = new MenuItem("Translation");
+
     mainMenu.getItems().addAll(saveLayer, saveAll, load, showImage);
-    getMenus().add(mainMenu);
+    globalSetting.getItems().addAll(translation);
+    getMenus().addAll(mainMenu, globalSetting);
 
     saveAll.setOnAction(_ -> {
       var window = this.getScene().getWindow();
@@ -105,6 +111,41 @@ public class MenuBar extends javafx.scene.control.MenuBar {
           throw new RuntimeException(e);
         }
       }
+    });
+
+    translation.setOnAction(_ -> {
+      var gridPane = new GridPane();
+      gridPane.setPadding(new Insets(10));
+      gridPane.setHgap(20);
+      gridPane.setVgap(20);
+      gridPane.add(new Label("Global translate X:"), 0, 0);
+      gridPane.add(new Label("Global translate Y:"), 0, 1);
+
+      var tranX = new NumberField(-(int) Screen.getPrimary().getBounds().getWidth(), (int) Screen.getPrimary().getBounds().getWidth());
+      var tranY = new NumberField(-(int) Screen.getPrimary().getBounds().getHeight(), (int) Screen.getPrimary().getBounds().getHeight());
+      gridPane.add(tranX, 1, 0);
+      gridPane.add(tranY, 1, 1);
+
+      var apply = new Button("Apply");
+      gridPane.add(apply, 0, 2);
+      var ok = new Button("OK");
+      gridPane.add(ok, 1, 2);
+      var scene = new Scene(gridPane);
+      var stage = new Stage();
+      stage.setScene(scene);
+      stage.show();
+
+      apply.setOnAction(_ -> {
+        for (var node : SVGEditor.getAppCast().center.getChildren()) {
+          if (node instanceof JVGLayer layer) {
+            layer.move(tranX.getValue(), tranY.getValue());
+            SVGEditor.getAppCast().updateSVGPath(layer);
+          }
+        }
+        tranX.setText("0");
+        tranY.setText("0");
+      });
+      ok.setOnAction(_ -> stage.close());
     });
   }
 }
