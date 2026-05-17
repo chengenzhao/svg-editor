@@ -21,9 +21,10 @@ public class MenuBar extends javafx.scene.control.MenuBar {
 
     var globalSetting = new Menu("Global Setting");
     var translation = new MenuItem("Translation");
+    var backgroundColor = new MenuItem("Editor Background Color");
 
     mainMenu.getItems().addAll(saveLayer, saveAll, load, showImage);
-    globalSetting.getItems().addAll(translation);
+    globalSetting.getItems().addAll(translation, backgroundColor);
     getMenus().addAll(mainMenu, globalSetting);
 
     saveAll.setOnAction(_ -> {
@@ -147,5 +148,29 @@ public class MenuBar extends javafx.scene.control.MenuBar {
       });
       ok.setOnAction(_ -> stage.close());
     });
+
+    backgroundColor.setOnAction(_ -> {
+      var gridPane = new GridPane();
+      gridPane.setPadding(new Insets(10));
+      gridPane.setHgap(20);
+      gridPane.setVgap(20);
+      gridPane.add(new Label("Editor Background Color:"), 0, 0);
+
+      var colorPicker = new ColorPicker();
+      gridPane.add(colorPicker, 0,1);
+
+      var scene = new Scene(gridPane);
+      var stage = new Stage();
+      stage.setScene(scene);
+      stage.show();
+
+      colorPicker.setOnAction(_ ->{
+        SVGEditor.getAppCast().center.setBackground(new Background(new BackgroundFill(colorPicker.getValue(), null,null)));
+        stage.close();
+      });
+    });
+
   }
+
+
 }
