@@ -37,7 +37,7 @@ public class RightTree extends VBox {
             var top = SVGEditor.getAppCast().topBox;
             top.opacityParameter.getSlider().valueProperty().unbindBidirectional(view.opacityProperty());;
           }
-          case JVGLayer layer -> {
+          case JVGPath layer -> {
             var top = SVGEditor.getAppCast().topBox;
             var bottom = SVGEditor.getAppCast().bottom;
             layer.strokeProperty().unbind();
@@ -64,7 +64,7 @@ public class RightTree extends VBox {
           var top = SVGEditor.getAppCast().topBox;
           top.opacityParameter.getSlider().valueProperty().bindBidirectional(view.opacityProperty());;
         }
-        case JVGLayer layer -> {
+        case JVGPath layer -> {
           var top = SVGEditor.getAppCast().topBox;
           var bottom = SVGEditor.getAppCast().bottom;
           bottom.strokeParameters.getStroke().setValue((Color) (layer.getStroke()==null?Color.BLACK:layer.getStroke()));
@@ -151,9 +151,9 @@ public class RightTree extends VBox {
   }
 
   public TreeItem<Node> createSVGPath(String name,TreeItem<Node> parent) {
-    JVGLayer JVGLayer = new JVGLayer();
+    JVGPath JVGPath = new JVGPath();
 
-    SVGEditor.getAppCast().center.getChildren().add(JVGLayer);
+    SVGEditor.getAppCast().center.getChildren().add(JVGPath);
 
     var hBox = new HBox(new Label(name));
     hBox.setSpacing(10);
@@ -162,15 +162,15 @@ public class RightTree extends VBox {
 
     var item = new TreeItem<Node>(hBox);
 
-    itemGraphicBiMap.put(item, JVGLayer);
+    itemGraphicBiMap.put(item, JVGPath);
 
     if(parent!=null) {
       parent.getChildren().addFirst(item);
 
-      JVGLayer.setCache(true);
+      JVGPath.setCache(true);
 //      svgPath.setBlendMode(BlendMode.MULTIPLY);
 //        n.setCacheHint(CacheHint.QUALITY);
-      JVGLayer.setClip(((JVGLayer)itemGraphicBiMap.get(parent)).daemon());
+      JVGPath.setClip(((JVGPath)itemGraphicBiMap.get(parent)).daemon());
     }
     else
       treeView.getRoot().getChildren().addFirst(item);
@@ -248,7 +248,7 @@ public class RightTree extends VBox {
     delRecursively(item, treeView.getRoot().getChildren());
     switch(itemGraphicBiMap.remove(item)){
       case ImageView view -> SVGEditor.getAppCast().center.getChildren().remove(view);
-      case JVGLayer layer -> SVGEditor.getAppCast().center.getChildren().remove(layer);
+      case JVGPath layer -> SVGEditor.getAppCast().center.getChildren().remove(layer);
       case null, default -> {}
     }
     rearrangePane();

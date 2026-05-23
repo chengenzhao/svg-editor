@@ -2,6 +2,7 @@ package com.whitewoodcity.svgeditor.bottom;
 
 import com.whitewoodcity.control.NumberField;
 import com.whitewoodcity.fxgl.vectorview.JVGLayer;
+import com.whitewoodcity.fxgl.vectorview.JVGPath;
 import com.whitewoodcity.javafx.binding.XBindings;
 import com.whitewoodcity.svgeditor.SVGEditor;
 import com.whitewoodcity.svgeditor.SVGEditorHeader;
@@ -10,6 +11,7 @@ import javafx.collections.FXCollections;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.*;
+import javafx.scene.shape.Shape;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +28,7 @@ public class FillParameters extends SVGEditorHeader {
 
     fillType.valueProperty().addListener((_, _, newV) -> {
       var node = SVGEditor.getAppCast().rightTree.currentNodeInPane();
-      if (node instanceof JVGLayer layer) {
+      if (node instanceof JVGPath layer) {
         var fill = switch (newV) {
           case "Color" -> Color.BLACK;
           case "LinearGradient" ->
@@ -47,136 +49,138 @@ public class FillParameters extends SVGEditorHeader {
   }
 
   public void updateNBind(JVGLayer layer) {
-    var fill = layer.getFill();
-    switch (fill) {
-      case Color color -> {
-        fillType.setValue("Color");
-        var picker = new ColorPicker();
-        picker.setValue(color);
-        content.getChildren().clear();
-        content.getChildren().add(picker);
+    if(layer instanceof Shape shape) {
+      var fill = shape.getFill();
+      switch (fill) {
+        case Color color -> {
+          fillType.setValue("Color");
+          var picker = new ColorPicker();
+          picker.setValue(color);
+          content.getChildren().clear();
+          content.getChildren().add(picker);
 
-        layer.fillProperty().bind(picker.valueProperty());
-      }
-      case LinearGradient gradient -> {
-        fillType.setValue("LinearGradient");
-
-        var startX = new NumberField(-10000, 10000);
-        var startY = new NumberField(-10000, 10000);
-        var endX = new NumberField(-10000, 10000);
-        var endY = new NumberField(-10000, 10000);
-        startX.setText("" + gradient.getStartX());
-        startY.setText("" + gradient.getStartY());
-        endX.setText("" + gradient.getEndX());
-        endY.setText("" + gradient.getEndY());
-        startX.setPrefWidth(100);
-        startY.prefWidthProperty().bind(startX.prefWidthProperty());
-        endX.prefWidthProperty().bind(startX.prefWidthProperty());
-        endY.prefWidthProperty().bind(startX.prefWidthProperty());
-        var proportional = new CheckBox();
-        proportional.setSelected(gradient.isProportional());
-        var cycleMethod = cycleMethodChoiceBox();
-        cycleMethod.setValue(gradient.getCycleMethod());
-
-        var addStop = new Button("+");
-        var minusStop = new Button("-");
-
-        addStop.setOnAction(_ -> addStop());
-        minusStop.setOnAction(_-> minusStop());
-
-        content.getChildren().clear();
-        content.getChildren().addAll(
-          new Label("Start X:"), startX,
-          new Label("Y:"), startY,
-          new Label("End X:"), endX,
-          new Label("Y:"), endY,
-          new Label("Proportional:"), proportional,
-          new Label("Cycle Method:"), cycleMethod,
-          new Label("Stops:"), addStop, minusStop);
-
-        var offsets = new SimpleListProperty<Double>(FXCollections.observableArrayList());
-        var colors = new SimpleListProperty<Color>(FXCollections.observableArrayList());
-        for (int i = 0; i < gradient.getStops().size(); i++) {
-          var stop = gradient.getStops().get(i);
-          offsets.add(stop.getOffset());
-          colors.add(stop.getColor());
-          var offset = new NumberField(0, 1);
-          offset.setPrefWidth(50);
-          offset.setText(stop.getOffset() + "");
-          var color = new ColorPicker(stop.getColor());
-          int j = i;
-          offset.valueProperty().addListener((_, _, v) -> offsets.set(j, v.doubleValue()));
-          color.valueProperty().addListener((_, _, v) -> colors.set(j, v));
-          content.getChildren().addAll(offset, color);
+          shape.fillProperty().bind(picker.valueProperty());
         }
+        case LinearGradient gradient -> {
+          fillType.setValue("LinearGradient");
 
-        layer.fillProperty().bind(XBindings.reduce(startX.valueProperty(), startY.valueProperty(), endX.valueProperty(), endY.valueProperty(),
-          proportional.selectedProperty(), cycleMethod.valueProperty(), offsets, colors,
-          (sx, sy, ex, ey, p, c, os, cs) -> new LinearGradient(sx.doubleValue(), sy.doubleValue(), ex.doubleValue(), ey.doubleValue(), p, c, stops(os, cs))));
-      }
-      case RadialGradient gradient -> {
-        fillType.setValue("RadialGradient");
+          var startX = new NumberField(-10000, 10000);
+          var startY = new NumberField(-10000, 10000);
+          var endX = new NumberField(-10000, 10000);
+          var endY = new NumberField(-10000, 10000);
+          startX.setText("" + gradient.getStartX());
+          startY.setText("" + gradient.getStartY());
+          endX.setText("" + gradient.getEndX());
+          endY.setText("" + gradient.getEndY());
+          startX.setPrefWidth(100);
+          startY.prefWidthProperty().bind(startX.prefWidthProperty());
+          endX.prefWidthProperty().bind(startX.prefWidthProperty());
+          endY.prefWidthProperty().bind(startX.prefWidthProperty());
+          var proportional = new CheckBox();
+          proportional.setSelected(gradient.isProportional());
+          var cycleMethod = cycleMethodChoiceBox();
+          cycleMethod.setValue(gradient.getCycleMethod());
 
-        var centerX = new NumberField(-10000, 10000);
-        var centerY = new NumberField(-10000, 10000);
-        var focusAngle = new NumberField(-360,360);
-        var focusDistance = new NumberField(-10000,10000);
-        var radius = new NumberField(-10000,10000);
-        centerX.setText("" + gradient.getCenterX());
-        centerY.setText("" + gradient.getCenterY());
-        focusAngle.setText(""+gradient.getFocusAngle());
-        focusDistance.setText(""+gradient.getFocusDistance());
-        radius.setText(""+gradient.getRadius());
-        centerX.setPrefWidth(100);
-        centerY.prefWidthProperty().bind(centerX.prefWidthProperty());
-        focusAngle.prefWidthProperty().bind(centerX.prefWidthProperty());
-        focusDistance.prefWidthProperty().bind(centerX.prefWidthProperty());
-        radius.prefWidthProperty().bind(centerX.prefWidthProperty());
+          var addStop = new Button("+");
+          var minusStop = new Button("-");
 
-        var proportional = new CheckBox();
-        proportional.setSelected(gradient.isProportional());
-        var cycleMethod = cycleMethodChoiceBox();
-        cycleMethod.setValue(gradient.getCycleMethod());
+          addStop.setOnAction(_ -> addStop());
+          minusStop.setOnAction(_ -> minusStop());
 
-        var addStop = new Button("+");
-        var minusStop = new Button("-");
+          content.getChildren().clear();
+          content.getChildren().addAll(
+            new Label("Start X:"), startX,
+            new Label("Y:"), startY,
+            new Label("End X:"), endX,
+            new Label("Y:"), endY,
+            new Label("Proportional:"), proportional,
+            new Label("Cycle Method:"), cycleMethod,
+            new Label("Stops:"), addStop, minusStop);
 
-        addStop.setOnAction(_ -> addStop());
-        minusStop.setOnAction(_-> minusStop());
+          var offsets = new SimpleListProperty<Double>(FXCollections.observableArrayList());
+          var colors = new SimpleListProperty<Color>(FXCollections.observableArrayList());
+          for (int i = 0; i < gradient.getStops().size(); i++) {
+            var stop = gradient.getStops().get(i);
+            offsets.add(stop.getOffset());
+            colors.add(stop.getColor());
+            var offset = new NumberField(0, 1);
+            offset.setPrefWidth(50);
+            offset.setText(stop.getOffset() + "");
+            var color = new ColorPicker(stop.getColor());
+            int j = i;
+            offset.valueProperty().addListener((_, _, v) -> offsets.set(j, v.doubleValue()));
+            color.valueProperty().addListener((_, _, v) -> colors.set(j, v));
+            content.getChildren().addAll(offset, color);
+          }
 
-        content.getChildren().clear();
-        content.getChildren().addAll(
-          new Label("Center X:"), centerX,
-          new Label("Y:"), centerY,
-          new Label("Focus Angle:"), focusAngle,
-          new Label("Focus Distance:"), focusDistance,
-          new Label("Radius:"), radius,
-
-          new Label("Proportional:"), proportional,
-          new Label("Cycle Method:"), cycleMethod,
-          new Label("Stops:"), addStop, minusStop);
-
-        var offsets = new SimpleListProperty<Double>(FXCollections.observableArrayList());
-        var colors = new SimpleListProperty<Color>(FXCollections.observableArrayList());
-        for (int i = 0; i < gradient.getStops().size(); i++) {
-          var stop = gradient.getStops().get(i);
-          offsets.add(stop.getOffset());
-          colors.add(stop.getColor());
-          var offset = new NumberField(0, 1);
-          offset.setPrefWidth(50);
-          offset.setText(stop.getOffset() + "");
-          var color = new ColorPicker(stop.getColor());
-          int j = i;
-          offset.valueProperty().addListener((_, _, v) -> offsets.set(j, v.doubleValue()));
-          color.valueProperty().addListener((_, _, v) -> colors.set(j, v));
-          content.getChildren().addAll(offset, color);
+          shape.fillProperty().bind(XBindings.reduce(startX.valueProperty(), startY.valueProperty(), endX.valueProperty(), endY.valueProperty(),
+            proportional.selectedProperty(), cycleMethod.valueProperty(), offsets, colors,
+            (sx, sy, ex, ey, p, c, os, cs) -> new LinearGradient(sx.doubleValue(), sy.doubleValue(), ex.doubleValue(), ey.doubleValue(), p, c, stops(os, cs))));
         }
+        case RadialGradient gradient -> {
+          fillType.setValue("RadialGradient");
 
-        layer.fillProperty().bind(XBindings.reduce(focusAngle.valueProperty(), focusDistance.valueProperty(),centerX.valueProperty(), centerY.valueProperty(), radius.valueProperty(),
-          proportional.selectedProperty(), cycleMethod.valueProperty(), offsets, colors,
-          (fa, fd, cx, cy,r, p, c, os, cs) -> new RadialGradient(fa.doubleValue(), fd.doubleValue(),cx.doubleValue(),cy.doubleValue(),  r.doubleValue(),p, c, stops(os, cs))));
-      }
-      default -> {
+          var centerX = new NumberField(-10000, 10000);
+          var centerY = new NumberField(-10000, 10000);
+          var focusAngle = new NumberField(-360, 360);
+          var focusDistance = new NumberField(-10000, 10000);
+          var radius = new NumberField(-10000, 10000);
+          centerX.setText("" + gradient.getCenterX());
+          centerY.setText("" + gradient.getCenterY());
+          focusAngle.setText("" + gradient.getFocusAngle());
+          focusDistance.setText("" + gradient.getFocusDistance());
+          radius.setText("" + gradient.getRadius());
+          centerX.setPrefWidth(100);
+          centerY.prefWidthProperty().bind(centerX.prefWidthProperty());
+          focusAngle.prefWidthProperty().bind(centerX.prefWidthProperty());
+          focusDistance.prefWidthProperty().bind(centerX.prefWidthProperty());
+          radius.prefWidthProperty().bind(centerX.prefWidthProperty());
+
+          var proportional = new CheckBox();
+          proportional.setSelected(gradient.isProportional());
+          var cycleMethod = cycleMethodChoiceBox();
+          cycleMethod.setValue(gradient.getCycleMethod());
+
+          var addStop = new Button("+");
+          var minusStop = new Button("-");
+
+          addStop.setOnAction(_ -> addStop());
+          minusStop.setOnAction(_ -> minusStop());
+
+          content.getChildren().clear();
+          content.getChildren().addAll(
+            new Label("Center X:"), centerX,
+            new Label("Y:"), centerY,
+            new Label("Focus Angle:"), focusAngle,
+            new Label("Focus Distance:"), focusDistance,
+            new Label("Radius:"), radius,
+
+            new Label("Proportional:"), proportional,
+            new Label("Cycle Method:"), cycleMethod,
+            new Label("Stops:"), addStop, minusStop);
+
+          var offsets = new SimpleListProperty<Double>(FXCollections.observableArrayList());
+          var colors = new SimpleListProperty<Color>(FXCollections.observableArrayList());
+          for (int i = 0; i < gradient.getStops().size(); i++) {
+            var stop = gradient.getStops().get(i);
+            offsets.add(stop.getOffset());
+            colors.add(stop.getColor());
+            var offset = new NumberField(0, 1);
+            offset.setPrefWidth(50);
+            offset.setText(stop.getOffset() + "");
+            var color = new ColorPicker(stop.getColor());
+            int j = i;
+            offset.valueProperty().addListener((_, _, v) -> offsets.set(j, v.doubleValue()));
+            color.valueProperty().addListener((_, _, v) -> colors.set(j, v));
+            content.getChildren().addAll(offset, color);
+          }
+
+          shape.fillProperty().bind(XBindings.reduce(focusAngle.valueProperty(), focusDistance.valueProperty(), centerX.valueProperty(), centerY.valueProperty(), radius.valueProperty(),
+            proportional.selectedProperty(), cycleMethod.valueProperty(), offsets, colors,
+            (fa, fd, cx, cy, r, p, c, os, cs) -> new RadialGradient(fa.doubleValue(), fd.doubleValue(), cx.doubleValue(), cy.doubleValue(), r.doubleValue(), p, c, stops(os, cs))));
+        }
+        default -> {
+        }
       }
     }
   }
@@ -197,7 +201,7 @@ public class FillParameters extends SVGEditorHeader {
   }
 
   private void addStop(){
-    if(SVGEditor.getAppCast().rightTree.currentNodeInPane() instanceof JVGLayer l){
+    if(SVGEditor.getAppCast().rightTree.currentNodeInPane() instanceof JVGPath l){
 
       List<Stop> stops = switch (l.getFill()){
         case LinearGradient gradient -> new ArrayList<>(gradient.getStops());
@@ -231,7 +235,7 @@ public class FillParameters extends SVGEditorHeader {
   }
 
   private void minusStop(){
-    if(SVGEditor.getAppCast().rightTree.currentNodeInPane() instanceof JVGLayer l){
+    if(SVGEditor.getAppCast().rightTree.currentNodeInPane() instanceof JVGPath l){
 
       List<Stop> stops = switch (l.getFill()){
         case LinearGradient gradient -> new ArrayList<>(gradient.getStops());

@@ -3,6 +3,7 @@ package com.whitewoodcity.svgeditor;
 import com.whitewoodcity.control.NumberField;
 import com.whitewoodcity.fxgl.vectorview.JVG;
 import com.whitewoodcity.fxgl.vectorview.JVGLayer;
+import com.whitewoodcity.fxgl.vectorview.JVGPath;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -13,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Shape;
 
 public class LeftColumn extends VBox {
 
@@ -68,7 +70,7 @@ public class LeftColumn extends VBox {
         zoom(xy, layer, factor);
       }
     }
-    if(SVGEditor.getAppCast().rightTree.currentNodeInPane() instanceof JVGLayer layer)
+    if(SVGEditor.getAppCast().rightTree.currentNodeInPane() instanceof JVGPath layer)
       SVGEditor.getAppCast().bottom.fillParameters.updateNBind(layer);
   }
 
@@ -91,11 +93,13 @@ public class LeftColumn extends VBox {
   }
 
   public void zoom(Point2D anchorPoint, JVGLayer layer, double factor){
-    layer.fillProperty().unbind();
+    if(layer instanceof Shape shape)
+      shape.fillProperty().unbind();
     layer.trim(anchorPoint)
       .zoom(factor)
       .move(anchorPoint);
-    SVGEditor.getAppCast().updateSVGPath(layer);
+    if(layer instanceof JVGPath jvgPath)
+      SVGEditor.getAppCast().updateSVGPath(jvgPath);
   }
 
   public void zoom(JVGLayer layer, double factor){

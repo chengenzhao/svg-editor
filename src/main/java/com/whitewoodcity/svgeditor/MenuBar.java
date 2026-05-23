@@ -7,8 +7,12 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.whitewoodcity.control.NumberField;
 import com.whitewoodcity.fxgl.vectorview.JVG;
-import com.whitewoodcity.fxgl.vectorview.JVGLayer;
+import com.whitewoodcity.fxgl.vectorview.JVGPath;
+import com.whitewoodcity.fxgl.vectorview.JsonKeys;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.stage.Screen;
 
 public class MenuBar extends javafx.scene.control.MenuBar {
 
@@ -65,7 +69,7 @@ public class MenuBar extends javafx.scene.control.MenuBar {
       fileChooser.setTitle("What file would you like to save?");
       fileChooser.setInitialFileName("layer.jvgl");
       var file = fileChooser.showSaveDialog(window);
-      if (file != null && SVGEditor.getAppCast().rightTree.currentNodeInPane() instanceof JVGLayer svgl) {
+      if (file != null && SVGEditor.getAppCast().rightTree.currentNodeInPane() instanceof JVGPath svgl) {
         try {
           Files.write(Paths.get(file.getPath()), svgl.toJsonString().getBytes());
         } catch (IOException e) {
@@ -89,7 +93,7 @@ public class MenuBar extends javafx.scene.control.MenuBar {
           switch (json) {
             case ArrayNode arrayNode -> JVG.fromJson(obj -> {
               TreeItem<Node> item;
-              if (obj.has(JVGLayer.JsonKeys.CLIP.key())) {
+              if (obj.has(JsonKeys.CLIP.key())) {
                 var parent = ref.get();
                 item = app.rightTree.createSVGPath("SubLayer" + parent.getChildren().size(), parent);
               } else {
@@ -97,11 +101,11 @@ public class MenuBar extends javafx.scene.control.MenuBar {
                 item.setExpanded(true);
                 ref.set(item);
               }
-              return (JVGLayer) app.rightTree.getNodeByItem(item);
+              return (JVGPath) app.rightTree.getNodeByItem(item);
             }, arrayNode);
             case ObjectNode objectNode -> {
               var item = app.rightTree.createSVGPath();
-              var svgl = (JVGLayer) app.rightTree.getNodeByItem(item);
+              var svgl = (JVGPath) app.rightTree.getNodeByItem(item);
               svgl.fromJson(objectNode);
               app.rightTree.treeView.getSelectionModel().select(item);
             }
@@ -138,7 +142,7 @@ public class MenuBar extends javafx.scene.control.MenuBar {
 
       apply.setOnAction(_ -> {
         for (var node : SVGEditor.getAppCast().center.getChildren()) {
-          if (node instanceof JVGLayer layer) {
+          if (node instanceof JVGPath layer) {
             layer.move(tranX.getValue(), tranY.getValue());
             SVGEditor.getAppCast().updateSVGPath(layer);
           }
