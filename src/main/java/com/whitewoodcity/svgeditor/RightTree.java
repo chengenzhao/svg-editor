@@ -4,6 +4,7 @@ import module com.google.common;
 import module com.whitewoodcity.fxcity;
 import module java.base;
 import module javafx.controls;
+import com.whitewoodcity.javafx.jvg.JVGPath;
 import javafx.scene.control.Label;
 
 public class RightTree extends VBox {

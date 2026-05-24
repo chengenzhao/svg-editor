@@ -1,8 +1,8 @@
 package com.whitewoodcity.svgeditor.bottom;
 
 import com.whitewoodcity.control.NumberField;
-import com.whitewoodcity.fxgl.vectorview.JVGLayer;
-import com.whitewoodcity.fxgl.vectorview.JVGPath;
+import com.whitewoodcity.javafx.jvg.JVGLayer;
+import com.whitewoodcity.javafx.jvg.JVGPath;
 import com.whitewoodcity.javafx.binding.XBindings;
 import com.whitewoodcity.svgeditor.SVGEditor;
 import com.whitewoodcity.svgeditor.SVGEditorHeader;

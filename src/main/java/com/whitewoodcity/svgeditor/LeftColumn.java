@@ -1,9 +1,9 @@
 package com.whitewoodcity.svgeditor;
 
 import com.whitewoodcity.control.NumberField;
-import com.whitewoodcity.fxgl.vectorview.JVG;
-import com.whitewoodcity.fxgl.vectorview.JVGLayer;
-import com.whitewoodcity.fxgl.vectorview.JVGPath;
+import com.whitewoodcity.javafx.jvg.JVG;
+import com.whitewoodcity.javafx.jvg.JVGLayer;
+import com.whitewoodcity.javafx.jvg.JVGPath;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
