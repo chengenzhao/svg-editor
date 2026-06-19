@@ -11,8 +11,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <junit.version>6.0.0</junit.version>
-        <fxcity.version>3.4.2</fxcity.version>
+        <junit.version>6.1.0</junit.version>
+        <fxcity.version>3.6</fxcity.version>
         <guava.version>33.5.0-jre</guava.version>
     </properties>
 
