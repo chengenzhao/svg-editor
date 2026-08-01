@@ -26,9 +26,13 @@ public class MenuBar extends javafx.scene.control.MenuBar {
     var globalSetting = new Menu("Global Setting");
     var translation = new MenuItem("Translation");
     var backgroundColor = new MenuItem("Editor Background Color");
+    var flip = new Menu("Flip");
+    var flipHorizontal = new MenuItem("Flip Horizontally");
+    var flipVertical = new MenuItem("Fip Vertically");
 
     mainMenu.getItems().addAll(saveLayer, saveAll, load, showImage);
-    globalSetting.getItems().addAll(translation, backgroundColor);
+    globalSetting.getItems().addAll(translation, backgroundColor, flip);
+    flip.getItems().addAll(flipHorizontal, flipVertical);
     getMenus().addAll(mainMenu, globalSetting);
 
     saveAll.setOnAction(_ -> {
@@ -174,7 +178,20 @@ public class MenuBar extends javafx.scene.control.MenuBar {
       });
     });
 
+    flipHorizontal.setOnAction(_ -> flip(Orientation.HORIZONTAL));
+    flipVertical.setOnAction(_-> flip(Orientation.VERTICAL));
   }
 
 
+  private void flip(Orientation orientation){
+    var jvg = new JVG(JVG.toJson(SVGEditor.getAppCast().center.getChildren()).toString());
+    var xy = jvg.getXY();
+    var d = jvg.trim().getDimension();
+    for (var node : SVGEditor.getAppCast().center.getChildren()) {
+      if (node instanceof JVGPath layer) {
+        layer.move(-xy.getX(), -xy.getY()).flip(d, orientation).move(xy);
+        SVGEditor.getAppCast().updateSVGPath(layer);
+      }
+    }
+  }
 }
