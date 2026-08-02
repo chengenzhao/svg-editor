@@ -88,7 +88,7 @@ public class LeftColumn extends VBox {
         view.setFitHeight(view.getFitHeight() * factor);
       }
       case JVGLayer layer -> zoom(layer, factor);
-      default -> {}
+      case null, default -> {}
     }
   }
 
