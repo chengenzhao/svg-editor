@@ -44,10 +44,10 @@ jobs:
           --name "SVGEditor" `
           --app-version "1.1.0" `
           --module com.whitewoodcity.svgeditor/com.whitewoodcity.svgeditor.SVGEditor `
-          --module‑path target/classes `
+          --module-path target/classes `
           --dest ./output `
-          --win‑dir‑chooser `
-          --win‑shortcut
+          --win-dir-chooser `
+          --win-shortcut
 
 #    - name: Generate Installer with jpackage
 #      run: jpackage --input target/ --name "SVGEditor" --main-jar "svg-editor.jar" --main-class "com.whitewoodcity.svgeditor.SVGEditor" --type msi --dest output/ --app-version "1.1.0" --vendor "White Wood City"
