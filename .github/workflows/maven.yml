@@ -47,7 +47,7 @@ jobs:
           --name "SVGEditor" `
           --app-version "1.1.0" `
           --module com.whitewoodcity.svgeditor/com.whitewoodcity.svgeditor.SVGEditor `
-          --module-path “target/classes;target/modules” `
+          --module-path “target/classes” `
           --runtime-image target/app `
           --dest ./output `
           --win-dir-chooser `
