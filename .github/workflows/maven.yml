@@ -41,7 +41,7 @@ jobs:
         --name "SVGEditor" \
         --main-jar "svgeditor-1.0-SNAPSHOT.jar" \
         --main-class "com.whitewoodcity.SVGEditor" \
-        --type ${{ matrix.pkg-type }} \
+        --type msi \
         --dest output/ \
         --app-version "1.0.0" \
         --vendor "White Wood City"
