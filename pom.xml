@@ -74,15 +74,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- javafx‑maven‑plugin：负责 run、jlink -->
-            <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.8</version>
-                <configuration>
-                    <mainClass>com.whitewoodcity.svgeditor/com.whitewoodcity.svgeditor.SVGEditor</mainClass>
-                </configuration>
-            </plugin>
         </plugins>
         <finalName>${jar.name}</finalName>
     </build>

@@ -8,7 +8,6 @@ module com.whitewoodcity.svgeditor {
   requires com.almasb.fxgl.all;
   requires com.google.common;
   requires com.fasterxml.jackson.databind;
-  requires annotations;
 
   exports com.whitewoodcity.svgeditor;
   exports com.whitewoodcity.svgeditor.top;
