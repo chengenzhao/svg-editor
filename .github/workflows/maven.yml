@@ -42,7 +42,7 @@ jobs:
         jpackage `
           --type exe `
           --name "SVGEditor" `
-          --app‑version "1.1.0" `
+          --app-version "1.1.0" `
           --module com.whitewoodcity.svgeditor/com.whitewoodcity.svgeditor.SVGEditor `
           --module‑path target/classes `
           --dest ./output `
