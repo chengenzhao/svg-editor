@@ -29,14 +29,10 @@ jobs:
         java-package: jdk
         cache: maven
 
-#    - name: Install WiX Toolset (Windows)
-#      if: matrix.os == 'windows-latest'
-#      run: dotnet tool install --global WiX
-
     - name: Build with Maven
       run: mvn clean package -DskipTests
 
-    - name: Build with Maven
+    - name: Build Runtime
       run: mvn javafx:jlink
 
     - name: jpackage build Windows exe
@@ -52,9 +48,6 @@ jobs:
           --dest ./output `
           --win-dir-chooser `
           --win-shortcut
-
-#    - name: Generate Installer with jpackage
-#      run: jpackage --input target/ --name "SVGEditor" --main-jar "svg-editor.jar" --main-class "com.whitewoodcity.svgeditor.SVGEditor" --type msi --dest output/ --app-version "1.1.0" --vendor "White Wood City"
 
     - uses: actions/upload-artifact@v7
       with:
