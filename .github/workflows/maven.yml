@@ -26,7 +26,7 @@ jobs:
       with:
         java-version: '26'
         distribution: 'liberica'
-        java-package: jdk
+        java-package: jdk+fx
         cache: maven
 
 #    - name: Install WiX Toolset (Windows)
