@@ -36,16 +36,15 @@ jobs:
       run: mvn clean package -DskipTests
 
     - name: Generate Installer with jpackage
-      run: |
-        jpackage \
-          --input target/ \
-          --name "SVGEditor" \
-          --main-jar "svgeditor-1.0-SNAPSHOT.jar" \
-          --main-class "com.whitewoodcity.SVGEditor" \
-          --type ${{ matrix.pkg-type }} \
-          --dest output/ \
-          --app-version "1.0.0" \
-          --vendor "White Wood City"
+      run: jpackage \
+        --input target/ \
+        --name "SVGEditor" \
+        --main-jar "svgeditor-1.0-SNAPSHOT.jar" \
+        --main-class "com.whitewoodcity.SVGEditor" \
+        --type ${{ matrix.pkg-type }} \
+        --dest output/ \
+        --app-version "1.0.0" \
+        --vendor "White Wood City"
 
     - uses: actions/upload-artifact@v7
       with:
