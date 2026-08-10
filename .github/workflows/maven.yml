@@ -26,6 +26,7 @@ jobs:
       with:
         java-version: '26'
         distribution: 'temurin'
+        java-package: jdk+fx
         cache: maven
 
     - name: Install WiX Toolset (Windows)
