@@ -74,26 +74,14 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- 关键插件：把所有依赖jar复制到 target/modules 目录 -->
+            <!-- javafx‑maven‑plugin：负责 run、jlink -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.8.0</version>
-                <executions>
-                    <execution>
-                        <id>copy-modules</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/modules</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                        </configuration>
-                    </execution>
-                </executions>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <mainClass>com.whitewoodcity.svgeditor/com.whitewoodcity.svgeditor.SVGEditor</mainClass>
+                </configuration>
             </plugin>
         </plugins>
         <finalName>${jar.name}</finalName>
