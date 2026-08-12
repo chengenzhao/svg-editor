@@ -43,8 +43,10 @@ public class SVGEditor extends Application {
 
     var borderPane = new BorderPane();
 
-    borderPane.setTop(topBox);
+    center.setViewOrder(Double.MAX_VALUE);
+
     borderPane.setCenter(center);
+    borderPane.setTop(topBox);
     borderPane.setLeft(left);
     borderPane.setRight(rightTree);
     borderPane.setBottom(bottom);
