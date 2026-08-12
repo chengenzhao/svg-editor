@@ -54,7 +54,9 @@ public class SVGEditor extends Application {
     rightTree.createSVGPath();
     rightTree.treeView.getSelectionModel().selectFirst();
 
-    Scene scene = new Scene(new VBox(menuBar, borderPane));
+    menuBar.setViewOrder(-1);
+
+    Scene scene = new Scene(new VBox(menuBar,borderPane));
     stage.setTitle("SVG Path Editor~!");
     stage.setScene(scene);
     stage.show();
