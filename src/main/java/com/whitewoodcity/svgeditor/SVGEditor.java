@@ -61,6 +61,16 @@ public class SVGEditor extends Application {
     stage.setScene(scene);
     stage.show();
 
+    scene.setOnKeyPressed(e -> {
+      switch (e.getCode()){
+        case W -> left.up().fire();
+        case S -> left.down().fire();
+        case A -> left.left().fire();
+        case D -> left.right().fire();
+        default -> {}
+      }
+    });
+
     bottom.prefWidthProperty().bind(scene.widthProperty());
   }
 
