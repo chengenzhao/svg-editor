@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.whitewoodcity.control.NumberField;
 import com.whitewoodcity.javafx.jvg.JVG;
+import com.whitewoodcity.javafx.jvg.JVGLayer;
 import com.whitewoodcity.javafx.jvg.JVGPath;
 import com.whitewoodcity.javafx.jvg.JsonKeys;
 import javafx.scene.control.Label;
@@ -189,9 +190,14 @@ public class MenuBar extends javafx.scene.control.MenuBar {
     var d = jvg.trim().getDimension();
     for (var node : SVGEditor.getAppCast().center.getChildren()) {
       if (node instanceof JVGPath layer) {
+        layer.fillProperty().unbind();
         layer.move(-xy.getX(), -xy.getY()).flip(d, orientation).move(xy);
         SVGEditor.getAppCast().updateSVGPath(layer);
       }
+    }
+
+    if (SVGEditor.getAppCast().rightTree.currentNodeInPane() instanceof JVGLayer svgl) {
+      SVGEditor.getAppCast().bottom.fillParameters.updateNBind(svgl);
     }
   }
 }
