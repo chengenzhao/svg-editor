@@ -195,8 +195,8 @@ public class SVGEditor extends Application {
   private Pane getPane() {
     var pane = new Pane();
     pane.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
-    pane.setPrefHeight(Screen.getPrimary().getBounds().getHeight() * .8);
-    pane.setPrefWidth(Screen.getPrimary().getBounds().getWidth() * .8);
+    pane.setPrefHeight(Screen.getPrimary().getBounds().getHeight() * .7);
+    pane.setPrefWidth(Screen.getPrimary().getBounds().getWidth() * .7);
 
     pane.setOnMousePressed(e -> {
       if (e.getButton() == MouseButton.PRIMARY && rightTree.currentNodeInPane() instanceof JVGPath layer) {
