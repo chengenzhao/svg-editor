@@ -6,7 +6,7 @@
 
     <groupId>com.whitewoodcity</groupId>
     <artifactId>svgeditor</artifactId>
-    <version>1.6</version>
+    <version>1.6.0</version>
     <name>svg-editor</name>
 
     <properties>
