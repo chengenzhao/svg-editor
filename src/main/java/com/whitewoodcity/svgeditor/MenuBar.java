@@ -45,8 +45,20 @@ public class MenuBar extends javafx.scene.control.MenuBar {
       var file = fileChooser.showSaveDialog(window);
       if (file != null) {
         try {
+          for (var node : SVGEditor.getAppCast().center.getChildren()) {
+            if (node instanceof JVGPath layer) {
+              layer.fillProperty().unbind();
+              layer.improveFill();
+              SVGEditor.getAppCast().updateSVGPath(layer);
+            }
+          }
+
           Files.write(Paths.get(file.getPath()),
             JVG.toJson(SVGEditor.getAppCast().center.getChildren()).toString().getBytes());
+
+          if (SVGEditor.getAppCast().rightTree.currentNodeInPane() instanceof JVGLayer svgl) {
+            SVGEditor.getAppCast().bottom.fillParameters.updateNBind(svgl);
+          }
         } catch (IOException e) {
           throw new RuntimeException(e);
         }
@@ -183,15 +195,17 @@ public class MenuBar extends javafx.scene.control.MenuBar {
     flipVertical.setOnAction(_-> flip(Orientation.VERTICAL));
   }
 
-
   private void flip(Orientation orientation){
     var jvg = new JVG(JVG.toJson(SVGEditor.getAppCast().center.getChildren()).toString());
     var xy = jvg.getXY();
     var d = jvg.trim().getDimension();
+    var r = new Rectangle2D(xy.getX(), xy.getY(), d.getWidth(), d.getHeight());
     for (var node : SVGEditor.getAppCast().center.getChildren()) {
       if (node instanceof JVGPath layer) {
         layer.fillProperty().unbind();
-        layer.move(-xy.getX(), -xy.getY()).flip(d, orientation).move(xy);
+//        layer.move(-xy.getX(), -xy.getY()).flip(d, orientation).move(xy);
+        layer.improveFill();
+        layer.flip(r, orientation);
         SVGEditor.getAppCast().updateSVGPath(layer);
       }
     }
