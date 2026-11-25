@@ -4,8 +4,11 @@ import module com.google.common;
 import module com.whitewoodcity.fxcity;
 import module java.base;
 import module javafx.controls;
-import com.whitewoodcity.javafx.jvg.JVGPath;
+import io.javafx.whitewoodcity.jvg.JVGPath;
 import javafx.scene.control.Label;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 public class RightTree extends VBox {
 

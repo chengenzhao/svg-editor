@@ -1,11 +1,11 @@
 package com.whitewoodcity.svgeditor.bottom;
 
 import com.whitewoodcity.control.NumberField;
-import com.whitewoodcity.javafx.jvg.JVGLayer;
-import com.whitewoodcity.javafx.jvg.JVGPath;
 import com.whitewoodcity.javafx.binding.XBindings;
 import com.whitewoodcity.svgeditor.SVGEditor;
 import com.whitewoodcity.svgeditor.SVGEditorHeader;
+import io.javafx.whitewoodcity.jvg.JVGLayer;
+import io.javafx.whitewoodcity.jvg.JVGPath;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.control.*;

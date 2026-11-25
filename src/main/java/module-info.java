@@ -9,6 +9,7 @@ module com.whitewoodcity.svgeditor {
   requires com.google.common;
   requires com.fasterxml.jackson.databind;
   requires java.desktop;
+  requires io.javafx.whitewoodcity.transitfx;
 
   exports com.whitewoodcity.svgeditor;
   exports com.whitewoodcity.svgeditor.top;
